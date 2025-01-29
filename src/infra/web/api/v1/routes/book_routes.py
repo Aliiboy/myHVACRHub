@@ -15,7 +15,7 @@ from infra.web.dtos.book_dtos import (
 
 tag = Tag(name="book", description="Some Book")
 router = APIBlueprint(
-    "/",
+    "/book",
     __name__,
     url_prefix="/book",
     abp_tags=[tag],
