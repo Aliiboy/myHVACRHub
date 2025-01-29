@@ -1,0 +1,71 @@
+[project]
+name = "iasimov-flask-api"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10.5"
+dependencies = [
+    "alembic>=1.14.1",
+    "dependency-injector>=4.45.0",
+    "flask-openapi3[elements,rapidoc,rapipdf,redoc,scalar,swagger]>=4.0.3",
+    "pydantic-settings>=2.7.1",
+    "sqlmodel>=0.0.22",
+    ]
+
+[dependency-groups]
+dev = [
+    "mypy>=1.14.1",
+    "pytest>=8.3.4",
+    "pytest-cov>=6.0.0",
+    "pytest-watch>=4.2.0",
+    "ruff>=0.9.2",
+    ]
+
+[tool.ruff.lint]
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "B",  # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+    "ARG001", # unused arguments in functions
+        ]
+ignore = [
+    "E501",  # line too long, handled by black
+    "B008",  # do not perform function calls in argument defaults
+    "W191",  # indentation contains tabs
+    "B904",  # Allow raising exceptions without from e, for HTTPException
+        ]
+
+exclude = [
+    "src/infra/data/migrations/**/*.py",
+    ]
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.mypy]
+python_version = "3.10"
+mypy_path = "src"
+strict = true
+
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+addopts = "--cov=src --cov-report term-missing --cov-report html" # pytest-watch
+
+[tool.coverage.run]
+branch = true
+source = ["src"]
+omit = [
+    "src/**/*__init__.py",
+    "src/**/*interface.py",
+    "src/**/*_interface.py",
+    "src/tests/**/*.py",
+    "src/infra/web/app.py",
+    "src/infra/web/container.py"
+    ]
+
+
