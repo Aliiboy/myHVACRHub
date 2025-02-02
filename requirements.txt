@@ -9,7 +9,9 @@ blinker==1.9.0
 click==8.1.8
     # via flask
 coolprop==6.6.0
-    # via iasimov-flask-api (pyproject.toml)
+    # via
+    #   iasimov-flask-api (pyproject.toml)
+    #   pyfluids
 dependency-injector==4.45.0
     # via iasimov-flask-api (pyproject.toml)
 flask==3.1.0
@@ -55,6 +57,8 @@ pydantic-core==2.27.2
     # via pydantic
 pydantic-settings==2.7.1
     # via iasimov-flask-api (pyproject.toml)
+pyfluids==2.7.2
+    # via iasimov-flask-api (pyproject.toml)
 python-dotenv==1.0.1
     # via pydantic-settings
 sqlalchemy==2.0.37
@@ -63,6 +67,8 @@ sqlalchemy==2.0.37
     #   sqlmodel
 sqlmodel==0.0.22
     # via iasimov-flask-api (pyproject.toml)
+tomli==2.2.1
+    # via pyfluids
 typing-extensions==4.12.2
     # via
     #   alembic
