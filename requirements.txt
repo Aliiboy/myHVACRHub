@@ -9,9 +9,7 @@ blinker==1.9.0
 click==8.1.8
     # via flask
 coolprop==6.6.0
-    # via
-    #   iasimov-flask-api (pyproject.toml)
-    #   pyfluids
+    # via pyfluids
 dependency-injector==4.45.0
     # via iasimov-flask-api (pyproject.toml)
 flask==3.1.0
