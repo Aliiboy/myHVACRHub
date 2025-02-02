@@ -396,6 +396,7 @@ dependencies = [
     { name = "dependency-injector" },
     { name = "flask-openapi3", extra = ["elements", "rapidoc", "rapipdf", "redoc", "scalar", "swagger"] },
     { name = "pydantic-settings" },
+    { name = "pyfluids" },
     { name = "sqlmodel" },
 ]
 
@@ -415,6 +416,7 @@ requires-dist = [
     { name = "dependency-injector", specifier = ">=4.45.0" },
     { name = "flask-openapi3", extras = ["elements", "rapidoc", "rapipdf", "redoc", "scalar", "swagger"], specifier = ">=4.0.3" },
     { name = "pydantic-settings", specifier = ">=2.7.1" },
+    { name = "pyfluids", specifier = ">=2.7.2" },
     { name = "sqlmodel", specifier = ">=0.0.22" },
 ]
 
@@ -692,6 +694,19 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/73/7b/c58a586cd7d9ac66d2ee4ba60ca2d241fa837c02bca9bea80a9a8c3d22a9/pydantic_settings-2.7.1.tar.gz", hash = "sha256:10c9caad35e64bfb3c2fbf70a078c0e25cc92499782e5200747f942a065dec93", size = 79920 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/b4/46/93416fdae86d40879714f72956ac14df9c7b76f7d41a4d68aa9f71a0028b/pydantic_settings-2.7.1-py3-none-any.whl", hash = "sha256:590be9e6e24d06db33a4262829edef682500ef008565a969c73d39d5f8bfb3fd", size = 29718 },
+]
+
+[[package]]
+name = "pyfluids"
+version = "2.7.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "coolprop" },
+    { name = "tomli" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/fb/ac/8798f618918e13e313dd114f81148dfcc4e4464224387279f99d1758834c/pyfluids-2.7.2.tar.gz", hash = "sha256:87cfb66d3e0b10798c5c125cc03975448b6fbca45538a2b029f409c974c8e699", size = 17265 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/9f/9f/7c29613da67d5e8cd7d0f605bfd407a4cdfba1a99f03f040c58b5b36ace3/pyfluids-2.7.2-py3-none-any.whl", hash = "sha256:09f5a438fd68c2be7e08517e2c70b02df0c81dc92e078486f1eca42aac3d50f8", size = 23709 },
 ]
 
 [[package]]
