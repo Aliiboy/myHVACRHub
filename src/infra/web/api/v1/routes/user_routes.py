@@ -1,5 +1,9 @@
+from collections.abc import Callable
+from typing import cast
+
 from dependency_injector.wiring import Provide, inject
 from flask import Response, jsonify, make_response
+from flask_jwt_extended import get_jwt_identity, jwt_required
 from flask_openapi3 import APIBlueprint, Tag  # type: ignore[attr-defined]
 
 from app.usecases.user.authenticate_user import AuthenticateUserUseCase
@@ -55,8 +59,8 @@ def login(
         return make_response(jsonify(error_response.model_dump()), 401)
 
 
-# @router.get("/protected")
-# @cast("Callable[..., Response]", jwt_required())
-# def protected_route() -> Response:
-#     current_user = get_jwt_identity()
-#     return make_response(jsonify({"message": f"Bienvenue, {current_user}"}), 200)
+@router.get("/protected")
+@cast("Callable[..., Response]", jwt_required())
+def protected_route() -> Response:
+    current_user = get_jwt_identity()
+    return make_response(jsonify({"message": f"Bienvenue, {current_user}"}), 200)

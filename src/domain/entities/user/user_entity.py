@@ -13,8 +13,6 @@ class User(BaseModel):
 
     hashed_password: str = Field(
         ...,
-        min_length=UserSettings.password_min_length,
-        max_length=UserSettings.password_max_length,
         description=UserSettings.password_description,
     )
 

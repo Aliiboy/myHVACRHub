@@ -7,6 +7,7 @@ import bcrypt
 from app.usecases.user.create_user import CreateUserUseCase
 from domain.entities.user.user_entity import User
 from infra.data.repositories.user.user_interface import UserRepositoryInterface
+from infra.services.bcrypt_password_hasher import BcryptPasswordHasher
 
 
 class CreateUserUseCaseTests(unittest.TestCase):
@@ -14,7 +15,11 @@ class CreateUserUseCaseTests(unittest.TestCase):
         self.mock_user_repository: UserRepositoryInterface = MagicMock(
             spec=UserRepositoryInterface
         )
-        self.use_case = CreateUserUseCase(repository=self.mock_user_repository)
+        self.mock_password_hasher = BcryptPasswordHasher()
+        self.use_case = CreateUserUseCase(
+            repository=self.mock_user_repository,
+            password_hasher=self.mock_password_hasher,
+        )
 
     def test_create_user_success(self) -> None:
         email: str = "test@example.com"

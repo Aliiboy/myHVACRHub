@@ -9,6 +9,8 @@ from infra.data.repositories.book.book_sqlrepo import BookSQLRepository
 from infra.data.repositories.user.user_sqlrepo import UserSQLRepository
 from infra.data.sql_database import SQLDatabase
 from infra.data.sql_unit_of_work import SQLUnitOfWork
+from infra.services.bcrypt_password_hasher import BcryptPasswordHasher
+from infra.services.jwt_token_service import JWTTokenService
 from infra.web.settings import AppSettings
 
 
@@ -28,6 +30,15 @@ class AppContainer(containers.DeclarativeContainer):
 
     # unit of work
     unit_of_work = providers.Factory(SQLUnitOfWork, session_factory=database_session)
+
+    # === services ===
+    password_hasher = providers.Factory(BcryptPasswordHasher)
+    token_service = providers.Factory(
+        JWTTokenService,
+        secret_key=app_settings.provided.JWT_SECRET_KEY,
+        algorithm=app_settings.provided.JWT_ALGORITHM,
+        expires_delta=app_settings.provided.JWT_ACCESS_TOKEN_EXPIRES,
+    )
 
     # === book module ===
     # repositories
@@ -51,8 +62,11 @@ class AppContainer(containers.DeclarativeContainer):
     user_repository = providers.Factory(UserSQLRepository, uow=unit_of_work)
     # usecases
     create_user_usecase = providers.Factory(
-        CreateUserUseCase, repository=user_repository
+        CreateUserUseCase, repository=user_repository, password_hasher=password_hasher
     )
     authenticate_user_usecase = providers.Factory(
-        AuthenticateUserUseCase, repository=user_repository, settings=app_settings
+        AuthenticateUserUseCase,
+        repository=user_repository,
+        password_hasher=password_hasher,
+        token_service=token_service,
     )
