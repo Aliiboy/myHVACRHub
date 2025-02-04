@@ -9,8 +9,8 @@ from utils.class_object import singleton
 
 
 @singleton
-class Database:
-    def __init__(self: "Database", settings: AppSettings) -> None:
+class SQLDatabase:
+    def __init__(self: "SQLDatabase", settings: AppSettings) -> None:
         self.settings = settings
         self.engine = create_engine(
             self.settings.DATABASE_URL,
@@ -23,7 +23,7 @@ class Database:
         SQLModel.metadata.create_all(self.engine)
 
     @contextmanager
-    def get_session(self: "Database") -> Iterator[Session]:
+    def get_session(self: "SQLDatabase") -> Iterator[Session]:
         session = Session(self.engine)
         try:
             yield session

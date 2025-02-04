@@ -3,7 +3,7 @@ import unittest
 from flask.testing import FlaskClient
 from flask_openapi3.openapi import OpenAPI
 
-from infra.data.database import Database
+from infra.data.sql_database import SQLDatabase
 from infra.web.app import WebApp
 from infra.web.container import AppContainer
 
@@ -11,7 +11,7 @@ from infra.web.container import AppContainer
 class BaseAPITest(unittest.TestCase):
     web_application: OpenAPI
     client: FlaskClient
-    database: Database
+    database: SQLDatabase
 
     @classmethod
     def setUpClass(cls) -> None:

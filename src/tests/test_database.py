@@ -4,19 +4,19 @@ from typing import ClassVar
 from sqlalchemy.exc import SQLAlchemyError
 from sqlmodel import Session
 
-from infra.data.database import Database
+from infra.data.sql_database import SQLDatabase
 from infra.web.settings import AppSettings
 
 
 class DatabaseTests(unittest.TestCase):
-    database: ClassVar[Database]
+    database: ClassVar[SQLDatabase]
 
     @classmethod
     def setUpClass(cls) -> None:
         app_settings = AppSettings(
             DATABASE_URL="sqlite:///:memory:", DATABASE_ECHO=False
         )
-        cls.database = Database(settings=app_settings)
+        cls.database = SQLDatabase(settings=app_settings)
         cls.database.create_database()
 
     @classmethod

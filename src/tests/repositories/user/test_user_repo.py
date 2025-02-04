@@ -9,13 +9,12 @@ from tests.repositories.base_repo_test import BaseRepositoryTest
 class UserSQLRepositoryTests(BaseRepositoryTest):
     def setUp(self) -> None:
         super().setUp()
-        self.user_repository = UserSQLRepository(
-            session_factory=lambda: self.database.get_session()
-        )
+        self.user_repository = UserSQLRepository(uow=self.uow)
 
     def tearDown(self) -> None:
-        self.session.execute(text("DELETE FROM users"))
-        self.session.commit()
+        with self.database.get_session() as session:
+            session.execute(text("DELETE FROM users"))
+            session.commit()
         super().tearDown()
 
     def test_add_user_successfully(self) -> None:

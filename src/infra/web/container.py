@@ -5,9 +5,10 @@ from app.usecases.book.get_all_books import GetAllBooksUseCase
 from app.usecases.humid_air.get_full_ha_props import GetFullHAPropertyUseCase
 from app.usecases.user.authenticate_user import AuthenticateUserUseCase
 from app.usecases.user.create_user import CreateUserUseCase
-from infra.data.database import Database
 from infra.data.repositories.book.book_sqlrepo import BookSQLRepository
 from infra.data.repositories.user.user_sqlrepo import UserSQLRepository
+from infra.data.sql_database import SQLDatabase
+from infra.data.sql_unit_of_work import SQLUnitOfWork
 from infra.web.settings import AppSettings
 
 
@@ -22,14 +23,15 @@ class AppContainer(containers.DeclarativeContainer):
 
     app_settings = providers.Singleton(AppSettings)
     # database
-    database = providers.Singleton(Database, settings=app_settings)
+    database = providers.Singleton(SQLDatabase, settings=app_settings)
     database_session = providers.Factory(database.provided.get_session)
+
+    # unit of work
+    unit_of_work = providers.Factory(SQLUnitOfWork, session_factory=database_session)
 
     # === book module ===
     # repositories
-    book_repository = providers.Factory(
-        BookSQLRepository, session_factory=database_session
-    )
+    book_repository = providers.Factory(BookSQLRepository, uow=unit_of_work)
 
     # usecases
     create_book_usecase = providers.Factory(
@@ -46,9 +48,7 @@ class AppContainer(containers.DeclarativeContainer):
 
     # === user module ===
     # repositories
-    user_repository = providers.Factory(
-        UserSQLRepository, session_factory=database_session
-    )
+    user_repository = providers.Factory(UserSQLRepository, uow=unit_of_work)
     # usecases
     create_user_usecase = providers.Factory(
         CreateUserUseCase, repository=user_repository
