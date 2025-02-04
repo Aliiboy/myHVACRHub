@@ -20,7 +20,8 @@ if not config.get_main_option("sqlalchemy.url"):
 # add your model's MetaData object here
 # for 'autogenerate' support
 # from myapp import mymodel
-from infra.data.models.book.book_sqlmodel import *  # noqa: F401
+# from infra.data.models.book.book_sqlmodel import *  # noqa: F401
+from infra.data.models.user.user_sqlmodel import *  # noqa: F401
 
 target_metadata = SQLModel.metadata
 # target_metadata = None

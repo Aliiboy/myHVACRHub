@@ -6,7 +6,7 @@ from sqlmodel import Session, select
 
 from domain.entities.book.book_entity import Book
 from infra.data.models.book.book_sqlmodel import BookSQLModel
-from infra.data.repositories.book.interface import BookRepositoryInterface
+from infra.data.repositories.book.book_interface import BookRepositoryInterface
 
 
 class BookSQLRepository(BookRepositoryInterface):

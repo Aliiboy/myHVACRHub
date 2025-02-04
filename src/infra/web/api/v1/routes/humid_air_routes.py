@@ -1,17 +1,11 @@
 from dependency_injector.wiring import Provide, inject
 from flask import Response, jsonify, make_response
 from flask_openapi3 import APIBlueprint, Tag  # type: ignore[attr-defined]
-from pydantic import BaseModel, Field
 
 from app.usecases.humid_air.get_full_ha_props import GetFullHAPropertyUseCase
 from infra.web.container import AppContainer
+from infra.web.dtos.common import ErrorResponse
 from infra.web.dtos.ha_dtos import HumidAirRequestDTO, HumidAirResponseDTO
-
-
-class ErrorResponse(BaseModel):
-    code: int = Field(..., description="Status Code")
-    message: str = Field(..., description="Error message")
-
 
 tag = Tag(
     name="Air humide",

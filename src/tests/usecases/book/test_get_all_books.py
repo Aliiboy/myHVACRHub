@@ -1,37 +1,38 @@
 import unittest
+from typing import cast
 from unittest.mock import MagicMock
 
 from app.usecases.book.get_all_books import GetAllBooksUseCase
 from domain.entities.book.book_entity import Book
-from infra.data.repositories.book.interface import BookRepositoryInterface
+from infra.data.repositories.book.book_interface import BookRepositoryInterface
 
 
-class TestGetAllBooksUseCase(unittest.TestCase):
+class GetAllBooksUseCaseTests(unittest.TestCase):
     def setUp(self) -> None:
-        self.mock_repository = MagicMock(spec=BookRepositoryInterface)
+        self.mock_repository: BookRepositoryInterface = MagicMock(
+            spec=BookRepositoryInterface
+        )
         self.use_case = GetAllBooksUseCase(repository=self.mock_repository)
 
-    def test_get_all_books_with_empty_repository(self) -> None:
-        # given
-        self.mock_repository.get_all_books.return_value = []
-        # when
-        result = self.use_case.execute()
-        # then
-        self.assertEqual(result, [])
-        self.mock_repository.get_all_books.assert_called_once()
+    def test_get_all_books_returns_empty_list_when_no_books_exist(self) -> None:
+        cast(MagicMock, self.mock_repository.get_all_books).return_value = []
 
-    def test_get_all_books_with_multiple_books(self) -> None:
-        # given
-        books = [
+        result: list[Book] = self.use_case.execute()
+
+        self.assertEqual(result, [])
+        cast(MagicMock, self.mock_repository.get_all_books).assert_called_once()
+
+    def test_get_all_books_returns_all_books_when_books_exist(self) -> None:
+        books: list[Book] = [
             Book(title="Book 1", author="Author 1"),
             Book(title="Book 2", author="Author 2"),
         ]
-        self.mock_repository.get_all_books.return_value = books
-        # when
-        result = self.use_case.execute()
-        # then
+        cast(MagicMock, self.mock_repository.get_all_books).return_value = books
+
+        result: list[Book] = self.use_case.execute()
+
         self.assertEqual(len(result), len(books))
-        for i, book in enumerate(result):
-            self.assertEqual(book.title, books[i].title)
-            self.assertEqual(book.author, books[i].author)
-        self.mock_repository.get_all_books.assert_called_once()
+        for expected, actual in zip(books, result, strict=False):
+            self.assertEqual(expected.title, actual.title)
+            self.assertEqual(expected.author, actual.author)
+        cast(MagicMock, self.mock_repository.get_all_books).assert_called_once()

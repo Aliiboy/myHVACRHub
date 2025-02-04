@@ -1,5 +1,5 @@
 from domain.entities.book.book_entity import Book
-from infra.data.repositories.book.interface import (
+from infra.data.repositories.book.book_interface import (
     BookRepositoryInterface,
 )
 

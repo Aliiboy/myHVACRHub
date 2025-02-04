@@ -6,7 +6,7 @@ class BookEntitieSettings:
     title_min_length: int = 1
     title_max_length: int = 250
     # author
-    author_decription: str = "Auteur du livre"
+    author_description: str = "Auteur du livre"
     author_min_length: int = 1
     author_max_length: int = 250
     # date

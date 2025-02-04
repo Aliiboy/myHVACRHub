@@ -4,7 +4,7 @@ import os
 def merge_python_files(input_directory: str, output_file: str) -> None:
     """
     Parcourt les sous-dossiers d'un répertoire pour collecter les lignes de tous les fichiers .py
-    et les écrit dans un fichier de sortie.
+    et les écrit dans un fichier de sortie en supprimant les lignes vides.
 
     :param input_directory: Chemin du dossier contenant les fichiers .py
     :param output_file: Chemin du fichier de sortie
@@ -17,14 +17,15 @@ def merge_python_files(input_directory: str, output_file: str) -> None:
                     try:
                         with open(file_path, encoding="utf-8") as infile:
                             outfile.write(f"# Contenu du fichier: {file_path}\n")
-                            outfile.write(infile.read())
-                            outfile.write("\n\n")
+                            for line in infile:
+                                if line.strip():
+                                    outfile.write(line)
+                            outfile.write("\n")
                     except Exception as e:
                         print(f"Erreur lors de la lecture du fichier {file_path}: {e}")
 
 
 if __name__ == "__main__":
-    # Exemple d'utilisation
     input_directory: str = input(
         "Entrez le chemin du dossier contenant les fichiers .py : "
     )

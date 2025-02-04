@@ -18,7 +18,7 @@ class BookRequestDTO(BaseModel):
         ...,
         min_length=BookEntitieSettings.author_min_length,
         max_length=BookEntitieSettings.author_max_length,
-        description=BookEntitieSettings.author_decription,
+        description=BookEntitieSettings.author_description,
     )
 
 

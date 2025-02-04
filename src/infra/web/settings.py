@@ -1,22 +1,38 @@
+from datetime import timedelta
+
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class AppSettings(BaseSettings):
     # general
-    APP_NAME: str = Field(default="IAsimov api", description="app name")
-    APP_VERSION: str = Field(default="0.0.1", description="app version")
+    APP_NAME: str = Field(default="IAsimov api", description="Nom de l'application")
+    APP_VERSION: str = Field(default="0.0.1", description="Version de l'application")
 
     # server
-    HOST: str = Field(default="127.0.0.1", description="server address")
-    PORT: int = Field(default=5000, description="server port")
-    SERVER_URL: str = Field(default="http://127.0.0.1:5000")
+    HOST: str = Field(default="127.0.0.1", description="Adresse du serveur")
+    PORT: int = Field(default=5000, description="Port du serveur")
+    SERVER_URL: str = Field(
+        default="http://127.0.0.1:5000", description="URL du serveur"
+    )
 
     # database
-    DATABASE_URL: str = Field(default="sqlite:///./test.db", description="database url")
-    DATABASE_ECHO: bool = Field(default=True, description="enable SQL logs")
+    DATABASE_URL: str = Field(
+        default="sqlite:///./test.db", description="URL de la base de données"
+    )
+    DATABASE_ECHO: bool = Field(default=True, description="Activer les logs SQL")
     DATABASE_POOL_SIZE: int = Field(
-        default=5, description="max number of connections in pool"
+        default=5, description="Nombre maximal de connexions dans le pool"
+    )
+
+    # authentification (JWT)
+    JWT_SECRET_KEY: str = Field(default="mydevsecretkey", description="Clé secrète JWT")
+    JWT_ALGORITHM: str = Field(
+        default="HS256", description="Algorithme de signature JWT"
+    )
+    JWT_ACCESS_TOKEN_EXPIRES: timedelta | None = Field(
+        default=None,
+        description="Durée d'expiration du token d'accès (None = permanent)",
     )
 
     # .env mapper

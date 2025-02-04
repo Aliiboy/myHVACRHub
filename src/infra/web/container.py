@@ -3,8 +3,11 @@ from dependency_injector import containers, providers
 from app.usecases.book.create_book import CreateBookUseCase
 from app.usecases.book.get_all_books import GetAllBooksUseCase
 from app.usecases.humid_air.get_full_ha_props import GetFullHAPropertyUseCase
+from app.usecases.user.authenticate_user import AuthenticateUserUseCase
+from app.usecases.user.create_user import CreateUserUseCase
 from infra.data.database import Database
 from infra.data.repositories.book.book_sqlrepo import BookSQLRepository
+from infra.data.repositories.user.user_sqlrepo import UserSQLRepository
 from infra.web.settings import AppSettings
 
 
@@ -13,12 +16,12 @@ class AppContainer(containers.DeclarativeContainer):
         modules=[
             "infra.web.api.v1.routes.book_routes",
             "infra.web.api.v1.routes.humid_air_routes",
+            "infra.web.api.v1.routes.user_routes",
         ]
     )
 
-    # database
     app_settings = providers.Singleton(AppSettings)
-
+    # database
     database = providers.Singleton(Database, settings=app_settings)
     database_session = providers.Factory(database.provided.get_session)
 
@@ -40,3 +43,16 @@ class AppContainer(containers.DeclarativeContainer):
     # repositories
     # usecases
     get_full_ha_props_usecase = providers.Factory(GetFullHAPropertyUseCase)
+
+    # === user module ===
+    # repositories
+    user_repository = providers.Factory(
+        UserSQLRepository, session_factory=database_session
+    )
+    # usecases
+    create_user_usecase = providers.Factory(
+        CreateUserUseCase, repository=user_repository
+    )
+    authenticate_user_usecase = providers.Factory(
+        AuthenticateUserUseCase, repository=user_repository, settings=app_settings
+    )
