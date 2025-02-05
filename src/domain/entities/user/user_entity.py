@@ -1,9 +1,16 @@
 from datetime import datetime
+from enum import Enum
 from uuid import UUID, uuid4
 
 from pydantic import BaseModel, EmailStr, Field
 
 from domain.settings.user_settings import UserSettings
+
+
+class UserRole(str, Enum):
+    admin = "admin"
+    moderator = "moderator"
+    user = "user"
 
 
 class User(BaseModel):
@@ -15,6 +22,9 @@ class User(BaseModel):
         ...,
         description=UserSettings.password_description,
     )
+
+    # TODO : description dans usersetting
+    role: UserRole = Field(default=UserRole.user, description="Rôle de l'utilisateur")
 
     created_at: datetime = Field(
         default_factory=datetime.utcnow, description=UserSettings.created_at_description
