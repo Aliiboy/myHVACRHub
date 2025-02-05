@@ -312,95 +312,20 @@ wheels = [
 ]
 
 [package.optional-dependencies]
-elements = [
-    { name = "flask-openapi3-elements" },
-]
-rapidoc = [
-    { name = "flask-openapi3-rapidoc" },
-]
-rapipdf = [
-    { name = "flask-openapi3-rapipdf" },
-]
-redoc = [
-    { name = "flask-openapi3-redoc" },
-]
-scalar = [
-    { name = "flask-openapi3-scalar" },
-]
 swagger = [
     { name = "flask-openapi3-swagger" },
 ]
 
 [[package]]
-name = "flask-openapi3-elements"
-version = "9.0.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "flask-openapi3" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/b1/4c/0e3c3b883556b3bdeaaebe4b16d2d955f81072b14ba8d686340c572ac4cb/flask_openapi3_elements-9.0.0.tar.gz", hash = "sha256:1f138e5bc4e47400a833884252a8522f9f0ea79537b46e77cfd87cbca5f6ca87", size = 647490 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/10/25/bdf2468a79986c3e1c95e4717379db73dfb8c7326c9e53283234917f019d/flask_openapi3_elements-9.0.0-py3-none-any.whl", hash = "sha256:b232e245f08eb35f9419951df9250f76a1741eb0d2f3a26752746689ede8fcfc", size = 648794 },
-]
-
-[[package]]
-name = "flask-openapi3-rapidoc"
-version = "9.3.8"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "flask-openapi3" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/82/1f/07405956cc53775add9ff8b520b4ce73d8afff32b4ac91b3c74dbdbd4ec5/flask_openapi3_rapidoc-9.3.8.tar.gz", hash = "sha256:f298d2f5cb1019c4f394f0b358cade68084555c1499c03abec7cd50b6127459d", size = 221774 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/c9/17/a4ac71b8dc36079c9ed7204b56dce8a6ac2ddc93dafc507806572a3244a7/flask_openapi3_rapidoc-9.3.8-py3-none-any.whl", hash = "sha256:3785ccaeff56c8644f03d8be7a5ba1d9a2bfa9237f55b38703ff332742403fea", size = 223034 },
-]
-
-[[package]]
-name = "flask-openapi3-rapipdf"
-version = "2.2.1"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "flask-openapi3" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/e8/6f/2589d16beffc956bb0897d536406c548a70a6d1c3b24cefdc1be654152a9/flask_openapi3_rapipdf-2.2.1.tar.gz", hash = "sha256:87d3be483581f3a92d1bdd175b2227987a26929f45a7ba1e0aa7131a842a31b0", size = 1101679 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/f1/ed/69a741bb4e44822ee0fcdc2d9d0f7b594bed5565488edd5cd829eb0fda4d/flask_openapi3_rapipdf-2.2.1-py3-none-any.whl", hash = "sha256:3439f3b0138908a75a3ab963a27325fb16957355be2b1ab0010a62ffa2f9eb36", size = 1105451 },
-]
-
-[[package]]
-name = "flask-openapi3-redoc"
-version = "2.3.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "flask-openapi3" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/a9/66/a4d8cf212e71de361270759db47dce671f2c34b81f56c1badd516fc31114/flask_openapi3_redoc-2.3.0.tar.gz", hash = "sha256:bd6c470cdfa66e61f2a01e53c74486bc5556f2a5e9d1237316c051c0763c5355", size = 280890 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/d9/0e/a935efc5e7dea3e630cf5f79bb8febc5628abe8e9c2935b6ec3a2f184281/flask_openapi3_redoc-2.3.0-py3-none-any.whl", hash = "sha256:fc18f044ce5dc9a67e6d5a936e5f8ef3733e633579df64e99e1ce2fd211d263d", size = 282013 },
-]
-
-[[package]]
-name = "flask-openapi3-scalar"
-version = "1.25.108"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "flask-openapi3" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/27/6b/8a90c3845ae3c7606111439de6b33a471ea7680a62bd921af363dd6167d0/flask_openapi3_scalar-1.25.108.tar.gz", hash = "sha256:9b2ac5ab880cf1bc7a32b5a67d3f557500bbcb68ebffed3c9fc9b7421c76345a", size = 746826 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/d2/83/37bb4d51fc2fbef37ff4a1396d4d54e3188492c73ae685c13b580782869a/flask_openapi3_scalar-1.25.108-py3-none-any.whl", hash = "sha256:bae457c9dc0f649ae772a84ea05c0b723be47082133ead484792004edbfee2eb", size = 749850 },
-]
-
-[[package]]
 name = "flask-openapi3-swagger"
-version = "5.18.2"
+version = "5.18.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "flask-openapi3" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/36/f0/2f4845b3176ddd3f327fccbf6fc088b2fa53e726b7bc6f5b999741ca74c2/flask_openapi3_swagger-5.18.2.tar.gz", hash = "sha256:3ac546bc1ce6b81f2a4585c2b7a9d4b7746a76826cb9b374adfdf8b70a6e0d31", size = 489620 }
+sdist = { url = "https://files.pythonhosted.org/packages/5e/a4/25a5296bd8c284c8478d5a653bd1b4ed13243e00b962f2a1c9653e3093eb/flask_openapi3_swagger-5.18.3.tar.gz", hash = "sha256:aec4a13913645a8c419d49d8fcdfbea3ad941e0f906913ffe50ef3aa79bc200b", size = 493680 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/52/48/a3e3359e440dc11cf0293ba001090ca13d123fc735947052896e22c082ff/flask_openapi3_swagger-5.18.2-py3-none-any.whl", hash = "sha256:f8178f77e225211b6a0189a6764c8070417712fc67d0a292c3c7892374b64c9e", size = 493025 },
+    { url = "https://files.pythonhosted.org/packages/cb/98/a255b3001b7286dbc95f6be8428d80c4382d5c744918e46e0b852ccbf515/flask_openapi3_swagger-5.18.3-py3-none-any.whl", hash = "sha256:91bd29de20c2c4aaf0d969c1aec11dd72b1b7bf5d7f16da821659d329c152cff", size = 497025 },
 ]
 
 [[package]]
@@ -463,7 +388,7 @@ dependencies = [
     { name = "bcrypt" },
     { name = "dependency-injector" },
     { name = "flask-jwt-extended" },
-    { name = "flask-openapi3", extra = ["elements", "rapidoc", "rapipdf", "redoc", "scalar", "swagger"] },
+    { name = "flask-openapi3", extra = ["swagger"] },
     { name = "pydantic", extra = ["email"] },
     { name = "pydantic-settings" },
     { name = "pyfluids" },
@@ -486,7 +411,7 @@ requires-dist = [
     { name = "bcrypt", specifier = ">=4.2.1" },
     { name = "dependency-injector", specifier = ">=4.45.0" },
     { name = "flask-jwt-extended", specifier = ">=4.7.1" },
-    { name = "flask-openapi3", extras = ["elements", "rapidoc", "rapipdf", "redoc", "scalar", "swagger"], specifier = ">=4.0.3" },
+    { name = "flask-openapi3", extras = ["swagger"], specifier = ">=4.0.3" },
     { name = "pydantic", extras = ["email"], specifier = ">=2.10.5" },
     { name = "pydantic-settings", specifier = ">=2.7.1" },
     { name = "pyfluids", specifier = ">=2.7.2" },

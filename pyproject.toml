@@ -9,12 +9,12 @@
         "bcrypt>=4.2.1",
         "dependency-injector>=4.45.0",
         "flask-jwt-extended>=4.7.1",
-        "flask-openapi3[elements,rapidoc,rapipdf,redoc,scalar,swagger]>=4.0.3",
+        "flask-openapi3[swagger]>=4.0.3",
         "pydantic-settings>=2.7.1",
         "pydantic[email]>=2.10.5",
         "pyfluids>=2.7.2",
         "pyjwt>=2.10.1",
-        "sqlmodel>=0.0.22",
+        "sqlmodel>=0.0.22", 
         ]
 
     [dependency-groups]

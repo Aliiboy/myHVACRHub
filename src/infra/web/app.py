@@ -27,6 +27,7 @@ class WebApp:
             info=info,
             servers=servers,
             security_schemes=security_schemes,  # type: ignore[arg-type]
+            doc_prefix="/",
         )
 
         # jwt
