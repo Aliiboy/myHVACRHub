@@ -1,6 +1,7 @@
 from dependency_injector.wiring import Provide, inject
 from flask import Response, jsonify, make_response
-from flask_openapi3 import APIBlueprint, Tag  # type: ignore[attr-defined]
+from flask_openapi3 import APIBlueprint, Tag
+from networkx import descendants  # type: ignore[attr-defined]
 
 from app.usecases.user.authenticate_user import AuthenticateUserUseCase
 from app.usecases.user.create_user import CreateUserUseCase
@@ -25,7 +26,9 @@ router = APIBlueprint(
 )
 
 
-@router.post("/register", responses={201: TokenResponseDTO, 400: ErrorResponse})
+@router.post("/register",
+             description="Permet de s'enregistrer dans la base de données de l'API"
+             responses={201: TokenResponseDTO, 400: ErrorResponse})
 @inject
 def register(
     body: RegisterRequestDTO,
@@ -39,7 +42,9 @@ def register(
         return make_response(jsonify(error_response.model_dump()), 400)
 
 
-@router.post("/login", responses={200: TokenResponseDTO})
+@router.post("/login",
+             description="Permet de se connecter et de récuperer le token pour l'inserer dans votre agent GPT",
+             responses={200: TokenResponseDTO})
 @inject
 def login(
     body: LoginRequestDTO,
