@@ -1,6 +1,6 @@
 from dependency_injector.wiring import Provide, inject
 from flask import Response, jsonify, make_response
-from flask_openapi3 import APIBlueprint, Tag
+from flask_openapi3 import APIBlueprint, Tag  # type: ignore[attr-defined]
 
 from app.usecases.user.authenticate_user import AuthenticateUserUseCase
 from app.usecases.user.create_user import CreateUserUseCase
@@ -37,7 +37,9 @@ def register(
 ) -> Response:
     try:
         use_case.execute(email=body.email, password=body.password)
+        # TODO : créer un SuccessRegisterResponse
         return make_response(jsonify({"message": "Utilisateur créé avec succès"}), 201)
+    # TODO : personnaliser les erreurs
     except ValueError as e:
         error_response = ErrorResponse(code=400, message=str(e))
         return make_response(jsonify(error_response.model_dump()), 400)
@@ -55,9 +57,11 @@ def login(
 ) -> Response:
     try:
         token = use_case.execute(email=body.email, password=body.password)
+        # TODO : créer un SuccessTokenResponse
         return make_response(
             jsonify({"access_token": token, "token_type": "Bearer"}), 200
         )
+    # TODO : personnaliser les erreurs
     except ValueError as e:
         error_response = ErrorResponse(code=401, message=str(e))
         return make_response(jsonify(error_response.model_dump()), 401)

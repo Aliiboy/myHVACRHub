@@ -17,9 +17,11 @@ class AuthenticateUserUseCase:
     def execute(self, email: str, password: str) -> str:
         user = self.repository.get_user_by_email(email)
         if not user:
+            # TODO : personnaliser les erreurs
             raise ValueError("Email incorrect.")
 
         if not self.password_hasher.verify(password, user.hashed_password):
+            # TODO : personnaliser les erreurs
             raise ValueError("Mot de passe incorrect.")
 
         return self.token_service.generate_token(user_id=str(user.id))

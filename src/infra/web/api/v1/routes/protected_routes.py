@@ -18,7 +18,7 @@ router = APIBlueprint(
     abp_tags=[tag],
     abp_responses={"401": ErrorResponse, "422": ErrorResponse, "500": ErrorResponse},
     abp_security=security,
-    doc_ui=False,
+    doc_ui=True,
 )
 
 

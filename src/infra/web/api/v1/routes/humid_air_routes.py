@@ -49,6 +49,7 @@ def get_ha_props(
 
         return make_response(jsonify(response.model_dump()), 200)
 
+    # TODO : personnaliser les erreurs
     except ValueError as e:
         return make_response(
             jsonify(

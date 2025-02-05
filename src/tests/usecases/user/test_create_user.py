@@ -23,7 +23,7 @@ class CreateUserUseCaseTests(unittest.TestCase):
 
     def test_create_user_success(self) -> None:
         email: str = "test@example.com"
-        password: str = "SecurePass123"
+        password: str = "SecurePass123!"
         cast(MagicMock, self.mock_user_repository.get_user_by_email).return_value = None
 
         new_user: User = self.use_case.execute(email=email, password=password)
@@ -46,5 +46,5 @@ class CreateUserUseCaseTests(unittest.TestCase):
         ).return_value = existing_user
 
         with self.assertRaises(ValueError) as context:
-            self.use_case.execute(email="test@example.com", password="SecurePass123")
+            self.use_case.execute(email="test@example.com", password="SecurePass123!")
         self.assertEqual(str(context.exception), "L'email est déjà utilisé.")

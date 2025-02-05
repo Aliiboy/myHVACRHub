@@ -22,7 +22,7 @@ class AuthenticateUserUseCaseTests(unittest.TestCase):
 
     def test_authenticate_user_success_returns_valid_token(self) -> None:
         email: str = "test@example.com"
-        password: str = "SecurePass123"
+        password: str = "SecurePass123!"
         hashed_password: str = "hashedpassword123"
 
         # Création d'un utilisateur simulé
@@ -46,7 +46,7 @@ class AuthenticateUserUseCaseTests(unittest.TestCase):
 
     def test_authenticate_user_invalid_email_raises_error(self) -> None:
         email: str = "nonexistent@example.com"
-        password: str = "SecurePass123"
+        password: str = "SecurePass123!"
         self.mock_user_repository.get_user_by_email.return_value = None
 
         with self.assertRaises(ValueError) as context:

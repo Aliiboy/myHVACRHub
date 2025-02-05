@@ -15,7 +15,7 @@ class CreateUserUseCase:
     def execute(self, email: str, password: str) -> User:
         existing_user = self.repository.get_user_by_email(email)
         if existing_user:
-            # TODO : custom exception
+            # TODO : personnaliser les erreurs
             raise ValueError("L'email est déjà utilisé.")
 
         hashed_password = self.password_hasher.hash(password)

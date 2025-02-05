@@ -6,7 +6,7 @@ from tests.routes.base_api_test import BaseAPITest
 class LoginUserRouteTests(BaseAPITest):
     def setUp(self) -> None:
         super().setUp()
-        user_data = {"email": "test@example.com", "password": "SecurePass123"}
+        user_data = {"email": "test@example.com", "password": "SecurePass123!"}
         self.client.post("/v1/auth/register", json=user_data)
 
     def tearDown(self) -> None:
@@ -15,7 +15,7 @@ class LoginUserRouteTests(BaseAPITest):
         super().tearDown()
 
     def test_login_user_successfully(self) -> None:
-        login_data = {"email": "test@example.com", "password": "SecurePass123"}
+        login_data = {"email": "test@example.com", "password": "SecurePass123!"}
         response = self.client.post("/v1/auth/login", json=login_data)
         self.assertEqual(response.status_code, 200)
         response_data = response.get_json()
@@ -27,6 +27,6 @@ class LoginUserRouteTests(BaseAPITest):
         self.assertEqual(response.status_code, 401)
 
     def test_login_with_invalid_email_returns_error(self) -> None:
-        login_data = {"email": "nonexistent@example.com", "password": "SecurePass123"}
+        login_data = {"email": "nonexistent@example.com", "password": "SecurePass123!"}
         response = self.client.post("/v1/auth/login", json=login_data)
         self.assertEqual(response.status_code, 401)
