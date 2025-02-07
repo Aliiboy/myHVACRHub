@@ -11,3 +11,10 @@ class UserNotFoundException(Exception):
 class UserInvalidPasswordException(Exception):
     def __init__(self) -> None:
         super().__init__("Mot de passe incorrect.")
+
+
+class UserInvalidPasswordPatternException(Exception):
+    def __init__(self) -> None:
+        super().__init__(
+            "Le mot de passe doit contenir au moins un chiffre et un caractère spécial."
+        )

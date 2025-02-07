@@ -5,6 +5,7 @@ from typing import Any
 from flask import Response, jsonify, make_response
 from pydantic import BaseModel, EmailStr, Field, model_validator
 
+from domain.exceptions.user_exceptions import UserInvalidPasswordPatternException
 from domain.settings.user_settings import UserSettings
 
 
@@ -22,13 +23,8 @@ class RegisterRequest(BaseModel):
     def check_password(cls, value: dict[str, Any]) -> dict[str, Any]:
         password = value.get("password", "")
 
-        if not isinstance(password, str):
-            raise ValueError("Le mot de passe doit être une chaîne de caractères.")
-
         if not (re.search(r"\d", password) and re.search(r"[@$!%*?&]", password)):
-            raise ValueError(
-                "Le mot de passe doit contenir au moins un chiffre et un caractère spécial."
-            )
+            raise UserInvalidPasswordPatternException()
 
         return value
 
