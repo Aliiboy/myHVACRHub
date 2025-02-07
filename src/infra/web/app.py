@@ -40,10 +40,6 @@ class WebApp:
         )
         self.jwt = JWTManager(self.app)
 
-        # database
-        self.database = self.container.database()
-        self.database.create_database()
-
         # routes
         self.app.register_api(routers_v1)
 

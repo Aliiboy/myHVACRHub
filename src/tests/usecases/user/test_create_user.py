@@ -6,7 +6,6 @@ import bcrypt
 
 from app.usecases.user.create_user import CreateUserUseCase
 from domain.entities.user.user_entity import User
-from domain.exceptions.user_exceptions import UserAlreadyExistsException
 from infra.data.repositories.user.user_interface import UserRepositoryInterface
 from infra.services.bcrypt_password_hasher import BcryptPasswordHasher
 
@@ -36,18 +35,4 @@ class CreateUserUseCaseTests(unittest.TestCase):
         )
         cast(MagicMock, self.mock_user_repository.add_user).assert_called_once_with(
             new_user
-        )
-
-    def test_create_user_with_existing_email_raises_error(self) -> None:
-        existing_user: User = User(
-            email="test@example.com", hashed_password="hashedpwd"
-        )
-        cast(
-            MagicMock, self.mock_user_repository.get_user_by_email
-        ).return_value = existing_user
-
-        with self.assertRaises(UserAlreadyExistsException) as context:
-            self.use_case.execute(email="test@example.com", password="SecurePass123!")
-        self.assertEqual(
-            str(context.exception), "L'email 'test@example.com' est déjà utilisé."
         )

@@ -21,6 +21,7 @@ class BaseAPITest(unittest.TestCase):
         cls.web_application = web_app_instance.app
         cls.client = cls.web_application.test_client()
         cls.database = container.database()
+        cls.database.create_database()
 
     def setUp(self) -> None:
         self.session_context = self.database.get_session()

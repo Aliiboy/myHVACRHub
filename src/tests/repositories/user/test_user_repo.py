@@ -2,6 +2,7 @@ from sqlalchemy import text
 from sqlalchemy.exc import IntegrityError
 
 from domain.entities.user.user_entity import User
+from domain.exceptions.user_exceptions import UserAlreadyExistsException
 from infra.data.repositories.user.user_sqlrepo import UserSQLRepository
 from tests.repositories.base_repo_test import BaseRepositoryTest
 
@@ -28,7 +29,7 @@ class UserSQLRepositoryTests(BaseRepositoryTest):
         user1 = User(email="test@example.com", hashed_password="hashedpassword123")
         user2 = User(email="test@example.com", hashed_password="anotherpassword")
         self.user_repository.add_user(user1)
-        with self.assertRaises(IntegrityError):
+        with self.assertRaises(UserAlreadyExistsException):
             self.user_repository.add_user(user2)
 
     def test_get_user_by_email_returns_existing_user(self) -> None:

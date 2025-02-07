@@ -16,9 +16,7 @@ class UserSQLModel(SQLModel, table=True):
         unique=True, index=True, description=UserSettings.email_description
     )
     hashed_password: str = Field(description=UserSettings.password_description)
-    # TODO : Description usersettings
-    role: UserRole = Field(default=UserRole.user, description="Rôle de l'utilisateur")
-
+    role: UserRole = Field(description=UserSettings.role_description)
     created_at: datetime = Field(description=UserSettings.created_at_description)
 
     def to_entity(self) -> User:

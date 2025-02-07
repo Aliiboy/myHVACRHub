@@ -19,7 +19,6 @@ class BookSQLRepository(BookRepositoryInterface):
             )
             uow.session.add(query)
             uow.session.flush()
-            uow.session.refresh(query)
             return query.to_entity()
 
     def get_all_books(self) -> list[Book]:

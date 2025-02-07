@@ -1,6 +1,10 @@
+from sqlalchemy.exc import IntegrityError
 from sqlmodel import select
 
 from domain.entities.user.user_entity import User
+from domain.exceptions.user_exceptions import (
+    UserAlreadyExistsException,
+)
 from infra.data.models.user.user_sqlmodel import UserSQLModel
 from infra.data.repositories.user.user_interface import UserRepositoryInterface
 from infra.data.sql_unit_of_work import SQLUnitOfWork
@@ -11,17 +15,20 @@ class UserSQLRepository(UserRepositoryInterface):
         self.uow = uow
 
     def add_user(self, user: User) -> User:
-        with self.uow as uow:
-            query = UserSQLModel(
-                id=user.id,
-                email=user.email,
-                hashed_password=user.hashed_password,
-                created_at=user.created_at,
-            )
-            uow.session.add(query)
-            uow.session.flush()
-            uow.session.refresh(query)
-            return query.to_entity()
+        try:
+            with self.uow as uow:
+                query = UserSQLModel(
+                    id=user.id,
+                    email=user.email,
+                    hashed_password=user.hashed_password,
+                    role=user.role,
+                    created_at=user.created_at,
+                )
+                uow.session.add(query)
+                uow.session.flush()
+                return query.to_entity()
+        except IntegrityError:
+            raise UserAlreadyExistsException(query.email)
 
     def get_user_by_email(self, email: str) -> User | None:
         with self.uow as uow:

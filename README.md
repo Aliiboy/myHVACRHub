@@ -19,7 +19,7 @@ Ce projet utilise les bibliothèques suivantes :
 - [`coolprop`](http\://coolprop.org/)
 
 ## ✅ Fonctionnalités à venir
-🔐 Intégration d'un système d'authentification
+- Systeme de cache dans pour la db
 
 ---
 🎉 **Merci d'utiliser IAsimov Flask API !** 🚀

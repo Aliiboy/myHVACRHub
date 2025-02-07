@@ -11,6 +11,8 @@ class UserSettings:
     password_pattern: str = (
         r"[A-Za-z\d@$!%*?&]*\d+[A-Za-z\d@$!%*?&]*[@$!%*?&]+[A-Za-z\d@$!%*?&]*"
     )
+    # role
+    role_description: str = "Niveau de permission de l'utilisateur"
     # token
     access_token_description: str = "Token JWT pour l'authentification"
     token_type_description: str = "Type de token"
