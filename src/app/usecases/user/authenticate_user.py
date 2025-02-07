@@ -1,3 +1,7 @@
+from domain.exceptions.user_exceptions import (
+    UserInvalidPasswordException,
+    UserNotFoundException,
+)
 from domain.services.password_hasher_interface import PasswordHasherInterface
 from domain.services.token_service_interface import TokenServiceInterface
 from infra.data.repositories.user.user_interface import UserRepositoryInterface
@@ -16,10 +20,10 @@ class AuthenticateUserUseCase:
 
     def execute(self, email: str, password: str) -> str:
         user = self.repository.get_user_by_email(email)
-        if not user:
-            raise ValueError("Email incorrect.")
 
+        if not user:
+            raise UserNotFoundException(email)
         if not self.password_hasher.verify(password, user.hashed_password):
-            raise ValueError("Mot de passe incorrect.")
+            raise UserInvalidPasswordException()
 
         return self.token_service.generate_token(user_id=user.id, role=user.role)

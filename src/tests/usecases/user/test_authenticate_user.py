@@ -4,6 +4,10 @@ from unittest.mock import MagicMock
 
 from app.usecases.user.authenticate_user import AuthenticateUserUseCase
 from domain.entities.user.user_entity import User
+from domain.exceptions.user_exceptions import (
+    UserInvalidPasswordException,
+    UserNotFoundException,
+)
 from domain.services.password_hasher_interface import PasswordHasherInterface
 from domain.services.token_service_interface import TokenServiceInterface
 from infra.data.repositories.user.user_interface import UserRepositoryInterface
@@ -49,9 +53,12 @@ class AuthenticateUserUseCaseTests(unittest.TestCase):
         password: str = "SecurePass123!"
         self.mock_user_repository.get_user_by_email.return_value = None
 
-        with self.assertRaises(ValueError) as context:
+        with self.assertRaises(UserNotFoundException) as context:
             self.use_case.execute(email=email, password=password)
-        self.assertEqual(str(context.exception), "Email incorrect.")
+        self.assertEqual(
+            str(context.exception),
+            f"L'utilisateur avec l'email '{email}' n'existe pas.",
+        )
 
     def test_authenticate_user_invalid_password_raises_error(self) -> None:
         email: str = "test@example.com"
@@ -62,6 +69,6 @@ class AuthenticateUserUseCaseTests(unittest.TestCase):
 
         self.mock_password_hasher.verify.return_value = False
 
-        with self.assertRaises(ValueError) as context:
+        with self.assertRaises(UserInvalidPasswordException) as context:
             self.use_case.execute(email=email, password=password)
         self.assertEqual(str(context.exception), "Mot de passe incorrect.")

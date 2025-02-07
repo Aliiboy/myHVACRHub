@@ -1,15 +1,22 @@
+from http import HTTPStatus
+
 from dependency_injector.wiring import Provide, inject
-from flask import Response, jsonify, make_response
+from flask import Response
 from flask_openapi3 import APIBlueprint, Tag  # type: ignore[attr-defined]
 
 from app.usecases.user.authenticate_user import AuthenticateUserUseCase
 from app.usecases.user.create_user import CreateUserUseCase
+from domain.exceptions.user_exceptions import (
+    UserAlreadyExistsException,
+    UserInvalidPasswordException,
+    UserNotFoundException,
+)
 from infra.web.container import AppContainer
-from infra.web.dtos.common import ErrorResponse
+from infra.web.dtos.generic import ClientErrorResponse, SuccessResponse
 from infra.web.dtos.user_dtos import (
-    LoginRequestDTO,
-    RegisterRequestDTO,
-    TokenResponseDTO,
+    LoginRequest,
+    LoginResponse,
+    RegisterRequest,
 )
 
 tag = Tag(name="Authentication", description="S'enregistrer et se connecter à l'API")
@@ -20,7 +27,6 @@ router = APIBlueprint(
     __name__,
     url_prefix="/auth",
     abp_tags=[tag],
-    abp_responses={"401": ErrorResponse, "422": ErrorResponse, "500": ErrorResponse},
     doc_ui=True,
 )
 
@@ -28,40 +34,52 @@ router = APIBlueprint(
 @router.post(
     "/register",
     description="Permet de s'enregistrer dans la base de données de l'API",
-    responses={201: TokenResponseDTO, 400: ErrorResponse},
+    responses={
+        HTTPStatus.CREATED: SuccessResponse,
+        HTTPStatus.CONFLICT: ClientErrorResponse,
+    },
 )
 @inject
 def register(
-    body: RegisterRequestDTO,
+    body: RegisterRequest,
     use_case: CreateUserUseCase = Provide[AppContainer.create_user_usecase],
 ) -> Response:
     try:
         use_case.execute(email=body.email, password=body.password)
-        # TODO : créer un SuccessRegisterResponse
-        return make_response(jsonify({"message": "Utilisateur créé avec succès"}), 201)
-    # TODO : personnaliser les erreurs
-    except ValueError as e:
-        error_response = ErrorResponse(code=400, message=str(e))
-        return make_response(jsonify(error_response.model_dump()), 400)
+        return SuccessResponse(
+            code=HTTPStatus.CREATED, message="Utilisateur créé avec succès"
+        ).to_response()
+
+    except UserAlreadyExistsException as e:
+        return ClientErrorResponse(
+            code=HTTPStatus.CONFLICT, message=str(e)
+        ).to_response()
 
 
 @router.post(
     "/login",
     description="Permet de se connecter et de récuperer le token pour l'inserer dans votre agent GPT",
-    responses={200: TokenResponseDTO},
+    responses={
+        HTTPStatus.OK: LoginResponse,
+        HTTPStatus.NOT_FOUND: ClientErrorResponse,
+        HTTPStatus.UNAUTHORIZED: ClientErrorResponse,
+    },
 )
 @inject
 def login(
-    body: LoginRequestDTO,
+    body: LoginRequest,
     use_case: AuthenticateUserUseCase = Provide[AppContainer.authenticate_user_usecase],
 ) -> Response:
     try:
         token = use_case.execute(email=body.email, password=body.password)
-        # TODO : créer un SuccessTokenResponse
-        return make_response(
-            jsonify({"access_token": token, "token_type": "Bearer"}), 200
-        )
-    # TODO : personnaliser les erreurs
-    except ValueError as e:
-        error_response = ErrorResponse(code=401, message=str(e))
-        return make_response(jsonify(error_response.model_dump()), 401)
+        return LoginResponse(access_token=token).to_response()
+
+    except UserNotFoundException as e:
+        return ClientErrorResponse(
+            code=HTTPStatus.NOT_FOUND, message=str(e)
+        ).to_response()
+
+    except UserInvalidPasswordException as e:
+        return ClientErrorResponse(
+            code=HTTPStatus.UNAUTHORIZED, message=str(e)
+        ).to_response()

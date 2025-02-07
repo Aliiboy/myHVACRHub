@@ -1,9 +1,13 @@
+from http import HTTPStatus
+
+from flask import Response, jsonify, make_response
 from pydantic import BaseModel, Field
 
+from domain.entities.humid_air.humid_air_entity import HumidAirEntity
 from domain.settings.ha_settings import HumidAirSettings
 
 
-class HumidAirRequestDTO(BaseModel):
+class HumidAirRequest(BaseModel):
     pressure: float = Field(
         default=HumidAirSettings.pressure_default_value,
         description=HumidAirSettings.pressure_description,
@@ -24,7 +28,7 @@ class HumidAirRequestDTO(BaseModel):
     )
 
 
-class HumidAirResponseDTO(BaseModel):
+class HumidAirResponse(BaseModel):
     pressure: float = Field(..., description=HumidAirSettings.pressure_description)
     temp_dry_bulb: float = Field(..., description=HumidAirSettings.tdb_description)
     relative_humidity: float = Field(..., description=HumidAirSettings.rh_description)
@@ -71,3 +75,15 @@ class HumidAirResponseDTO(BaseModel):
     compressibility_factor: float = Field(
         ..., description=HumidAirSettings.compressibility_factor_description
     )
+
+    @classmethod
+    def from_use_case_result(cls, full_ha_props: HumidAirEntity) -> "HumidAirResponse":
+        return cls(
+            **{
+                field: getattr(full_ha_props, field)
+                for field in cls.model_fields.keys()
+            }
+        )
+
+    def to_response(self) -> Response:
+        return make_response(jsonify(self.model_dump()), HTTPStatus.OK)

@@ -1,6 +1,6 @@
 import unittest
 
-from domain.entities.humid_air.ha_entity import HumidAirEntity
+from domain.entities.humid_air.humid_air_entity import HumidAirEntity
 
 
 class HumidAirEntityTests(unittest.TestCase):

@@ -1,7 +1,7 @@
 import unittest
 
 from app.usecases.humid_air.get_full_ha_props import GetFullHAPropertyUseCase
-from domain.entities.humid_air.ha_entity import HumidAirEntity
+from domain.entities.humid_air.humid_air_entity import HumidAirEntity
 
 
 class GetFullHAPropertyUseCaseTests(unittest.TestCase):

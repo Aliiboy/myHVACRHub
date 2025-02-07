@@ -1,12 +1,14 @@
 import re
+from http import HTTPStatus
 from typing import Any
 
+from flask import Response, jsonify, make_response
 from pydantic import BaseModel, EmailStr, Field, model_validator
 
 from domain.settings.user_settings import UserSettings
 
 
-class RegisterRequestDTO(BaseModel):
+class RegisterRequest(BaseModel):
     email: EmailStr = Field(..., description=UserSettings.email_description)
     password: str = Field(
         ...,
@@ -21,11 +23,9 @@ class RegisterRequestDTO(BaseModel):
         password = value.get("password", "")
 
         if not isinstance(password, str):
-            # TODO : Personnaliser les erreurs
             raise ValueError("Le mot de passe doit être une chaîne de caractères.")
 
         if not (re.search(r"\d", password) and re.search(r"[@$!%*?&]", password)):
-            # TODO : Personnaliser les erreurs
             raise ValueError(
                 "Le mot de passe doit contenir au moins un chiffre et un caractère spécial."
             )
@@ -33,13 +33,13 @@ class RegisterRequestDTO(BaseModel):
         return value
 
 
-class LoginRequestDTO(BaseModel):
+class LoginRequest(BaseModel):
     email: EmailStr = Field(..., description=UserSettings.email_description)
     password: str = Field(..., description=UserSettings.password_description)
 
 
-class TokenResponseDTO(BaseModel):
+class LoginResponse(BaseModel):
     access_token: str = Field(..., description=UserSettings.access_token_description)
-    token_type: str = Field(
-        default="Bearer", description=UserSettings.token_type_description
-    )
+
+    def to_response(self) -> Response:
+        return make_response(jsonify(self.model_dump()), HTTPStatus.OK)

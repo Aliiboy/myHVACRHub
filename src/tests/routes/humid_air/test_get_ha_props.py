@@ -1,3 +1,5 @@
+from http import HTTPStatus
+
 from tests.routes.base_api_test import BaseAPITest
 
 
@@ -11,7 +13,7 @@ class HumidAirRoutesTests(BaseAPITest):
         response = self.client.get(
             "/v1/humid_air/get_ha_props", query_string=valid_data
         )
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
         response_data = response.get_json()
         self.assertIn("pressure", response_data)
         self.assertIn("temp_dry_bulb", response_data)
@@ -26,8 +28,8 @@ class HumidAirRoutesTests(BaseAPITest):
         response = self.client.get(
             "/v1/humid_air/get_ha_props", query_string=invalid_data
         )
-        self.assertEqual(response.status_code, 422)
+        self.assertEqual(response.status_code, HTTPStatus.UNPROCESSABLE_ENTITY)
         response_data = response.get_json()
         self.assertIn("code", response_data)
-        self.assertEqual(response_data["code"], 422)
+        self.assertEqual(response_data["code"], HTTPStatus.UNPROCESSABLE_ENTITY)
         self.assertIn("message", response_data)
