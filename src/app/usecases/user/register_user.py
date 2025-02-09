@@ -3,7 +3,7 @@ from domain.services.password_hasher_interface import PasswordHasherInterface
 from infra.data.repositories.user.user_interface import UserRepositoryInterface
 
 
-class CreateUserUseCase:
+class RegisterUserUseCase:
     def __init__(
         self,
         repository: UserRepositoryInterface,

@@ -7,7 +7,7 @@ from domain.services.token_service_interface import TokenServiceInterface
 from infra.data.repositories.user.user_interface import UserRepositoryInterface
 
 
-class AuthenticateUserUseCase:
+class LoginUserUseCase:
     def __init__(
         self,
         repository: UserRepositoryInterface,

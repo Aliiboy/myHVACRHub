@@ -3,8 +3,8 @@ from dependency_injector import containers, providers
 from app.usecases.book.create_book import CreateBookUseCase
 from app.usecases.book.get_all_books import GetAllBooksUseCase
 from app.usecases.humid_air.get_full_ha_props import GetFullHAPropertyUseCase
-from app.usecases.user.authenticate_user import AuthenticateUserUseCase
-from app.usecases.user.create_user import CreateUserUseCase
+from app.usecases.user.login_user import LoginUserUseCase
+from app.usecases.user.register_user import RegisterUserUseCase
 from infra.data.repositories.book.book_sqlrepo import BookSQLRepository
 from infra.data.repositories.user.user_sqlrepo import UserSQLRepository
 from infra.data.sql_database import SQLDatabase
@@ -63,10 +63,10 @@ class AppContainer(containers.DeclarativeContainer):
     user_repository = providers.Factory(UserSQLRepository, uow=unit_of_work)
     # usecases
     create_user_usecase = providers.Factory(
-        CreateUserUseCase, repository=user_repository, password_hasher=password_hasher
+        RegisterUserUseCase, repository=user_repository, password_hasher=password_hasher
     )
     authenticate_user_usecase = providers.Factory(
-        AuthenticateUserUseCase,
+        LoginUserUseCase,
         repository=user_repository,
         password_hasher=password_hasher,
         token_service=token_service,

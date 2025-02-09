@@ -4,7 +4,7 @@ from unittest.mock import MagicMock
 
 import bcrypt
 
-from app.usecases.user.create_user import CreateUserUseCase
+from app.usecases.user.register_user import RegisterUserUseCase
 from domain.entities.user.user_entity import User
 from infra.data.repositories.user.user_interface import UserRepositoryInterface
 from infra.services.bcrypt_password_hasher import BcryptPasswordHasher
@@ -16,7 +16,7 @@ class CreateUserUseCaseTests(unittest.TestCase):
             spec=UserRepositoryInterface
         )
         self.mock_password_hasher = BcryptPasswordHasher()
-        self.use_case = CreateUserUseCase(
+        self.use_case = RegisterUserUseCase(
             repository=self.mock_user_repository,
             password_hasher=self.mock_password_hasher,
         )

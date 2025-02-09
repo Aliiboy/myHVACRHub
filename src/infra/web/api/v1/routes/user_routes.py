@@ -4,8 +4,8 @@ from dependency_injector.wiring import Provide, inject
 from flask import Response
 from flask_openapi3 import APIBlueprint, Tag  # type: ignore[attr-defined]
 
-from app.usecases.user.authenticate_user import AuthenticateUserUseCase
-from app.usecases.user.create_user import CreateUserUseCase
+from app.usecases.user.login_user import LoginUserUseCase
+from app.usecases.user.register_user import RegisterUserUseCase
 from domain.exceptions.user_exceptions import (
     UserAlreadyExistsException,
     UserInvalidPasswordException,
@@ -42,7 +42,7 @@ router = APIBlueprint(
 @inject
 def register(
     body: RegisterRequest,
-    use_case: CreateUserUseCase = Provide[AppContainer.create_user_usecase],
+    use_case: RegisterUserUseCase = Provide[AppContainer.create_user_usecase],
 ) -> Response:
     try:
         use_case.execute(email=body.email, password=body.password)
@@ -68,7 +68,7 @@ def register(
 @inject
 def login(
     body: LoginRequest,
-    use_case: AuthenticateUserUseCase = Provide[AppContainer.authenticate_user_usecase],
+    use_case: LoginUserUseCase = Provide[AppContainer.authenticate_user_usecase],
 ) -> Response:
     try:
         token = use_case.execute(email=body.email, password=body.password)

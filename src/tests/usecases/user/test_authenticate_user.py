@@ -2,7 +2,7 @@
 import unittest
 from unittest.mock import MagicMock
 
-from app.usecases.user.authenticate_user import AuthenticateUserUseCase
+from app.usecases.user.login_user import LoginUserUseCase
 from domain.entities.user.user_entity import User
 from domain.exceptions.user_exceptions import (
     UserInvalidPasswordException,
@@ -18,7 +18,7 @@ class AuthenticateUserUseCaseTests(unittest.TestCase):
         self.mock_user_repository: MagicMock = MagicMock(spec=UserRepositoryInterface)
         self.mock_password_hasher: MagicMock = MagicMock(spec=PasswordHasherInterface)
         self.mock_token_service: MagicMock = MagicMock(spec=TokenServiceInterface)
-        self.use_case: AuthenticateUserUseCase = AuthenticateUserUseCase(
+        self.use_case: LoginUserUseCase = LoginUserUseCase(
             repository=self.mock_user_repository,
             password_hasher=self.mock_password_hasher,
             token_service=self.mock_token_service,
