@@ -54,6 +54,6 @@ class TestRoleRequiredDecorator(unittest.TestCase):
 
     @patch("infra.web.decorators.role_required.verify_jwt_in_request")
     @patch("infra.web.decorators.role_required.get_jwt", return_value={})
-    def test_access_without_jwt(self, mock_get_jwt, mock_verify_jwt) -> None:
+    def test_access_without_jwt(self) -> None:
         response = self.client.get("/protected")
         self.assertEqual(response.status_code, 403)

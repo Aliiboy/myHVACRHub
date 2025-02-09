@@ -1,5 +1,4 @@
 from sqlalchemy import text
-from sqlalchemy.exc import IntegrityError
 
 from domain.entities.user.user_entity import User
 from domain.exceptions.user_exceptions import UserAlreadyExistsException
