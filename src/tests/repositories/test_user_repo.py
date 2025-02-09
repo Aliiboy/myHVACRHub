@@ -9,7 +9,7 @@ from tests.repositories.base_repo_test import BaseRepositoryTest
 class UserSQLRepositoryTests(BaseRepositoryTest):
     def setUp(self) -> None:
         super().setUp()
-        self.user_repository = UserSQLRepository(uow=self.uow)
+        self.user_repository = UserSQLRepository(unit_of_work=self.uow)
 
     def tearDown(self) -> None:
         with self.database.get_session() as session:
@@ -43,3 +43,20 @@ class UserSQLRepositoryTests(BaseRepositoryTest):
             "nonexistent@example.com"
         )
         self.assertIsNone(retrieved_user)
+
+    def test_get_all_users_return_all_users_when_users_exist(self) -> None:
+        users_to_add: list[User] = [
+            User(
+                email="user@example.com",
+                hashed_password="hash_password",
+            ),
+            User(
+                email="user2@example.com",
+                hashed_password="hash_password",
+            ),
+        ]
+        for user in users_to_add:
+            self.user_repository.add_user(user)
+
+        retrieved_users = self.user_repository.get_all_users(limit=100)
+        self.assertEqual(len(users_to_add), len(retrieved_users))

@@ -1,9 +1,13 @@
+from collections.abc import Callable
 from http import HTTPStatus
+from typing import cast
 
 from dependency_injector.wiring import Provide, inject
 from flask import Response
+from flask_jwt_extended import jwt_required
 from flask_openapi3 import APIBlueprint, Tag  # type: ignore[attr-defined]
 
+from app.usecases.user.get_all_users import GetAllUsersUsecase
 from app.usecases.user.login_user import LoginUserUseCase
 from app.usecases.user.register_user import RegisterUserUseCase
 from domain.exceptions.user_exceptions import (
@@ -12,15 +16,20 @@ from domain.exceptions.user_exceptions import (
     UserNotFoundException,
 )
 from infra.web.container import AppContainer
+from infra.web.decorators.role_required import role_required
+from infra.web.dtos.book_dtos import GetAllBooksQueryParams
 from infra.web.dtos.generic import ClientErrorResponse, SuccessResponse
 from infra.web.dtos.user_dtos import (
+    GetAllUsersResponse,
     LoginRequest,
     LoginResponse,
     RegisterRequest,
+    UserResponse,
 )
 
 tag = Tag(name="Authentication", description="S'enregistrer et se connecter à l'API")
 
+security = [{"jwt": []}]  # type: ignore[var-annotated]
 
 router = APIBlueprint(
     "/auth",
@@ -42,7 +51,7 @@ router = APIBlueprint(
 @inject
 def register(
     body: RegisterRequest,
-    use_case: RegisterUserUseCase = Provide[AppContainer.create_user_usecase],
+    use_case: RegisterUserUseCase = Provide[AppContainer.register_user_usecase],
 ) -> Response:
     try:
         use_case.execute(email=body.email, password=body.password)
@@ -68,7 +77,7 @@ def register(
 @inject
 def login(
     body: LoginRequest,
-    use_case: LoginUserUseCase = Provide[AppContainer.authenticate_user_usecase],
+    use_case: LoginUserUseCase = Provide[AppContainer.login_user_usecase],
 ) -> Response:
     try:
         token = use_case.execute(email=body.email, password=body.password)
@@ -83,3 +92,28 @@ def login(
         return ClientErrorResponse(
             code=HTTPStatus.UNAUTHORIZED, message=str(e)
         ).to_response()
+
+
+@router.get(
+    "get_all_users",
+    description="Récupère la liste de tous les utilisateurs",
+    security=security,
+    responses={
+        HTTPStatus.OK: GetAllUsersResponse,
+        HTTPStatus.FORBIDDEN: ClientErrorResponse,
+    },
+)
+@cast("Callable[..., Response]", jwt_required())
+@cast("Callable[..., Response]", role_required("admin"))
+@inject
+def get_all_users(
+    query: GetAllBooksQueryParams,
+    use_case: GetAllUsersUsecase = Provide[AppContainer.get_all_users_usecase],
+) -> Response:
+    # TODO : try except
+    users = use_case.execute(limit=query.limit)
+
+    users_to = [UserResponse.model_validate(user.model_dump()) for user in users]
+
+    response = GetAllUsersResponse(users=users_to)
+    return response.to_response()

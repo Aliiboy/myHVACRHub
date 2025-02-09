@@ -11,12 +11,12 @@ from infra.data.sql_unit_of_work import SQLUnitOfWork
 
 
 class UserSQLRepository(UserRepositoryInterface):
-    def __init__(self, uow: SQLUnitOfWork):
-        self.uow = uow
+    def __init__(self, unit_of_work: SQLUnitOfWork):
+        self.unit_of_work = unit_of_work
 
     def add_user(self, user: User) -> User:
         try:
-            with self.uow as uow:
+            with self.unit_of_work as uow:
                 query = UserSQLModel(
                     id=user.id,
                     email=user.email,
@@ -31,8 +31,15 @@ class UserSQLRepository(UserRepositoryInterface):
             raise UserAlreadyExistsException(query.email)
 
     def get_user_by_email(self, email: str) -> User | None:
-        with self.uow as uow:
+        with self.unit_of_work as uow:
             query = select(UserSQLModel).where(UserSQLModel.email == email)
 
-            user_model = uow.session.exec(query).first()
-            return user_model.to_entity() if user_model else None
+            user = uow.session.exec(query).first()
+            return user.to_entity() if user else None
+
+    def get_all_users(self, limit: int) -> list[User]:
+        with self.unit_of_work as uow:
+            query = select(UserSQLModel).limit(limit)
+
+            users = uow.session.exec(query).all()
+            return [user.to_entity() for user in users]

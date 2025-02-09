@@ -3,6 +3,7 @@ from dependency_injector import containers, providers
 from app.usecases.book.create_book import CreateBookUseCase
 from app.usecases.book.get_all_books import GetAllBooksUseCase
 from app.usecases.humid_air.get_full_ha_props import GetFullHAPropertyUseCase
+from app.usecases.user.get_all_users import GetAllUsersUsecase
 from app.usecases.user.login_user import LoginUserUseCase
 from app.usecases.user.register_user import RegisterUserUseCase
 from infra.data.repositories.book_sqlrepo import BookSQLRepository
@@ -43,7 +44,7 @@ class AppContainer(containers.DeclarativeContainer):
 
     # === book module ===
     # repositories
-    book_repository = providers.Factory(BookSQLRepository, uow=unit_of_work)
+    book_repository = providers.Factory(BookSQLRepository, unit_of_work=unit_of_work)
 
     # usecases
     create_book_usecase = providers.Factory(
@@ -60,14 +61,17 @@ class AppContainer(containers.DeclarativeContainer):
 
     # === user module ===
     # repositories
-    user_repository = providers.Factory(UserSQLRepository, uow=unit_of_work)
+    user_repository = providers.Factory(UserSQLRepository, unit_of_work=unit_of_work)
     # usecases
-    create_user_usecase = providers.Factory(
+    register_user_usecase = providers.Factory(
         RegisterUserUseCase, repository=user_repository, password_hasher=password_hasher
     )
-    authenticate_user_usecase = providers.Factory(
+    login_user_usecase = providers.Factory(
         LoginUserUseCase,
         repository=user_repository,
         password_hasher=password_hasher,
         token_service=token_service,
+    )
+    get_all_users_usecase = providers.Factory(
+        GetAllUsersUsecase, repository=user_repository
     )

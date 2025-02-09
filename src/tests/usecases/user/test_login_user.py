@@ -29,13 +29,11 @@ class LoginUserUseCaseTests(unittest.TestCase):
         password: str = "SecurePass123!"
         hashed_password: str = "hashedpassword123"
 
-        # Création d'un utilisateur simulé
         user: User = User(email=email, hashed_password=hashed_password)
         self.mock_user_repository.get_user_by_email.return_value = user
 
-        # Le hasher vérifie correctement le mot de passe
         self.mock_password_hasher.verify.return_value = True
-        # Le service de token renvoie un token simulé
+
         expected_token: str = "token123"
         self.mock_token_service.generate_token.return_value = expected_token
 

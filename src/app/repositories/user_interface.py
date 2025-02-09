@@ -11,3 +11,7 @@ class UserRepositoryInterface(ABC):
     @abstractmethod
     def get_user_by_email(self, email: str) -> User | None:
         pass
+
+    @abstractmethod
+    def get_all_users(self, limit: int) -> list[User]:
+        pass

@@ -9,7 +9,7 @@ from tests.repositories.base_repo_test import BaseRepositoryTest
 class BookSQLRepositoryTests(BaseRepositoryTest):
     def setUp(self) -> None:
         super().setUp()
-        self.book_repository = BookSQLRepository(uow=self.uow)
+        self.book_repository = BookSQLRepository(unit_of_work=self.uow)
 
     def tearDown(self) -> None:
         with self.database.get_session() as session:

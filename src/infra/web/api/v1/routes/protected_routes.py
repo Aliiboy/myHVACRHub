@@ -21,7 +21,7 @@ router = APIBlueprint(
     url_prefix="/protected",
     abp_tags=[tag],
     abp_security=security,
-    doc_ui=True,
+    doc_ui=False,
 )
 
 
