@@ -2,7 +2,7 @@ from sqlalchemy import text
 from sqlalchemy.exc import IntegrityError
 
 from domain.entities.book.book_entity import Book
-from infra.data.repositories.book.book_sqlrepo import BookSQLRepository
+from infra.data.repositories.book_sqlrepo import BookSQLRepository
 from tests.repositories.base_repo_test import BaseRepositoryTest
 
 

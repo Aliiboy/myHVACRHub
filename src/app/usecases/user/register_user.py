@@ -1,6 +1,6 @@
+from app.repositories.user_interface import UserRepositoryInterface
 from domain.entities.user.user_entity import User
 from domain.services.password_hasher_interface import PasswordHasherInterface
-from infra.data.repositories.user.user_interface import UserRepositoryInterface
 
 
 class RegisterUserUseCase:

@@ -1,7 +1,7 @@
-from domain.entities.book.book_entity import Book
-from infra.data.repositories.book.book_interface import (
+from app.repositories.book_interface import (
     BookRepositoryInterface,
 )
+from domain.entities.book.book_entity import Book
 
 
 class CreateBookUseCase:

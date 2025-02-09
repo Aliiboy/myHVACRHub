@@ -5,8 +5,8 @@ from app.usecases.book.get_all_books import GetAllBooksUseCase
 from app.usecases.humid_air.get_full_ha_props import GetFullHAPropertyUseCase
 from app.usecases.user.login_user import LoginUserUseCase
 from app.usecases.user.register_user import RegisterUserUseCase
-from infra.data.repositories.book.book_sqlrepo import BookSQLRepository
-from infra.data.repositories.user.user_sqlrepo import UserSQLRepository
+from infra.data.repositories.book_sqlrepo import BookSQLRepository
+from infra.data.repositories.user_sqlrepo import UserSQLRepository
 from infra.data.sql_database import SQLDatabase
 from infra.data.sql_unit_of_work import SQLUnitOfWork
 from infra.services.bcrypt_password_hasher import BcryptPasswordHasher

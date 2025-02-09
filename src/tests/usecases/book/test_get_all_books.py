@@ -2,9 +2,9 @@ import unittest
 from typing import cast
 from unittest.mock import MagicMock
 
+from app.repositories.book_interface import BookRepositoryInterface
 from app.usecases.book.get_all_books import GetAllBooksUseCase
 from domain.entities.book.book_entity import Book
-from infra.data.repositories.book.book_interface import BookRepositoryInterface
 
 
 class GetAllBooksUseCaseTests(unittest.TestCase):

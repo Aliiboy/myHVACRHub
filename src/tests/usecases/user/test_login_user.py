@@ -2,6 +2,7 @@
 import unittest
 from unittest.mock import MagicMock
 
+from app.repositories.user_interface import UserRepositoryInterface
 from app.usecases.user.login_user import LoginUserUseCase
 from domain.entities.user.user_entity import User
 from domain.exceptions.user_exceptions import (
@@ -10,10 +11,9 @@ from domain.exceptions.user_exceptions import (
 )
 from domain.services.password_hasher_interface import PasswordHasherInterface
 from domain.services.token_service_interface import TokenServiceInterface
-from infra.data.repositories.user.user_interface import UserRepositoryInterface
 
 
-class AuthenticateUserUseCaseTests(unittest.TestCase):
+class LoginUserUseCaseTests(unittest.TestCase):
     def setUp(self) -> None:
         self.mock_user_repository: MagicMock = MagicMock(spec=UserRepositoryInterface)
         self.mock_password_hasher: MagicMock = MagicMock(spec=PasswordHasherInterface)

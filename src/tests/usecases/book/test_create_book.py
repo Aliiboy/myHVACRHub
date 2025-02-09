@@ -2,10 +2,10 @@ import unittest
 from typing import cast
 from unittest.mock import MagicMock
 
+from app.repositories.book_interface import BookRepositoryInterface
 from app.usecases.book.create_book import CreateBookUseCase
 from domain.entities.book.book_entity import Book
 from domain.settings.book_settings import BookEntitieSettings
-from infra.data.repositories.book.book_interface import BookRepositoryInterface
 
 
 class CreateBookUseCaseTests(unittest.TestCase):

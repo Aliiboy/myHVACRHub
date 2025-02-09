@@ -4,7 +4,7 @@ from flask import Response, jsonify, make_response
 from pydantic import BaseModel, Field
 
 from domain.entities.humid_air.humid_air_entity import HumidAirEntity
-from domain.settings.ha_settings import HumidAirSettings
+from domain.settings.humid_air_settings import HumidAirSettings
 
 
 class HumidAirRequest(BaseModel):

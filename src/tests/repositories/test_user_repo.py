@@ -2,7 +2,7 @@ from sqlalchemy import text
 
 from domain.entities.user.user_entity import User
 from domain.exceptions.user_exceptions import UserAlreadyExistsException
-from infra.data.repositories.user.user_sqlrepo import UserSQLRepository
+from infra.data.repositories.user_sqlrepo import UserSQLRepository
 from tests.repositories.base_repo_test import BaseRepositoryTest
 
 

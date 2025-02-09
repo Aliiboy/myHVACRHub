@@ -1,8 +1,8 @@
 from sqlmodel import select
 
+from app.repositories.book_interface import BookRepositoryInterface
 from domain.entities.book.book_entity import Book
-from infra.data.models.book.book_sqlmodel import BookSQLModel
-from infra.data.repositories.book.book_interface import BookRepositoryInterface
+from infra.data.models.book_sqlmodel import BookSQLModel
 from infra.data.sql_unit_of_work import SQLUnitOfWork
 
 

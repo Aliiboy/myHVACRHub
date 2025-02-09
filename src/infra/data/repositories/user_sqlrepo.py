@@ -1,12 +1,12 @@
 from sqlalchemy.exc import IntegrityError
 from sqlmodel import select
 
+from app.repositories.user_interface import UserRepositoryInterface
 from domain.entities.user.user_entity import User
 from domain.exceptions.user_exceptions import (
     UserAlreadyExistsException,
 )
-from infra.data.models.user.user_sqlmodel import UserSQLModel
-from infra.data.repositories.user.user_interface import UserRepositoryInterface
+from infra.data.models.user_sqlmodel import UserSQLModel
 from infra.data.sql_unit_of_work import SQLUnitOfWork
 
 
