@@ -15,7 +15,7 @@ class UserSQLModel(SQLModel, table=True):
     email: EmailStr = Field(
         unique=True, index=True, description=UserSettings.email_description
     )
-    hashed_password: str = Field(description=UserSettings.password_description)
+    password: str = Field(description=UserSettings.password_description)
     role: UserRole = Field(description=UserSettings.role_description)
     created_at: datetime = Field(description=UserSettings.created_at_description)
 
@@ -23,7 +23,7 @@ class UserSQLModel(SQLModel, table=True):
         return User(
             id=self.id,
             email=self.email,
-            hashed_password=self.hashed_password,
+            password=self.password,
             role=self.role,
             created_at=self.created_at,
         )

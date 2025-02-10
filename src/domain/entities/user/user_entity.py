@@ -16,8 +16,10 @@ class UserRole(str, Enum):
 class User(BaseModel):
     id: UUID = Field(default_factory=uuid4, description=UserSettings.id_description)
     email: EmailStr = Field(..., description=UserSettings.email_description)
-    hashed_password: str = Field(
+    password: str = Field(
         ...,
+        min_length=UserSettings.password_min_length,
+        pattern=UserSettings.password_pattern,
         description=UserSettings.password_description,
     )
     role: UserRole = Field(

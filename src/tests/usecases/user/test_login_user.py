@@ -26,10 +26,10 @@ class LoginUserUseCaseTests(unittest.TestCase):
 
     def test_authenticate_user_success_returns_valid_token(self) -> None:
         email: str = "test@example.com"
-        password: str = "SecurePass123!"
-        hashed_password: str = "hashedpassword123"
+        password: str = "Password_1234!"
+        hashed_password: str = "hashedpassword123!"
 
-        user: User = User(email=email, hashed_password=hashed_password)
+        user: User = User(email=email, password=hashed_password)
         self.mock_user_repository.get_user_by_email.return_value = user
 
         self.mock_password_hasher.verify.return_value = True
@@ -48,7 +48,7 @@ class LoginUserUseCaseTests(unittest.TestCase):
 
     def test_authenticate_user_invalid_email_raises_error(self) -> None:
         email: str = "nonexistent@example.com"
-        password: str = "SecurePass123!"
+        password: str = "Password_1234!"
         self.mock_user_repository.get_user_by_email.return_value = None
 
         with self.assertRaises(UserNotFoundException) as context:
@@ -60,9 +60,8 @@ class LoginUserUseCaseTests(unittest.TestCase):
 
     def test_authenticate_user_invalid_password_raises_error(self) -> None:
         email: str = "test@example.com"
-        password: str = "WrongPass"
-        hashed_password: str = "hashedpassword123"
-        user: User = User(email=email, hashed_password=hashed_password)
+        password: str = "WrongPassword_1234!"
+        user: User = User(email=email, password=password)
         self.mock_user_repository.get_user_by_email.return_value = user
 
         self.mock_password_hasher.verify.return_value = False

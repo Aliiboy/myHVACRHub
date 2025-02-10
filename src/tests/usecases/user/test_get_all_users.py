@@ -26,11 +26,11 @@ class GetAllUsersUsecaseTest(unittest.TestCase):
         users: list[User] = [
             User(
                 email="user@example.com",
-                hashed_password="hash_password",
+                password="Password_1234!",
             ),
             User(
                 email="user2@example.com",
-                hashed_password="hash_password",
+                password="Password_1234!",
             ),
         ]
         cast(MagicMock, self.mock_user_repository.get_all_users).return_value = users

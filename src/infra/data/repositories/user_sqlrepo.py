@@ -6,21 +6,26 @@ from domain.entities.user.user_entity import User
 from domain.exceptions.user_exceptions import (
     UserAlreadyExistsException,
 )
+from domain.services.password_hasher_interface import PasswordHasherInterface
 from infra.data.models.user_sqlmodel import UserSQLModel
 from infra.data.sql_unit_of_work import SQLUnitOfWork
 
 
 class UserSQLRepository(UserRepositoryInterface):
-    def __init__(self, unit_of_work: SQLUnitOfWork):
+    def __init__(
+        self, unit_of_work: SQLUnitOfWork, password_hasher: PasswordHasherInterface
+    ):
         self.unit_of_work = unit_of_work
+        self.password_hasher = password_hasher
 
     def add_user(self, user: User) -> User:
         try:
+            hashed_password = self.password_hasher.hash(user.password)
             with self.unit_of_work as uow:
                 query = UserSQLModel(
                     id=user.id,
                     email=user.email,
-                    hashed_password=user.hashed_password,
+                    password=hashed_password,
                     role=user.role,
                     created_at=user.created_at,
                 )

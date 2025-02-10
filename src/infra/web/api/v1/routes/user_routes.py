@@ -13,6 +13,7 @@ from app.usecases.user.register_user import RegisterUserUseCase
 from domain.exceptions.user_exceptions import (
     UserAlreadyExistsException,
     UserInvalidPasswordException,
+    UserInvalidPasswordPatternException,
     UserNotFoundException,
 )
 from infra.web.container import AppContainer
@@ -46,6 +47,7 @@ router = APIBlueprint(
     responses={
         HTTPStatus.CREATED: SuccessResponse,
         HTTPStatus.CONFLICT: ClientErrorResponse,
+        HTTPStatus.UNPROCESSABLE_ENTITY: ClientErrorResponse,
     },
 )
 @inject
@@ -62,6 +64,11 @@ def register(
     except UserAlreadyExistsException as e:
         return ClientErrorResponse(
             code=HTTPStatus.CONFLICT, message=str(e)
+        ).to_response()
+
+    except UserInvalidPasswordPatternException as e:
+        return ClientErrorResponse(
+            code=HTTPStatus.UNPROCESSABLE_ENTITY, message=str(e)
         ).to_response()
 
 

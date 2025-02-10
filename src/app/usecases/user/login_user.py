@@ -23,7 +23,7 @@ class LoginUserUseCase:
 
         if not user:
             raise UserNotFoundException(email)
-        if not self.password_hasher.verify(password, user.hashed_password):
+        if not self.password_hasher.verify(password, user.password):
             raise UserInvalidPasswordException()
 
         return self.token_service.generate_token(user_id=user.id, role=user.role)

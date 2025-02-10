@@ -4,9 +4,7 @@ class UserSettings:
     # email
     email_description: str = "Adresse email unique de l'utilisateur"
     # password
-    password_description: str = (
-        "Mot de passe contenant au moins un chiffre et un caractère spécial"
-    )
+    password_description: str = "Mot de passe contenant au moins 6 caractères, un chiffre et un caractère spécial"
     password_min_length: int = 6
     password_pattern: str = (
         r"[A-Za-z\d@$!%*?&]*\d+[A-Za-z\d@$!%*?&]*[@$!%*?&]+[A-Za-z\d@$!%*?&]*"

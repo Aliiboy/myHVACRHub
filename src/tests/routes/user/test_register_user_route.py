@@ -21,3 +21,9 @@ class RegisterUserRouteTests(BaseAPITest):
         self.client.post("/v1/auth/register", json=user_data)
         response = self.client.post("/v1/auth/register", json=user_data)
         self.assertEqual(response.status_code, HTTPStatus.CONFLICT)
+
+    def test_register_user_with_invalid_password_returns_error(self) -> None:
+        user_data = {"email": "test3@example.com", "password": "invalidpassword"}
+        self.client.post("/v1/auth/register", json=user_data)
+        response = self.client.post("/v1/auth/register", json=user_data)
+        self.assertEqual(response.status_code, HTTPStatus.UNPROCESSABLE_ENTITY)

@@ -61,10 +61,13 @@ class AppContainer(containers.DeclarativeContainer):
 
     # === user module ===
     # repositories
-    user_repository = providers.Factory(UserSQLRepository, unit_of_work=unit_of_work)
+    user_repository = providers.Factory(
+        UserSQLRepository, unit_of_work=unit_of_work, password_hasher=password_hasher
+    )
     # usecases
     register_user_usecase = providers.Factory(
-        RegisterUserUseCase, repository=user_repository, password_hasher=password_hasher
+        RegisterUserUseCase,
+        repository=user_repository,
     )
     login_user_usecase = providers.Factory(
         LoginUserUseCase,

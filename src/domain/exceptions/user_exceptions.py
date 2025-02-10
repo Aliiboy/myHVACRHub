@@ -16,5 +16,5 @@ class UserInvalidPasswordException(Exception):
 class UserInvalidPasswordPatternException(Exception):
     def __init__(self) -> None:
         super().__init__(
-            "Le mot de passe doit contenir au moins un chiffre et un caractère spécial."
+            "Le mot de passe doit contenir au moins 6 caractères, un chiffre et un caractère spécial."
         )

@@ -1,14 +1,11 @@
-import re
 from datetime import datetime
 from http import HTTPStatus
-from typing import Any
 from uuid import UUID
 
 from flask import Response, jsonify, make_response
-from pydantic import BaseModel, EmailStr, Field, model_validator
+from pydantic import BaseModel, EmailStr, Field
 
 from domain.entities.user.user_entity import UserRole
-from domain.exceptions.user_exceptions import UserInvalidPasswordPatternException
 from domain.settings.user_settings import UserSettings
 
 
@@ -16,20 +13,8 @@ class RegisterRequest(BaseModel):
     email: EmailStr = Field(..., description=UserSettings.email_description)
     password: str = Field(
         ...,
-        min_length=UserSettings.password_min_length,
-        pattern=UserSettings.password_pattern,
         description=UserSettings.password_description,
     )
-
-    @model_validator(mode="before")
-    @classmethod
-    def check_password(cls, value: dict[str, Any]) -> dict[str, Any]:
-        password = value.get("password", "")
-
-        if not (re.search(r"\d", password) and re.search(r"[@$!%*?&]", password)):
-            raise UserInvalidPasswordPatternException()
-
-        return value
 
 
 class LoginRequest(BaseModel):
