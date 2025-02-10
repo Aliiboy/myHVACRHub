@@ -50,7 +50,7 @@ router = APIBlueprint(
     },
 )
 @cast("Callable[..., Response]", jwt_required())
-@cast("Callable[..., Response]", role_required("moderator"))
+@cast("Callable[..., Response]", role_required("moderator", "admin"))
 @inject
 def add_cooling_load_coefficient(
     body: AddCoolingLoadFastCoefficientRequest,
