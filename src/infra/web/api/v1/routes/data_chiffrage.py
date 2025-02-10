@@ -1,19 +1,19 @@
 prix_production_froid = [
-    {"min": 100, "max": 200, "prix": 43826},
-    {"min": 201, "max": 300, "prix": 45844},
-    {"min": 301, "max": 400, "prix": 49758},
-    {"min": 401, "max": 500, "prix": 54238},
-    {"min": 501, "max": 650, "prix": 58995},
-    {"min": 651, "max": 800, "prix": 67136},
+    {"min": 100, "max": 200, "prix": 20094},
+    {"min": 201, "max": 300, "prix": 21972},
+    {"min": 301, "max": 400, "prix": 24142},
+    {"min": 401, "max": 500, "prix": 28462},
+    {"min": 501, "max": 650, "prix": 30971},
+    {"min": 651, "max": 800, "prix": 38062},
 ]
 
 
 prix_equipement_frigorifere = [
-    {"min": 0, "max": 10, "prix": 3730},
-    {"min": 11, "max": 20, "prix": 4081},
-    {"min": 21, "max": 30, "prix": 4507},
-    {"min": 31, "max": 50, "prix": 4986},
-    {"min": 51, "max": 75, "prix": 6327},
+    {"min": 0, "max": 10, "prix": 2700},
+    {"min": 11, "max": 20, "prix": 2941},
+    {"min": 21, "max": 30, "prix": 3230},
+    {"min": 31, "max": 50, "prix": 3516},
+    {"min": 51, "max": 75, "prix": 4511},
 ]
 
 bilan_frigo = {
@@ -81,15 +81,19 @@ prix_conso_frigorifere = {
 
 
 formules_prix_modele_frigorifere = {
-    "CHILLER_TRANE_1234ZE": lambda x: -2e-06 * x**4
-    + 0.004 * x**3
-    - 2.3568 * x**2
-    + 682.05 * x
-    + 27916,
-    "CHILLER_CTA_R290": lambda x: 0.1998 * x**2 + 54.238 * x + 78600,
-    "CHILLER_INTERCON_NH3": lambda x: 427.7 * x - 2726.6,
+    "CHILLER_TRANE_1234ZE": lambda x: -1.0713e-4 * x**3
+    + 0.0611 * x**2
+    + 311.7012 * x
+    - 29546.7417,
+    "CHILLER_CTA_R290": lambda x: -9.9768e-4 * x**3
+    + 1.3867 * x**2
+    - 382.8699 * x
+    + 125355.966,
+    "CHILLER_INTERCON_NH3": lambda x: -3.4880e-3 * x**3
+    + 4.3789 * x**2
+    - 1321.0512 * x
+    + 222326.724,
 }
-
 
 facteur_debit_puissance_tuyauterie = 0.238
 

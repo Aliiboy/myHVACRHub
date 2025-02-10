@@ -24,6 +24,9 @@ class AppSettings(BaseSettings):
     DATABASE_POOL_SIZE: int = Field(
         default=5, description="Nombre maximal de connexions dans le pool"
     )
+    EXCEL_DATABASE_URL: str = Field(
+        default="database.xlsx", description="URL de la base de données excel."
+    )
 
     # authentification (JWT)
     JWT_SECRET_KEY: str = Field(default="mydevsecretkey", description="Clé secrète JWT")

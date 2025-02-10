@@ -5,10 +5,12 @@ import pandas
 
 from app.repositories.fast_quote_interface import FastQuoteRepositoryInterface
 from domain.entities.fast_quote.cold_room_entity import ColdRoom
+from infra.web.settings import AppSettings
 
 
 class FastQuoteInMemoryRepository(FastQuoteRepositoryInterface):
-    excel_file: Final[str] = "src/infra/data/repositories/database.xlsx"
+    settings = AppSettings()
+    excel_file: Final[str] = settings.EXCEL_DATABASE_URL
     sheet_name: Final[str] = "ratios"
 
     def get_cooling_load_fast_coefficient(self, cold_room: ColdRoom) -> int:
