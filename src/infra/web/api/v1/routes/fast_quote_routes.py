@@ -29,7 +29,7 @@ router = APIBlueprint(
 
 @router.get(
     "get_cold_room_cooling_load_fast",
-    description="Récupère la liste de tous les utilisateurs",
+    description="Determine la puissance frigorifique d'une chambre froide (au ratio)",
     security=security,
     responses={
         HTTPStatus.OK: ColdRoomResponse,
