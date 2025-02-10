@@ -1,3 +1,8 @@
+import os
+from typing import Final
+
+import pandas
+
 from app.repositories.fast_quote_interface import FastQuoteRepositoryInterface
 from domain.entities.fast_quote.cold_room_entity import ColdRoom
 
@@ -18,31 +23,6 @@ prix_equipement_frigorifere = [
     {"min": 31, "max": 50, "prix": 4986},
     {"min": 51, "max": 75, "prix": 6327},
 ]
-
-cooling_load_fast_coefficients = {
-    "QUAI": [
-        {"vol_min": 0, "vol_max": 1900, "ratio": 52},
-        {"vol_min": 1901, "vol_max": 3200, "ratio": 41},
-        {"vol_min": 3201, "vol_max": 3840, "ratio": 33},
-        {"vol_min": 3841, "vol_max": 6400, "ratio": 26},
-    ],
-    "CF": [
-        {"vol_min": 0, "vol_max": 500, "ratio": 28},
-        {"vol_min": 501, "vol_max": 800, "ratio": 25},
-        {"vol_min": 801, "vol_max": 1100, "ratio": 21},
-        {"vol_min": 1101, "vol_max": 1600, "ratio": 24},
-        {"vol_min": 1601, "vol_max": 2200, "ratio": 20},
-        {"vol_min": 2201, "vol_max": 3000, "ratio": 20},
-        {"vol_min": 3001, "vol_max": 4800, "ratio": 20},
-        {"vol_min": 4801, "vol_max": 6600, "ratio": 15},
-        {"vol_min": 6601, "vol_max": 8000, "ratio": 15},
-    ],
-    "PLATEFORME": [
-        {"vol_min": 0, "vol_max": 1900, "ratio": 40},
-        {"vol_min": 1901, "vol_max": 10800, "ratio": 25},
-        {"vol_min": 10801, "vol_max": 26400, "ratio": 17},
-    ],
-}
 
 # DT 8
 prix_conso_frigorifere = {
@@ -140,9 +120,23 @@ proportion_frais_divers = 0.01
 
 
 class FastQuoteInMemoryRepository(FastQuoteRepositoryInterface):
+    excel_file: Final[str] = "src/infra/data/repositories/database.xlsx"
+    sheet_name: Final[str] = "ratios"
+
     def get_cooling_load_fast_coefficient(self, cold_room: ColdRoom) -> int:
-        coefficients = cooling_load_fast_coefficients.get(cold_room.type.value, [])
-        for plage in coefficients:
-            if plage["vol_min"] <= cold_room.volume <= plage["vol_max"]:
-                ratio = plage["ratio"]
-        return ratio
+        if not os.path.exists(self.excel_file):
+            raise FileNotFoundError(f"Le fichier {self.excel_file} est introuvable.")
+
+        data_frame = pandas.read_excel(
+            self.excel_file, sheet_name=self.sheet_name, engine="openpyxl"
+        )
+
+        filtered_data_frame = data_frame[data_frame["type"] == cold_room.type.value]
+
+        for _, row in filtered_data_frame.iterrows():
+            if row["vol_min"] <= cold_room.volume <= row["vol_max"]:
+                return row["ratio"]
+
+        raise ValueError(
+            f"Aucun coefficient trouvé pour {cold_room.type.value} avec un volume de {cold_room.volume} m³"
+        )
