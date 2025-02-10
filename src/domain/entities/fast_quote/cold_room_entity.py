@@ -5,7 +5,7 @@ from pydantic import BaseModel, Field, PositiveFloat
 from domain.settings.cold_room_settings import ColdRoomSettings
 
 
-class ColdRoomType(str, Enum):
+class ColdRoomCategory(str, Enum):
     QUAI = "QUAI"
     CF = "CF"
     PLATEFORME = "PLATEFORME"
@@ -27,8 +27,8 @@ class ColdRoom(BaseModel):
         ge=ColdRoomSettings.height_ge,
         le=ColdRoomSettings.height_le,
     )
-    type: ColdRoomType = Field(
-        default=ColdRoomType.CF,
+    category: ColdRoomCategory = Field(
+        default=ColdRoomCategory.CF,
     )
 
     @property

@@ -8,12 +8,17 @@ from flask import Response, jsonify
 from flask_jwt_extended import jwt_required
 from flask_openapi3 import APIBlueprint, Tag  # type: ignore[attr-defined]
 
-from app.usecases.fast_quote.get_cold_room_cooling_load_fast import (
-    GetColdRoomCoolingLoadFastUseCase,
+from app.usecases.fast_quote.add_cooling_load_fast_coefficient import (
+    AddCoolingLoadFastCoefficientUseCase,
+)
+from app.usecases.fast_quote.calc_cold_room_cooling_load_fast import (
+    CalculateColdRoomCoolingLoadFastUseCase,
 )
 from infra.web.api.v1.routes.fast_quote_controllers import *
 from infra.web.container import AppContainer
+from infra.web.decorators.role_required import role_required
 from infra.web.dtos.fast_quote_dtos import (
+    AddCoolingLoadFastCoefficientRequest,
     ColdRoomRequest,
     ColdRoomResponse,
     GroupeFroidRequest,
@@ -21,7 +26,7 @@ from infra.web.dtos.fast_quote_dtos import (
     PrixTotal,
     TuyauterieRequest,
 )
-from infra.web.dtos.generic import ClientErrorResponse
+from infra.web.dtos.generic import ClientErrorResponse, SuccessResponse
 
 tag = Tag(name="Chiffrage rapide", description="Genere un chiffrage rapide")
 
@@ -36,36 +41,80 @@ router = APIBlueprint(
 )
 
 
+@router.post(
+    "/add_cooling_load_coefficient",
+    description="Ajoute un coefficient de charge frigorifique",
+    responses={
+        HTTPStatus.CREATED: SuccessResponse,
+        HTTPStatus.UNPROCESSABLE_ENTITY: ClientErrorResponse,
+    },
+)
+@cast("Callable[..., Response]", jwt_required())
+@cast("Callable[..., Response]", role_required("moderator"))
+@inject
+def add_cooling_load_coefficient(
+    body: AddCoolingLoadFastCoefficientRequest,
+    use_case: AddCoolingLoadFastCoefficientUseCase = Provide[
+        AppContainer.add_cooling_load_fast_coefficient_usecase
+    ],
+) -> Response:
+    try:
+        use_case.execute(
+            category=body.category,
+            vol_min=body.vol_min,
+            vol_max=body.vol_max,
+            coef=body.coef,
+        )
+        return SuccessResponse(
+            code=HTTPStatus.CREATED,
+            message="Coefficient ajouté avec succès",
+        ).to_response()
+    except ValueError as e:
+        return ClientErrorResponse(
+            code=HTTPStatus.UNPROCESSABLE_ENTITY, message=str(e)
+        ).to_response()
+
+
 @router.get(
-    "get_cold_room_cooling_load_fast",
+    "calculate_cold_room_cooling_load_fast",
     description="Determine la puissance frigorifique d'une chambre froide (au ratio)",
     security=security,
     responses={
         HTTPStatus.OK: ColdRoomResponse,
         HTTPStatus.UNAUTHORIZED: ClientErrorResponse,
+        HTTPStatus.UNPROCESSABLE_ENTITY: ClientErrorResponse,
     },
 )
 @cast("Callable[..., Response]", jwt_required())
 @inject
-def get_cold_room_cooling_load_fast(
+def calculate_cold_room_cooling_load_fast(
     query: ColdRoomRequest,
-    use_case: GetColdRoomCoolingLoadFastUseCase = Provide[
-        AppContainer.get_cold_room_cooling_load_fast_usecase
+    use_case: CalculateColdRoomCoolingLoadFastUseCase = Provide[
+        AppContainer.calculate_cold_room_cooling_load_fast_usecase
     ],
 ) -> Response:
-    cold_room, cold_room_power = use_case.execute(
-        query.length, query.width, query.height, query.type
-    )
+    try:
+        cold_room, cold_room_power = use_case.execute(
+            query.length, query.width, query.height, query.type
+        )
 
-    return ColdRoomResponse.from_use_case_result(
-        cold_room, cold_room_power
-    ).to_response()
+        return ColdRoomResponse.from_use_case_result(
+            cold_room, cold_room_power
+        ).to_response()
+    except ValueError as e:
+        return ClientErrorResponse(
+            code=HTTPStatus.UNPROCESSABLE_ENTITY, message=str(e)
+        ).to_response()
 
 
 # ======= ROUTE =========
 
 
-@router.get("/prix_frigo_local")
+@router.get(
+    "/prix_frigo_local",
+    security=security,
+)
+@cast("Callable[..., Response]", jwt_required())
 def calculate_prix_frigo_local(query: LocalFrigoRequest):
     # On calcule ensuite la puissance unitaire de chaque appareil en kW
     puissance_unitaire_appareils = math.ceil(
@@ -99,8 +148,11 @@ def calculate_prix_frigo_local(query: LocalFrigoRequest):
     )
 
 
-@router.get("/prix_groupe_froid")
-# @require_api_key
+@router.get(
+    "/prix_groupe_froid",
+    security=security,
+)
+@cast("Callable[..., Response]", jwt_required())
 def calculate_prix_groupe_froid(query: GroupeFroidRequest):
     prix_prod_froid = calculer_prix_puissance_frigo(query.puissance_bilan_thermique)
     prix_groupe_froid = calculer_prix_groupe_froid(
@@ -112,8 +164,11 @@ def calculate_prix_groupe_froid(query: GroupeFroidRequest):
     )
 
 
-@router.get("/prix_tuyauterie")
-# @require_api_key
+@router.get(
+    "/prix_tuyauterie",
+    security=security,
+)
+@cast("Callable[..., Response]", jwt_required())
 def calculate_prix_tuyauterie(query: TuyauterieRequest):
     # Calcul du débit min et max selon la puissance
     debitMin, debitMax = calculer_debit_min_max(query.p_min, query.p_max)
@@ -148,8 +203,11 @@ def calculate_prix_tuyauterie(query: TuyauterieRequest):
     )
 
 
-@router.get("/prix_elec_autom")
-# @require_api_key
+@router.get(
+    "/prix_elec_autom",
+    security=security,
+)
+@cast("Callable[..., Response]", jwt_required())
 def calculate_prix_elec_autom(query: PrixTotal):
     prix_elec_autom = query.prix_total * 0.1
 
@@ -160,8 +218,11 @@ def calculate_prix_elec_autom(query: PrixTotal):
     )
 
 
-@router.get("/prix_frais_divers")
-# @require_api_key
+@router.get(
+    "/prix_frais_divers",
+    security=security,
+)
+@cast("Callable[..., Response]", jwt_required())
 def calculate_prix_frais_divers(query: PrixTotal):
     frais_mes, frais_chefChantier, frais_divers = calculer_frais_divers(
         query.prix_total

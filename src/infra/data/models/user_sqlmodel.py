@@ -5,19 +5,16 @@ from pydantic import EmailStr
 from sqlmodel import Field, SQLModel
 
 from domain.entities.user.user_entity import User, UserRole
-from domain.settings.user_settings import UserSettings
 
 
 class UserSQLModel(SQLModel, table=True):
     __tablename__ = "users"
 
-    id: UUID = Field(primary_key=True, description=UserSettings.id_description)
-    email: EmailStr = Field(
-        unique=True, index=True, description=UserSettings.email_description
-    )
-    password: str = Field(description=UserSettings.password_description)
-    role: UserRole = Field(description=UserSettings.role_description)
-    created_at: datetime = Field(description=UserSettings.created_at_description)
+    id: UUID = Field(primary_key=True)
+    email: EmailStr = Field(unique=True, index=True)
+    password: str = Field()
+    role: UserRole = Field()
+    created_at: datetime = Field()
 
     def to_entity(self) -> User:
         return User(

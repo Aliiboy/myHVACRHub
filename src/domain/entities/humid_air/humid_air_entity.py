@@ -7,19 +7,16 @@ from domain.settings.humid_air_settings import HumidAirSettings
 class HumidAirEntity(BaseModel):
     pressure: float = Field(
         default=HumidAirSettings.pressure_default_value,
-        description=HumidAirSettings.pressure_description,
         ge=HumidAirSettings.pressure_ge,
         le=HumidAirSettings.pressure_le,
     )
     temp_dry_bulb: float = Field(
         ...,
-        description=HumidAirSettings.tdb_description,
         ge=HumidAirSettings.tdb_ge,
         le=HumidAirSettings.tdb_le,
     )
     relative_humidity: float = Field(
         ...,
-        description=HumidAirSettings.rh_description,
         ge=HumidAirSettings.rh_ge,
         le=HumidAirSettings.rh_le,
     )

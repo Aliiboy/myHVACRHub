@@ -14,17 +14,14 @@ class UserRole(str, Enum):
 
 
 class User(BaseModel):
-    id: UUID = Field(default_factory=uuid4, description=UserSettings.id_description)
-    email: EmailStr = Field(..., description=UserSettings.email_description)
+    id: UUID = Field(default_factory=uuid4)
+    email: EmailStr = Field(...)
     password: str = Field(
         ...,
         min_length=UserSettings.password_min_length,
         pattern=UserSettings.password_pattern,
-        description=UserSettings.password_description,
     )
-    role: UserRole = Field(
-        default=UserRole.user, description=UserSettings.role_description
-    )
+    role: UserRole = Field(default=UserRole.user)
     created_at: datetime = Field(
-        default_factory=datetime.utcnow, description=UserSettings.created_at_description
+        default_factory=datetime.utcnow,
     )

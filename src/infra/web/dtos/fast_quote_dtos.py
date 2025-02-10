@@ -4,7 +4,7 @@ from http import HTTPStatus
 from flask import Response, jsonify, make_response
 from pydantic import BaseModel, Field, PositiveFloat
 
-from domain.entities.fast_quote.cold_room_entity import ColdRoom, ColdRoomType
+from domain.entities.fast_quote.cold_room_entity import ColdRoom, ColdRoomCategory
 from domain.settings.cold_room_settings import ColdRoomSettings
 
 
@@ -27,9 +27,9 @@ class ColdRoomRequest(BaseModel):
         ge=ColdRoomSettings.height_ge,
         le=ColdRoomSettings.height_le,
     )
-    type: ColdRoomType = Field(
+    type: ColdRoomCategory = Field(
         description=ColdRoomSettings.type_description,
-        default=ColdRoomType.CF,
+        default=ColdRoomCategory.CF,
     )
 
 
@@ -48,7 +48,7 @@ class ColdRoomResponse(BaseModel):
         ...,
         description=ColdRoomSettings.height_description,
     )
-    type: ColdRoomType = Field(...)
+    type: ColdRoomCategory = Field(...)
 
     volume: PositiveFloat = Field(..., description=ColdRoomSettings.volume_description)
 
@@ -64,13 +64,20 @@ class ColdRoomResponse(BaseModel):
             length=cold_room.length,
             width=cold_room.width,
             height=cold_room.height,
-            type=cold_room.type,
+            type=cold_room.category,
             volume=cold_room.volume,
             cooling_load=cooling_load,
         )
 
     def to_response(self) -> Response:
         return make_response(jsonify(self.model_dump()), HTTPStatus.OK)
+
+
+class AddCoolingLoadFastCoefficientRequest(BaseModel):
+    category: ColdRoomCategory = Field(..., description="Type de chambre froide")
+    vol_min: int = Field(..., description="Volume minimum en m³")
+    vol_max: int = Field(..., description="Volume maximum en m³")
+    coef: int = Field(..., description="Coefficient ratio")
 
 
 # =========== DTO ===========
@@ -97,7 +104,7 @@ class GroupeFroidEnum(str, Enum):
 
 class GroupeFroidRequest(BaseModel):
     puissance_bilan_thermique: float = Field(
-        default=0, description="Puissance bilan thermique en kW"
+        ..., ge=200, description="Puissance bilan thermique en kW"
     )
     modele_GF: GroupeFroidEnum = Field(description="Modele de groupe froid")
 
