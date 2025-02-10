@@ -2,11 +2,15 @@ from dependency_injector import containers, providers
 
 from app.usecases.book.create_book import CreateBookUseCase
 from app.usecases.book.get_all_books import GetAllBooksUseCase
+from app.usecases.fast_quote.get_cold_room_cooling_load_fast import (
+    GetColdRoomCoolingLoadFastUseCase,
+)
 from app.usecases.humid_air.get_full_ha_props import GetFullHAPropertyUseCase
 from app.usecases.user.get_all_users import GetAllUsersUsecase
 from app.usecases.user.login_user import LoginUserUseCase
 from app.usecases.user.register_user import RegisterUserUseCase
 from infra.data.repositories.book_sqlrepo import BookSQLRepository
+from infra.data.repositories.fast_quote_inmemoryrepo import FastQuoteInMemoryRepository
 from infra.data.repositories.user_sqlrepo import UserSQLRepository
 from infra.data.sql_database import SQLDatabase
 from infra.data.sql_unit_of_work import SQLUnitOfWork
@@ -22,6 +26,7 @@ class AppContainer(containers.DeclarativeContainer):
             "infra.web.api.v1.routes.humid_air_routes",
             "infra.web.api.v1.routes.user_routes",
             "infra.web.api.v1.routes.protected_routes",
+            "infra.web.api.v1.routes.fast_quote_routes",
         ]
     )
 
@@ -77,4 +82,13 @@ class AppContainer(containers.DeclarativeContainer):
     )
     get_all_users_usecase = providers.Factory(
         GetAllUsersUsecase, repository=user_repository
+    )
+    # === fast quote module ===
+    # repository
+    fast_quote_repository = providers.Factory(
+        FastQuoteInMemoryRepository,
+    )
+    # usecases
+    get_cold_room_cooling_load_fast_usecase = providers.Factory(
+        GetColdRoomCoolingLoadFastUseCase, repository=fast_quote_repository
     )
