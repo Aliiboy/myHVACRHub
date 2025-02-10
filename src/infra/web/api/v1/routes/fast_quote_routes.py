@@ -44,6 +44,7 @@ router = APIBlueprint(
 @router.post(
     "/add_cooling_load_coefficient",
     description="Ajoute un coefficient de charge frigorifique",
+    security=security,
     responses={
         HTTPStatus.CREATED: SuccessResponse,
         HTTPStatus.UNPROCESSABLE_ENTITY: ClientErrorResponse,
