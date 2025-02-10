@@ -46,10 +46,14 @@ markupsafe==3.0.2
     #   mako
     #   werkzeug
 numpy==2.2.2
-    # via pandas
+    # via
+    #   pandas
+    #   pandas-stubs
 openpyxl==3.1.5
     # via iasimov-flask-api (pyproject.toml)
 pandas==2.2.3
+    # via iasimov-flask-api (pyproject.toml)
+pandas-stubs==2.2.3.241126
     # via iasimov-flask-api (pyproject.toml)
 pydantic==2.10.5
     # via
@@ -83,6 +87,8 @@ sqlmodel==0.0.22
     # via iasimov-flask-api (pyproject.toml)
 tomli==2.2.1
     # via pyfluids
+types-pytz==2025.1.0.20250204
+    # via pandas-stubs
 typing-extensions==4.12.2
     # via
     #   alembic
