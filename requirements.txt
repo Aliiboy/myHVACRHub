@@ -18,8 +18,6 @@ dnspython==2.7.0
     # via email-validator
 email-validator==2.2.0
     # via pydantic
-et-xmlfile==2.0.0
-    # via openpyxl
 flask==3.1.0
     # via
     #   flask-jwt-extended
@@ -45,16 +43,6 @@ markupsafe==3.0.2
     #   jinja2
     #   mako
     #   werkzeug
-numpy==2.2.2
-    # via
-    #   pandas
-    #   pandas-stubs
-openpyxl==3.1.5
-    # via iasimov-flask-api (pyproject.toml)
-pandas==2.2.3
-    # via iasimov-flask-api (pyproject.toml)
-pandas-stubs==2.2.3.241126
-    # via iasimov-flask-api (pyproject.toml)
 pydantic==2.10.5
     # via
     #   iasimov-flask-api (pyproject.toml)
@@ -71,14 +59,8 @@ pyjwt==2.10.1
     # via
     #   iasimov-flask-api (pyproject.toml)
     #   flask-jwt-extended
-python-dateutil==2.9.0.post0
-    # via pandas
 python-dotenv==1.0.1
     # via pydantic-settings
-pytz==2025.1
-    # via pandas
-six==1.17.0
-    # via python-dateutil
 sqlalchemy==2.0.37
     # via
     #   alembic
@@ -87,16 +69,12 @@ sqlmodel==0.0.22
     # via iasimov-flask-api (pyproject.toml)
 tomli==2.2.1
     # via pyfluids
-types-pytz==2025.1.0.20250204
-    # via pandas-stubs
 typing-extensions==4.12.2
     # via
     #   alembic
     #   pydantic
     #   pydantic-core
     #   sqlalchemy
-tzdata==2025.1
-    # via pandas
 werkzeug==3.1.3
     # via
     #   flask
