@@ -117,10 +117,7 @@ def get_all_users(
     query: GetAllBooksQueryParams,
     use_case: GetAllUsersUsecase = Provide[AppContainer.get_all_users_usecase],
 ) -> Response:
-    # TODO : try except
     users = use_case.execute(limit=query.limit)
-
     users_to = [UserResponse.model_validate(user.model_dump()) for user in users]
-
     response = GetAllUsersResponse(users=users_to)
     return response.to_response()

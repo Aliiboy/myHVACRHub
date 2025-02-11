@@ -73,11 +73,29 @@ class ColdRoomResponse(BaseModel):
         return make_response(jsonify(self.model_dump()), HTTPStatus.OK)
 
 
-class AddCoolingLoadFastCoefficientRequest(BaseModel):
+class CoolingLoadFastCoefficientRequest(BaseModel):
     category: ColdRoomCategory = Field(..., description="Type de chambre froide")
     vol_min: int = Field(..., description="Volume minimum en m³")
     vol_max: int = Field(..., description="Volume maximum en m³")
     coef: int = Field(..., description="Coefficient ratio")
+
+
+class GetAllCoolingLoadFastCoefficientQueryParams(BaseModel):
+    limit: int = Field(default=50, gt=0)
+
+
+class CoolingLoadFastCoefficientResponse(BaseModel):
+    category: ColdRoomCategory = Field(..., description="Type de chambre froide")
+    vol_min: int = Field(..., description="Volume minimum en m³")
+    vol_max: int = Field(..., description="Volume maximum en m³")
+    coef: int = Field(..., description="Coefficient ratio")
+
+
+class GetAllCoolingLoadFastResponse(BaseModel):
+    coefficients: list[CoolingLoadFastCoefficientResponse]
+
+    def to_response(self) -> Response:
+        return make_response(jsonify(self.model_dump()), HTTPStatus.OK)
 
 
 # =========== DTO ===========

@@ -1,5 +1,5 @@
 from sqlalchemy.exc import IntegrityError
-from sqlmodel import select
+from sqlmodel import asc, select
 
 from app.repositories.fast_quote_interface import (
     ColdRoomCoolingCoefficientRepositoryInterface,
@@ -20,6 +20,7 @@ class ColdRoomCoolingCoefficientSQLRepository(
     def __init__(self, unit_of_work: SQLUnitOfWork):
         self.unit_of_work = unit_of_work
 
+    # write
     def add_coefficient(
         self, coefficient: CoolingLoadFastCoefficient
     ) -> CoolingLoadFastCoefficient:
@@ -40,6 +41,7 @@ class ColdRoomCoolingCoefficientSQLRepository(
                 f"Le coefficient pour {coefficient.category} [{coefficient.vol_min} - {coefficient.vol_max} m³] existe déjà."
             )
 
+    # read
     def get_coef_by_category_and_volume(self, cold_room: ColdRoom) -> int | None:
         with self.unit_of_work as uow:
             query = (
@@ -52,3 +54,16 @@ class ColdRoomCoolingCoefficientSQLRepository(
             )
             coefficient = uow.session.exec(query).first()
             return coefficient.coef if coefficient else None
+
+    def get_all_coefficients(self, limit: int) -> list[CoolingLoadFastCoefficient]:
+        with self.unit_of_work as uow:
+            query = (
+                select(CoolingLoadFastCoefficientSQLModel)
+                .order_by(
+                    asc(CoolingLoadFastCoefficientSQLModel.category),
+                    asc(CoolingLoadFastCoefficientSQLModel.vol_min),
+                )
+                .limit(limit)
+            )
+            coefficients = uow.session.exec(query).all()
+            return [coefficient.to_entity() for coefficient in coefficients]

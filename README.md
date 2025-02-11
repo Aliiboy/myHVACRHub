@@ -20,8 +20,6 @@ Ce projet utilise les bibliothèques suivantes :
 
 ## ✅ Fonctionnalités à venir
 - Systeme de cache dans pour la db
-- Supprimer description dans les entités
-- laisser les descriptions dans les dtos
 - Reparer le linter
 ---
 🎉 **Merci d'utiliser IAsimov Flask API !** 🚀

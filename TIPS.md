@@ -13,7 +13,8 @@ chmod +x script.sh
 git status     # verifie l'etat des fichiers (modifié, staged, untracked)
 git pull       # recupere et fusionne les modifications depuis le repoIncorporates change
 git clean -f   #  
-git restore .   # Restore specified paths in the working tree 
+git restore .   # Restore specified paths in the working tree
+git log -p --pretty=format:"Commit: %h - %s (%an, %ar)" --since="2025-02-10 00:00:00" --until="2025-02-11 00:00:00" > commits_files.txt
 ```
 ## pip
 > Python standard package manager.

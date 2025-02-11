@@ -8,6 +8,9 @@ from app.usecases.fast_quote.add_cooling_load_fast_coefficient import (
 from app.usecases.fast_quote.calc_cold_room_cooling_load_fast import (
     CalculateColdRoomCoolingLoadFastUseCase,
 )
+from app.usecases.fast_quote.get_all_cooling_load_fast_coefficient import (
+    GetAllCoolingLoadFastCoefficienUseCase,
+)
 from app.usecases.humid_air.get_full_ha_props import GetFullHAPropertyUseCase
 from app.usecases.user.get_all_users import GetAllUsersUsecase
 from app.usecases.user.login_user import LoginUserUseCase
@@ -96,6 +99,10 @@ class AppContainer(containers.DeclarativeContainer):
     # usecases
     add_cooling_load_fast_coefficient_usecase = providers.Factory(
         AddCoolingLoadFastCoefficientUseCase,
+        repository=cold_room_cooling_coef_repository,
+    )
+    get_all_cooling_load_fast_coefficients_usecase = providers.Factory(
+        GetAllCoolingLoadFastCoefficienUseCase,
         repository=cold_room_cooling_coef_repository,
     )
     calculate_cold_room_cooling_load_fast_usecase = providers.Factory(

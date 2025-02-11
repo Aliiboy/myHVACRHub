@@ -14,13 +14,19 @@ from app.usecases.fast_quote.add_cooling_load_fast_coefficient import (
 from app.usecases.fast_quote.calc_cold_room_cooling_load_fast import (
     CalculateColdRoomCoolingLoadFastUseCase,
 )
+from app.usecases.fast_quote.get_all_cooling_load_fast_coefficient import (
+    GetAllCoolingLoadFastCoefficienUseCase,
+)
 from infra.web.api.v1.routes.fast_quote_controllers import *
 from infra.web.container import AppContainer
 from infra.web.decorators.role_required import role_required
 from infra.web.dtos.fast_quote_dtos import (
-    AddCoolingLoadFastCoefficientRequest,
     ColdRoomRequest,
     ColdRoomResponse,
+    CoolingLoadFastCoefficientRequest,
+    CoolingLoadFastCoefficientResponse,
+    GetAllCoolingLoadFastCoefficientQueryParams,
+    GetAllCoolingLoadFastResponse,
     GroupeFroidRequest,
     LocalFrigoRequest,
     PrixTotal,
@@ -54,7 +60,7 @@ router = APIBlueprint(
 @cast("Callable[..., Response]", role_required("moderator", "admin"))
 @inject
 def add_cooling_load_coefficient(
-    body: AddCoolingLoadFastCoefficientRequest,
+    body: CoolingLoadFastCoefficientRequest,
     use_case: AddCoolingLoadFastCoefficientUseCase = Provide[
         AppContainer.add_cooling_load_fast_coefficient_usecase
     ],
@@ -74,6 +80,33 @@ def add_cooling_load_coefficient(
         return ClientErrorResponse(
             code=HTTPStatus.UNPROCESSABLE_ENTITY, message=str(e)
         ).to_response()
+
+
+@router.get(
+    "/get_all_cooling_load_fast_coefficients",
+    security=security,
+    responses={
+        HTTPStatus.OK: GetAllCoolingLoadFastResponse,
+        HTTPStatus.FORBIDDEN: ClientErrorResponse,
+    },
+)
+@cast("Callable[..., Response]", jwt_required())
+@cast("Callable[..., Response]", role_required("moderator", "admin"))
+@inject
+def get_all_cooling_load_fast_coefficients(
+    query: GetAllCoolingLoadFastCoefficientQueryParams,
+    use_case: GetAllCoolingLoadFastCoefficienUseCase = Provide[
+        AppContainer.get_all_cooling_load_fast_coefficients_usecase
+    ],
+) -> Response:
+    coefficients = use_case.execute(limit=query.limit)
+    response = GetAllCoolingLoadFastResponse(
+        coefficients=[
+            CoolingLoadFastCoefficientResponse.model_validate(coef.model_dump())
+            for coef in coefficients
+        ]
+    )
+    return response.to_response()
 
 
 @router.get(
@@ -98,7 +131,6 @@ def calculate_cold_room_cooling_load_fast(
         cold_room, cold_room_power = use_case.execute(
             query.length, query.width, query.height, query.type
         )
-
         return ColdRoomResponse.from_use_case_result(
             cold_room, cold_room_power
         ).to_response()
