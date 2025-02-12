@@ -1,7 +1,5 @@
 from dependency_injector import containers, providers
 
-from app.usecases.book.create_book import CreateBookUseCase
-from app.usecases.book.get_all_books import GetAllBooksUseCase
 from app.usecases.fast_quote.add_cooling_load_fast_coefficient import (
     AddCoolingLoadFastCoefficientUseCase,
 )
@@ -18,7 +16,6 @@ from app.usecases.humid_air.get_full_ha_props import GetFullHAPropertyUseCase
 from app.usecases.user.get_all_users import GetAllUsersUsecase
 from app.usecases.user.login_user import LoginUserUseCase
 from app.usecases.user.register_user import RegisterUserUseCase
-from infra.data.repositories.book_sqlrepo import BookSQLRepository
 from infra.data.repositories.fast_quote_sqlrepo import (
     ColdRoomCoolingCoefficientSQLRepository,
 )
@@ -65,18 +62,6 @@ class AppContainer(containers.DeclarativeContainer):
     # }
     # TODO : Et modifier les routes, exemple :
     # use_case: CreateBookUseCase = Provide[AppContainer.book_usecases["create"]],
-
-    # === book module ===
-    # repositories
-    book_repository = providers.Factory(BookSQLRepository, unit_of_work=unit_of_work)
-
-    # usecases
-    create_book_usecase = providers.Factory(
-        CreateBookUseCase, repository=book_repository
-    )
-    get_all_books_usecase = providers.Factory(
-        GetAllBooksUseCase, repository=book_repository
-    )
 
     # === humid air module ===
     # repositories
