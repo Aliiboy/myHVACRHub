@@ -18,9 +18,9 @@ from domain.exceptions.user_exceptions import (
 )
 from infra.web.container import AppContainer
 from infra.web.decorators.role_required import role_required
-from infra.web.dtos.book_dtos import GetAllBooksQueryParams
 from infra.web.dtos.generic import ClientErrorResponse, SuccessResponse
 from infra.web.dtos.user_dtos import (
+    GetAllUsersQueryParams,
     GetAllUsersResponse,
     LoginRequest,
     LoginResponse,
@@ -114,7 +114,7 @@ def login(
 @cast("Callable[..., Response]", role_required("admin"))
 @inject
 def get_all_users(
-    query: GetAllBooksQueryParams,
+    query: GetAllUsersQueryParams,
     use_case: GetAllUsersUsecase = Provide[AppContainer.get_all_users_usecase],
 ) -> Response:
     users = use_case.execute(limit=query.limit)

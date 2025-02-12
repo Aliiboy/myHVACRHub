@@ -30,7 +30,6 @@ from infra.web.settings import AppSettings
 class AppContainer(containers.DeclarativeContainer):
     wiring_config = containers.WiringConfiguration(
         modules=[
-            "infra.web.api.v1.routes.book_routes",
             "infra.web.api.v1.routes.humid_air_routes",
             "infra.web.api.v1.routes.user_routes",
             "infra.web.api.v1.routes.protected_routes",
