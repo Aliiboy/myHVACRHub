@@ -18,8 +18,11 @@ Ce projet utilise les bibliothèques suivantes :
 - [`pyfluids`](https://github.com/portyanikhin/PyFluids)
 - [`coolprop`](http\://coolprop.org/)
 
-## ✅ Fonctionnalités à venir
+## ✅ TODO
 - Systeme de cache dans pour la db
 - Reparer le linter
+- Mettre les requests (ou les renommer en CommandType) dans le dossier domain (request des usescases) voir `UpdateCoolingLoadFastCoefficientUseCase`. Et garder les Responses et les QueryParams dans le dossier api.
+- Reprendre le testing
 ---
+
 🎉 **Merci d'utiliser IAsimov Flask API !** 🚀

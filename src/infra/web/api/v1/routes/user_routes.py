@@ -119,5 +119,4 @@ def get_all_users(
 ) -> Response:
     users = use_case.execute(limit=query.limit)
     users_to = [UserResponse.model_validate(user.model_dump()) for user in users]
-    response = GetAllUsersResponse(users=users_to)
-    return response.to_response()
+    return GetAllUsersResponse(users=users_to).to_response()

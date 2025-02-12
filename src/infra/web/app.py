@@ -19,6 +19,7 @@ class WebApp:
         # security
         jwt = {"type": "http", "scheme": "bearer", "bearerFormat": "JWT"}
         security_schemes = {"jwt": jwt}
+
         # app
         servers = [Server(url=self.settings.SERVER_URL)]
         info = Info(title=self.settings.APP_NAME, version=self.settings.APP_VERSION)

@@ -3,7 +3,6 @@ from uuid import UUID
 from sqlmodel import Field, SQLModel
 
 from domain.entities.book.book_entity import Book
-from domain.settings.book_settings import BookEntitieSettings
 
 
 class BookSQLModel(SQLModel, table=True):

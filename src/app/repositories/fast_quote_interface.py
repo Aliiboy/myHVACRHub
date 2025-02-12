@@ -1,17 +1,25 @@
 from abc import ABC, abstractmethod
+from uuid import UUID
 
 from domain.entities.fast_quote.cold_room_entity import ColdRoom
 from domain.entities.fast_quote.cooling_load_fast_coef_entity import (
     CoolingLoadFastCoefficient,
 )
+from infra.web.dtos.fast_quote_dtos import CoolingLoadFastCoefficientBody
 
 
 class ColdRoomCoolingCoefficientRepositoryInterface(ABC):
     # write
     @abstractmethod
     def add_coefficient(
-        self, coefficien: CoolingLoadFastCoefficient
+        self, coefficient: CoolingLoadFastCoefficient
     ) -> CoolingLoadFastCoefficient:
+        pass
+
+    @abstractmethod
+    def update_coefficient(
+        self, id: UUID, data: CoolingLoadFastCoefficientBody
+    ) -> CoolingLoadFastCoefficient | None:
         pass
 
     # read

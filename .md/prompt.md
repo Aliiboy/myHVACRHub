@@ -1,22 +1,28 @@
 ## 📌 Ajoutes ou complete ces elements dans le projet
 
-### **Usecases: `GetAllCoolingLoadFastCoefficienUseCase`**
+### **Usecases: `UpdateCoolingLoadFastCoefficientUseCase`**
 #### Objectif : 
-- Ce usecase permettra d'afficher l'ensemble des coefficients.
+- Ce usecase permettra de modifier un coefficient.
+- Ce usecase n'aura pas la responsabilité de chercher le coefficient à modifier.
 - Ce usecase aura un methode `execute()`
 #### Spéficication :
-- La methode aura un parametre `limit: int` pour limiter le nombre de coefficients à afficher et renverra une liste de l'entité `CoolingLoadFastCoefficient`.
+- La methode aura deux paramètres : 
+  - un `id`pour recuperer le coefficient avec son identifiant unique.
+  - un paramètre `data`.
+- La methode renverra une entité `CoolingLoadFastCoefficient`.
+- Si la methode ne trouve pas de coefficient, `execute()`levera une erreur `CoolingLoadFastCoefficientNotFoundException()`
 
 ---
 
 ### **Repository : `ColdRoomCoolingCoefficientSQLRepository`**
 #### Objectif :
-- Dans ce repository, créer un methode `get_all_coefficients()`.
-#### Spécification :
-- La methode prendra `limit: int` en paramètre.
+- Dans ce repository, créer un methode `update_coefficient()`.
+#### Spécification : 
+- La methode prendra deux paramètres :
+  - un `id`pour recuperer le coefficient avec son identifiant unique.
+  - un paramètre `data`.
 - La methode utilisera `CoolingLoadFastCoefficientSQLModel` pour la requete.
-- La methode renverra une liste de `CoolingLoadFastCoefficient`. Pour renvoyer une liste de `CoolingLoadFastCoefficient`, il faudra utiliser la methode `to_entity()` de `CoolingLoadFastCoefficientSQLModel`.
-- Il faudra ranger la liste par ordre de `category`et par ordre de `vol_min`.
+- La methode renverra une entité de `CoolingLoadFastCoefficient` ou `None`. Pour renvoyer `CoolingLoadFastCoefficient`, il faudra utiliser la methode `to_entity()` de `CoolingLoadFastCoefficientSQLModel`.
 
 ---
 
@@ -27,9 +33,10 @@
 
 ### **Routes**
 #### Objectif :
-- Ajoute la route `get_all_cooling_load_fast_coefficients`.
+- Ajoute la route `update_cooling_load_fast_coefficient`.
+- Utilise des dtos de requete et de reponse qui herite de `BaseModel` et utilise `Field()` de pydantic.
 #### Spécifications :
-- Ajoute les décorateurs `jwt_required()`et `role_required("moderator")`
-- Ajoute `security=security` et `responses`dans `@router.get()`
-- `responses` prendra `HTTPStatus.FORBIDDEN` et `HTTPStatus.OK` avec les dtos `ClientErrorResponse` et `GetAllCoolingLoadFastResponse`.
+- Ajoute les décorateurs `@cast("Callable[..., Response]", jwt_required())` et `@cast("Callable[..., Response]", role_required("moderator", "admin"))`.
+- Ajoute `security=security` et `responses`dans `@router.get()`.
+- `responses` prendra `HTTPStatus.NOT_FOUND` et `HTTPStatus.OK` avec les dtos `ClientErrorResponse` et `GetCoolingLoadFastCoefficientResponse`.
 - Fait un `try-except`

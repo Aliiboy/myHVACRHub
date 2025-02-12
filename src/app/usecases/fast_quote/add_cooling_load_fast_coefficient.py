@@ -11,6 +11,7 @@ class AddCoolingLoadFastCoefficientUseCase:
     def __init__(self, repository: ColdRoomCoolingCoefficientRepositoryInterface):
         self.repository = repository
 
+    # TODO : change request
     def execute(
         self, category: ColdRoomCategory, vol_min: int, vol_max: int, coef: int
     ) -> CoolingLoadFastCoefficient:

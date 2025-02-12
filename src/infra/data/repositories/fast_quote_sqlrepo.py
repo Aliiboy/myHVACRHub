@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from sqlalchemy.exc import IntegrityError
 from sqlmodel import asc, select
 
@@ -12,6 +14,7 @@ from infra.data.models.cooling_load_fast_coef_sqlmodel import (
     CoolingLoadFastCoefficientSQLModel,
 )
 from infra.data.sql_unit_of_work import SQLUnitOfWork
+from infra.web.dtos.fast_quote_dtos import CoolingLoadFastCoefficientBody
 
 
 class ColdRoomCoolingCoefficientSQLRepository(
@@ -37,9 +40,20 @@ class ColdRoomCoolingCoefficientSQLRepository(
                 uow.session.flush()
                 return query.to_entity()
         except IntegrityError:
-            raise ValueError(
-                f"Le coefficient pour {coefficient.category} [{coefficient.vol_min} - {coefficient.vol_max} m³] existe déjà."
-            )
+            # TODO : à personnaliser ou supprimer..
+            raise ValueError("L'ajout de ce coefficient genere une erreur.")
+
+    def update_coefficient(
+        self, id: UUID, data: CoolingLoadFastCoefficientBody
+    ) -> CoolingLoadFastCoefficient | None:
+        with self.unit_of_work as uow:
+            coefficient = uow.session.get(CoolingLoadFastCoefficientSQLModel, id)
+            if not coefficient:
+                return None
+            for key, value in data.model_dump().items():
+                setattr(coefficient, key, value)
+            uow.session.commit()
+            return coefficient.to_entity()
 
     # read
     def get_coef_by_category_and_volume(self, cold_room: ColdRoom) -> int | None:

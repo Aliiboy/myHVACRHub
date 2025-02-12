@@ -11,6 +11,8 @@ class CalculateColdRoomCoolingLoadFastUseCase:
     ):
         self.repository = repository
 
+    # TODO : change request
+    # TODO : Pas forcé de renvoyer l'entité, le resultat de cooling_load suffirait.
     def execute(
         self, length: float, wigth: float, height: float, type: ColdRoomCategory
     ) -> tuple[ColdRoom, float]:

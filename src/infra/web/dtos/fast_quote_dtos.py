@@ -1,5 +1,6 @@
 from enum import Enum
 from http import HTTPStatus
+from uuid import UUID
 
 from flask import Response, jsonify, make_response
 from pydantic import BaseModel, Field, PositiveFloat
@@ -73,18 +74,23 @@ class ColdRoomResponse(BaseModel):
         return make_response(jsonify(self.model_dump()), HTTPStatus.OK)
 
 
-class CoolingLoadFastCoefficientRequest(BaseModel):
+class CoolingLoadFastCoefficientBody(BaseModel):
     category: ColdRoomCategory = Field(..., description="Type de chambre froide")
     vol_min: int = Field(..., description="Volume minimum en m³")
     vol_max: int = Field(..., description="Volume maximum en m³")
     coef: int = Field(..., description="Coefficient ratio")
 
 
+class CoolingLoadFastCoefficientPath(BaseModel):
+    id: UUID = Field(..., description="identificant unique")
+
+
 class GetAllCoolingLoadFastCoefficientQueryParams(BaseModel):
     limit: int = Field(default=50, gt=0)
 
 
-class CoolingLoadFastCoefficientResponse(BaseModel):
+class GetCoolingLoadFastCoefficientResponse(BaseModel):
+    id: UUID = Field(..., description="identifiant unique")
     category: ColdRoomCategory = Field(..., description="Type de chambre froide")
     vol_min: int = Field(..., description="Volume minimum en m³")
     vol_max: int = Field(..., description="Volume maximum en m³")
@@ -92,7 +98,7 @@ class CoolingLoadFastCoefficientResponse(BaseModel):
 
 
 class GetAllCoolingLoadFastResponse(BaseModel):
-    coefficients: list[CoolingLoadFastCoefficientResponse]
+    coefficients: list[GetCoolingLoadFastCoefficientResponse]
 
     def to_response(self) -> Response:
         return make_response(jsonify(self.model_dump()), HTTPStatus.OK)

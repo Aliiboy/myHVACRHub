@@ -18,6 +18,7 @@ class UserSQLRepository(UserRepositoryInterface):
         self.unit_of_work = unit_of_work
         self.password_hasher = password_hasher
 
+    # write
     def add_user(self, user: User) -> User:
         try:
             hashed_password = self.password_hasher.hash(user.password)
@@ -35,16 +36,16 @@ class UserSQLRepository(UserRepositoryInterface):
         except IntegrityError:
             raise UserAlreadyExistsException(query.email)
 
+    # read
     def get_user_by_email(self, email: str) -> User | None:
         with self.unit_of_work as uow:
             query = select(UserSQLModel).where(UserSQLModel.email == email)
-
             user = uow.session.exec(query).first()
             return user.to_entity() if user else None
 
     def get_all_users(self, limit: int) -> list[User]:
+        # TODO : Order by
         with self.unit_of_work as uow:
             query = select(UserSQLModel).limit(limit)
-
             users = uow.session.exec(query).all()
             return [user.to_entity() for user in users]

@@ -11,6 +11,9 @@ from app.usecases.fast_quote.calc_cold_room_cooling_load_fast import (
 from app.usecases.fast_quote.get_all_cooling_load_fast_coefficient import (
     GetAllCoolingLoadFastCoefficienUseCase,
 )
+from app.usecases.fast_quote.update_cooling_load_fast_coefficient import (
+    UpdateCoolingLoadFastCoefficientUseCase,
+)
 from app.usecases.humid_air.get_full_ha_props import GetFullHAPropertyUseCase
 from app.usecases.user.get_all_users import GetAllUsersUsecase
 from app.usecases.user.login_user import LoginUserUseCase
@@ -54,6 +57,14 @@ class AppContainer(containers.DeclarativeContainer):
         algorithm=app_settings.provided.JWT_ALGORITHM,
         expires_delta=app_settings.provided.JWT_ACCESS_TOKEN_EXPIRES,
     )
+
+    # TODO : Créer des dictionnaires, exemple :
+    #     book_usecases = {
+    #     "create": providers.Factory(CreateBookUseCase, repository=book_repository),
+    #     "get_all": providers.Factory(GetAllBooksUseCase, repository=book_repository),
+    # }
+    # TODO : Et modifier les routes, exemple :
+    # use_case: CreateBookUseCase = Provide[AppContainer.book_usecases["create"]],
 
     # === book module ===
     # repositories
@@ -99,6 +110,10 @@ class AppContainer(containers.DeclarativeContainer):
     # usecases
     add_cooling_load_fast_coefficient_usecase = providers.Factory(
         AddCoolingLoadFastCoefficientUseCase,
+        repository=cold_room_cooling_coef_repository,
+    )
+    update_cooling_load_fast_coefficient_usecase = providers.Factory(
+        UpdateCoolingLoadFastCoefficientUseCase,
         repository=cold_room_cooling_coef_repository,
     )
     get_all_cooling_load_fast_coefficients_usecase = providers.Factory(

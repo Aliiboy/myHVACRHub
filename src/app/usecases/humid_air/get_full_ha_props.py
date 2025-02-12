@@ -2,6 +2,7 @@ from domain.entities.humid_air.humid_air_entity import HumidAirEntity
 
 
 class GetFullHAPropertyUseCase:
+    # TODO : change request
     def execute(
         self, pressure: float, temp_dry_bulb: float, relative_humidity: float
     ) -> HumidAirEntity:

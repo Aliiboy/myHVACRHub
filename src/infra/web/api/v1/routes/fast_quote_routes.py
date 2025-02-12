@@ -17,16 +17,23 @@ from app.usecases.fast_quote.calc_cold_room_cooling_load_fast import (
 from app.usecases.fast_quote.get_all_cooling_load_fast_coefficient import (
     GetAllCoolingLoadFastCoefficienUseCase,
 )
+from app.usecases.fast_quote.update_cooling_load_fast_coefficient import (
+    UpdateCoolingLoadFastCoefficientUseCase,
+)
+from domain.exceptions.fast_quote_exceptions import (
+    CoolingLoadFastCoefficientNotFoundException,
+)
 from infra.web.api.v1.routes.fast_quote_controllers import *
 from infra.web.container import AppContainer
 from infra.web.decorators.role_required import role_required
 from infra.web.dtos.fast_quote_dtos import (
     ColdRoomRequest,
     ColdRoomResponse,
-    CoolingLoadFastCoefficientRequest,
-    CoolingLoadFastCoefficientResponse,
+    CoolingLoadFastCoefficientBody,
+    CoolingLoadFastCoefficientPath,
     GetAllCoolingLoadFastCoefficientQueryParams,
     GetAllCoolingLoadFastResponse,
+    GetCoolingLoadFastCoefficientResponse,
     GroupeFroidRequest,
     LocalFrigoRequest,
     PrixTotal,
@@ -60,7 +67,7 @@ router = APIBlueprint(
 @cast("Callable[..., Response]", role_required("moderator", "admin"))
 @inject
 def add_cooling_load_coefficient(
-    body: CoolingLoadFastCoefficientRequest,
+    body: CoolingLoadFastCoefficientBody,
     use_case: AddCoolingLoadFastCoefficientUseCase = Provide[
         AppContainer.add_cooling_load_fast_coefficient_usecase
     ],
@@ -76,6 +83,44 @@ def add_cooling_load_coefficient(
             code=HTTPStatus.CREATED,
             message="Coefficient ajouté avec succès",
         ).to_response()
+    # TODO : a personaliser
+    except ValueError as e:
+        return ClientErrorResponse(
+            code=HTTPStatus.UNPROCESSABLE_ENTITY, message=str(e)
+        ).to_response()
+
+
+@router.put(
+    "/update_cooling_load_fast_coefficient/<uuid:id>",
+    security=security,
+    responses={
+        HTTPStatus.CREATED: GetCoolingLoadFastCoefficientResponse,
+        HTTPStatus.NOT_FOUND: ClientErrorResponse,
+        HTTPStatus.UNPROCESSABLE_ENTITY: ClientErrorResponse,
+    },
+)
+@cast("Callable[..., Response]", jwt_required())
+@cast("Callable[..., Response]", role_required("moderator", "admin"))
+@inject
+def update_cooling_load_fast_coefficient(
+    path: CoolingLoadFastCoefficientPath,
+    body: CoolingLoadFastCoefficientBody,
+    use_case: UpdateCoolingLoadFastCoefficientUseCase = Provide[
+        AppContainer.update_cooling_load_fast_coefficient_usecase
+    ],
+) -> Response:
+    try:
+        use_case.execute(path.id, body)
+        return SuccessResponse(
+            code=HTTPStatus.CREATED,
+            message="Coefficient ajouté avec succès",
+        ).to_response()
+
+    except CoolingLoadFastCoefficientNotFoundException as e:
+        return ClientErrorResponse(
+            code=HTTPStatus.NOT_FOUND, message=str(e)
+        ).to_response()
+    # TODO : personnaliser
     except ValueError as e:
         return ClientErrorResponse(
             code=HTTPStatus.UNPROCESSABLE_ENTITY, message=str(e)
@@ -99,14 +144,14 @@ def get_all_cooling_load_fast_coefficients(
         AppContainer.get_all_cooling_load_fast_coefficients_usecase
     ],
 ) -> Response:
+    # TODO : try except ?
     coefficients = use_case.execute(limit=query.limit)
-    response = GetAllCoolingLoadFastResponse(
+    return GetAllCoolingLoadFastResponse(
         coefficients=[
-            CoolingLoadFastCoefficientResponse.model_validate(coef.model_dump())
+            GetCoolingLoadFastCoefficientResponse.model_validate(coef.model_dump())
             for coef in coefficients
         ]
-    )
-    return response.to_response()
+    ).to_response()
 
 
 @router.get(

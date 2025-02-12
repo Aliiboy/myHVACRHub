@@ -12,6 +12,7 @@ class RegisterUserUseCase:
     ):
         self.repository = repository
 
+    # TODO : change request
     def execute(self, email: str, password: str) -> User:
         try:
             new_user = User(email=email, password=password)

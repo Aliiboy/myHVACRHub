@@ -10,5 +10,6 @@ class GetAllCoolingLoadFastCoefficienUseCase:
     def __init__(self, repository: ColdRoomCoolingCoefficientRepositoryInterface):
         self.repository = repository
 
+    # TODO : change request
     def execute(self, limit: int) -> list[CoolingLoadFastCoefficient]:
         return self.repository.get_all_coefficients(limit)
