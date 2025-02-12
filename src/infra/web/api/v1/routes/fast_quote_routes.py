@@ -113,7 +113,7 @@ def update_cooling_load_fast_coefficient(
         use_case.execute(path.id, body)
         return SuccessResponse(
             code=HTTPStatus.CREATED,
-            message="Coefficient ajouté avec succès",
+            message="Coefficient modifié avec succès",
         ).to_response()
 
     except CoolingLoadFastCoefficientNotFoundException as e:
