@@ -15,7 +15,7 @@ from app.usecases.fast_quote.update_cooling_load_fast_coefficient import (
 from app.usecases.humid_air.get_full_ha_props import GetFullHAPropertyUseCase
 from app.usecases.user.get_all_users import GetAllUsersUsecase
 from app.usecases.user.login_user import LoginUserUseCase
-from app.usecases.user.register_user import RegisterUserUseCase
+from app.usecases.user.register_user import UserSignUpUseCase
 from infra.data.repositories.fast_quote_sqlrepo import (
     ColdRoomCoolingCoefficientSQLRepository,
 )
@@ -74,7 +74,7 @@ class AppContainer(containers.DeclarativeContainer):
     )
     # usecases
     register_user_usecase = providers.Factory(
-        RegisterUserUseCase,
+        UserSignUpUseCase,
         repository=user_repository,
     )
     login_user_usecase = providers.Factory(

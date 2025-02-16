@@ -3,30 +3,34 @@ from typing import cast
 from unittest.mock import MagicMock
 
 from app.repositories.user_interface import UserRepositoryInterface
-from app.usecases.user.register_user import RegisterUserUseCase
-from domain.entities.user.user_entity import User
-from infra.services.bcrypt_password_hasher import BcryptPasswordHasher
+from app.schemas.user_schema import UserSignUpSchema
+from app.usecases.user.register_user import UserSignUpUseCase
+from domain.exceptions.user_exceptions import UserValidationException
 
 
-class RegisterUserUseCaseTests(unittest.TestCase):
+class UserSignUpUseCaseTests(unittest.TestCase):
     def setUp(self) -> None:
         self.mock_user_repository: UserRepositoryInterface = MagicMock(
             spec=UserRepositoryInterface
         )
-        self.mock_password_hasher = BcryptPasswordHasher()
-        self.use_case = RegisterUserUseCase(
+        self.use_case = UserSignUpUseCase(
             repository=self.mock_user_repository,
         )
 
-    def test_create_user_success(self) -> None:
-        email: str = "test@example.com"
-        password: str = "Password_1234!"
-        cast(MagicMock, self.mock_user_repository.get_user_by_email).return_value = None
-
-        new_user: User = self.use_case.execute(email=email, password=password)
-
-        self.assertIsInstance(new_user, User)
-        self.assertEqual(new_user.email, email)
-        cast(MagicMock, self.mock_user_repository.add_user).assert_called_once_with(
-            new_user
+    def test_signup_user_success(self) -> None:
+        user_sign_up_schema = UserSignUpSchema(
+            email="test@example.com", password="Password_1234!"
         )
+
+        self.use_case.execute(user_sign_up_schema)
+        cast(MagicMock, self.mock_user_repository.add_user).assert_called_once()
+
+    def test_signup_user_with_invalid_data_raises_exception(self) -> None:
+        invalid_user_schema = UserSignUpSchema(email="invalid-email", password="123")
+
+        with self.assertRaises(UserValidationException) as context:
+            self.use_case.execute(invalid_user_schema)
+
+        self.assertIsInstance(context.exception, UserValidationException)
+        self.assertTrue(len(context.exception.errors) > 0)
+        self.assertEqual(context.exception.errors[0]["field"], "email")

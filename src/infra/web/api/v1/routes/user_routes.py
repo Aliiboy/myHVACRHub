@@ -5,16 +5,17 @@ from typing import cast
 from dependency_injector.wiring import Provide, inject
 from flask import Response
 from flask_jwt_extended import jwt_required
-from flask_openapi3 import APIBlueprint, Tag  # type: ignore[attr-defined]
+from flask_openapi3 import APIBlueprint, Tag
 
+from app.schemas.user_schema import UserSignUpSchema
 from app.usecases.user.get_all_users import GetAllUsersUsecase
 from app.usecases.user.login_user import LoginUserUseCase
-from app.usecases.user.register_user import RegisterUserUseCase
+from app.usecases.user.register_user import UserSignUpUseCase
 from domain.exceptions.user_exceptions import (
-    UserAlreadyExistsException,
+    UserDBException,
     UserInvalidPasswordException,
-    UserInvalidPasswordPatternException,
     UserNotFoundException,
+    UserValidationException,
 )
 from infra.web.container import AppContainer
 from infra.web.decorators.role_required import role_required
@@ -24,7 +25,6 @@ from infra.web.dtos.user_dtos import (
     GetAllUsersResponse,
     LoginRequest,
     LoginResponse,
-    RegisterRequest,
     UserResponse,
 )
 
@@ -52,21 +52,21 @@ router = APIBlueprint(
 )
 @inject
 def register(
-    body: RegisterRequest,
-    use_case: RegisterUserUseCase = Provide[AppContainer.register_user_usecase],
+    body: UserSignUpSchema,
+    use_case: UserSignUpUseCase = Provide[AppContainer.register_user_usecase],
 ) -> Response:
     try:
-        use_case.execute(email=body.email, password=body.password)
+        use_case.execute(body)
         return SuccessResponse(
             code=HTTPStatus.CREATED, message="Utilisateur créé avec succès"
         ).to_response()
 
-    except UserAlreadyExistsException as e:
+    except UserValidationException as e:
         return ClientErrorResponse(
-            code=HTTPStatus.CONFLICT, message=str(e)
+            code=HTTPStatus.UNPROCESSABLE_ENTITY, message=e.errors
         ).to_response()
 
-    except UserInvalidPasswordPatternException as e:
+    except UserDBException as e:
         return ClientErrorResponse(
             code=HTTPStatus.UNPROCESSABLE_ENTITY, message=str(e)
         ).to_response()

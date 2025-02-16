@@ -1,22 +1,21 @@
 from pydantic import ValidationError
 
 from app.repositories.user_interface import UserRepositoryInterface
+from app.schemas.user_schema import UserSignUpSchema
 from domain.entities.user.user_entity import User
-from domain.exceptions.user_exceptions import UserInvalidPasswordPatternException
+from domain.exceptions.user_exceptions import UserValidationException
 
 
-class RegisterUserUseCase:
+class UserSignUpUseCase:
     def __init__(
         self,
         repository: UserRepositoryInterface,
     ):
         self.repository = repository
 
-    # TODO : change request
-    def execute(self, email: str, password: str) -> User:
+    def execute(self, schema: UserSignUpSchema) -> User:
         try:
-            new_user = User(email=email, password=password)
-            self.repository.add_user(new_user)
-        except ValidationError:
-            raise UserInvalidPasswordPatternException()
-        return new_user
+            user_to_add = User(email=schema.email, password=schema.password)
+            return self.repository.add_user(user_to_add)
+        except ValidationError as e:
+            raise UserValidationException(e.errors())

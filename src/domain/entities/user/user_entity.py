@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 from uuid import UUID, uuid4
 
@@ -15,13 +15,13 @@ class UserRole(str, Enum):
 
 class User(BaseModel):
     id: UUID = Field(default_factory=uuid4)
-    email: EmailStr = Field(...)
+    email: EmailStr = Field(
+        ...,
+    )
     password: str = Field(
         ...,
         min_length=UserSettings.password_min_length,
         pattern=UserSettings.password_pattern,
     )
     role: UserRole = Field(default=UserRole.user)
-    created_at: datetime = Field(
-        default_factory=datetime.utcnow,
-    )
+    created_at: datetime = Field(default=datetime.now(timezone.utc))

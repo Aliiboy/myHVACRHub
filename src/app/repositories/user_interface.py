@@ -1,12 +1,13 @@
 from abc import ABC, abstractmethod
 
+from app.schemas.user_schema import UserSignUpSchema
 from domain.entities.user.user_entity import User
 
 
 class UserRepositoryInterface(ABC):
     # write
     @abstractmethod
-    def add_user(self, user: User) -> User:
+    def add_user(self, schema: User) -> User:
         pass
 
     # read

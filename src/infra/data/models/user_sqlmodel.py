@@ -10,11 +10,13 @@ from domain.entities.user.user_entity import User, UserRole
 class UserSQLModel(SQLModel, table=True):
     __tablename__ = "users"
 
-    id: UUID = Field(primary_key=True)
-    email: EmailStr = Field(unique=True, index=True)
-    password: str = Field()
-    role: UserRole = Field()
-    created_at: datetime = Field()
+    id: UUID = Field(..., primary_key=True)
+    email: EmailStr = Field(..., unique=True, index=True)
+    password: str = Field(...)
+    role: UserRole = Field(...)
+    created_at: datetime = Field(
+        ...,
+    )
 
     def to_entity(self) -> User:
         return User(

@@ -20,9 +20,10 @@ Ce projet utilise les bibliothèques suivantes :
 
 ## ✅ TODO
 - Systeme de cache dans pour la db
-- Reparer le linter
 - Mettre les requests (ou les renommer en CommandType) dans le dossier domain (request des usescases) voir `UpdateCoolingLoadFastCoefficientUseCase`. Et garder les Responses et les QueryParams dans le dossier api.
 - Reprendre le testing
+- Faire le point sur les Field(), centraliser dans des fichiers config
+- renommer les bon fichiers et les endpoints suite au refacto
 ---
 
 🎉 **Merci d'utiliser IAsimov Flask API !** 🚀

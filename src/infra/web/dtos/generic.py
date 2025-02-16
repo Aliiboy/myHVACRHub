@@ -18,7 +18,9 @@ class ClientErrorResponse(BaseModel):
     """400"""
 
     code: int = Field(default=HTTPStatus.BAD_REQUEST, description="Status Code")
-    message: str = Field(default="Bad Request", description="Client error message")
+    message: str | list[dict] = Field(
+        default="Bad Request", description="Client error message"
+    )
 
     def to_response(self) -> Response:
         return make_response(jsonify(self.model_dump()), self.code)

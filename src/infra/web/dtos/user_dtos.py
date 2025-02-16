@@ -9,14 +9,6 @@ from domain.entities.user.user_entity import UserRole
 from domain.settings.user_settings import UserSettings
 
 
-class RegisterRequest(BaseModel):
-    email: EmailStr = Field(..., description=UserSettings.email_description)
-    password: str = Field(
-        ...,
-        description=UserSettings.password_description,
-    )
-
-
 class LoginRequest(BaseModel):
     email: EmailStr = Field(..., description=UserSettings.email_description)
     password: str = Field(..., description=UserSettings.password_description)

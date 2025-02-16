@@ -3,9 +3,7 @@ from sqlmodel import select
 
 from app.repositories.user_interface import UserRepositoryInterface
 from domain.entities.user.user_entity import User
-from domain.exceptions.user_exceptions import (
-    UserAlreadyExistsException,
-)
+from domain.exceptions.user_exceptions import UserDBException
 from domain.services.password_hasher_interface import PasswordHasherInterface
 from infra.data.models.user_sqlmodel import UserSQLModel
 from infra.data.sql_unit_of_work import SQLUnitOfWork
@@ -19,22 +17,22 @@ class UserSQLRepository(UserRepositoryInterface):
         self.password_hasher = password_hasher
 
     # write
-    def add_user(self, user: User) -> User:
+    def add_user(self, schema: User) -> User:
         try:
-            hashed_password = self.password_hasher.hash(user.password)
+            hashed_password = self.password_hasher.hash(schema.password)
             with self.unit_of_work as uow:
                 query = UserSQLModel(
-                    id=user.id,
-                    email=user.email,
+                    id=schema.id,
+                    email=schema.email,
                     password=hashed_password,
-                    role=user.role,
-                    created_at=user.created_at,
+                    role=schema.role,
+                    created_at=schema.created_at,
                 )
                 uow.session.add(query)
                 uow.session.flush()
                 return query.to_entity()
-        except IntegrityError:
-            raise UserAlreadyExistsException(query.email)
+        except IntegrityError as e:
+            raise UserDBException(message=str(e.orig))
 
     # read
     def get_user_by_email(self, email: str) -> User | None:
