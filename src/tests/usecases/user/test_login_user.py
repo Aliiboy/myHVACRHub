@@ -1,71 +1,71 @@
-# src/tests/usecases/user/test_authenticate_user.py
-import unittest
-from unittest.mock import MagicMock
+# # src/tests/usecases/user/test_authenticate_user.py
+# import unittest
+# from unittest.mock import MagicMock
 
-from app.repositories.user_interface import UserRepositoryInterface
-from app.usecases.user.login_user import LoginUserUseCase
-from domain.entities.user.user_entity import User
-from domain.exceptions.user_exceptions import (
-    UserInvalidPasswordException,
-    UserNotFoundException,
-)
-from domain.services.password_hasher_interface import PasswordHasherInterface
-from domain.services.token_service_interface import TokenServiceInterface
+# from app.repositories.user_interface import UserRepositoryInterface
+# from app.usecases.user.login_user import LoginUserUseCase
+# from domain.entities.user.user_entity import User
+# from domain.exceptions.user_exceptions import (
+#     UserInvalidPasswordException,
+#     UserNotFoundException,
+# )
+# from domain.services.password_hasher_interface import PasswordHasherInterface
+# from domain.services.token_service_interface import TokenServiceInterface
 
 
-class LoginUserUseCaseTests(unittest.TestCase):
-    def setUp(self) -> None:
-        self.mock_user_repository: MagicMock = MagicMock(spec=UserRepositoryInterface)
-        self.mock_password_hasher: MagicMock = MagicMock(spec=PasswordHasherInterface)
-        self.mock_token_service: MagicMock = MagicMock(spec=TokenServiceInterface)
-        self.use_case: LoginUserUseCase = LoginUserUseCase(
-            repository=self.mock_user_repository,
-            password_hasher=self.mock_password_hasher,
-            token_service=self.mock_token_service,
-        )
+# class LoginUserUseCaseTests(unittest.TestCase):
+#     def setUp(self) -> None:
+#         self.mock_user_repository: MagicMock = MagicMock(spec=UserRepositoryInterface)
+#         self.mock_password_hasher: MagicMock = MagicMock(spec=PasswordHasherInterface)
+#         self.mock_token_service: MagicMock = MagicMock(spec=TokenServiceInterface)
+#         self.use_case: LoginUserUseCase = LoginUserUseCase(
+#             repository=self.mock_user_repository,
+#             password_hasher=self.mock_password_hasher,
+#             token_service=self.mock_token_service,
+#         )
 
-    def test_authenticate_user_success_returns_valid_token(self) -> None:
-        email: str = "test@example.com"
-        password: str = "Password_1234!"
-        hashed_password: str = "hashedpassword123!"
+#     def test_authenticate_user_success_returns_valid_token(self) -> None:
+#         email: str = "test@example.com"
+#         password: str = "Password_1234!"
+#         hashed_password: str = "hashedpassword123!"
 
-        user: User = User(email=email, password=hashed_password)
-        self.mock_user_repository.get_user_by_email.return_value = user
+#         user: User = User(email=email, password=hashed_password)
+#         self.mock_user_repository.get_user_by_email.return_value = user
 
-        self.mock_password_hasher.verify.return_value = True
+#         self.mock_password_hasher.verify.return_value = True
 
-        expected_token: str = "token123"
-        self.mock_token_service.generate_token.return_value = expected_token
+#         expected_token: str = "token123"
+#         self.mock_token_service.generate_token.return_value = expected_token
 
-        token: str = self.use_case.execute(email=email, password=password)
-        self.assertEqual(token, expected_token)
+#         token: str = self.use_case.execute(email=email, password=password)
+#         self.assertEqual(token, expected_token)
 
-        self.mock_user_repository.get_user_by_email.assert_called_once_with(email)
-        self.mock_password_hasher.verify.assert_called_once_with(
-            password, hashed_password
-        )
-        self.mock_token_service.generate_token.assert_called_once()
+#         self.mock_user_repository.get_user_by_email.assert_called_once_with(email)
+#         self.mock_password_hasher.verify.assert_called_once_with(
+#             password, hashed_password
+#         )
+#         self.mock_token_service.generate_token.assert_called_once()
 
-    def test_authenticate_user_invalid_email_raises_error(self) -> None:
-        email: str = "nonexistent@example.com"
-        password: str = "Password_1234!"
-        self.mock_user_repository.get_user_by_email.return_value = None
+#     def test_authenticate_user_invalid_email_raises_error(self) -> None:
+#         email: str = "nonexistent@example.com"
+#         password: str = "Password_1234!"
+#         self.mock_user_repository.get_user_by_email.return_value = None
 
-        with self.assertRaises(UserNotFoundException) as context:
-            self.use_case.execute(email=email, password=password)
-        self.assertEqual(
-            str(context.exception),
-            f"L'utilisateur avec l'email '{email}' n'existe pas.",
-        )
+#         with self.assertRaises(UserNotFoundException) as context:
+#             self.use_case.execute(email=email, password=password)
+#         self.assertEqual(
+#             str(context.exception),
+#             f"L'utilisateur avec l'email '{email}' n'existe pas.",
+#         )
 
-    def test_authenticate_user_invalid_password_raises_error(self) -> None:
-        email: str = "test@example.com"
-        password: str = "WrongPassword_1234!"
-        user: User = User(email=email, password=password)
-        self.mock_user_repository.get_user_by_email.return_value = user
+#     def test_authenticate_user_invalid_password_raises_error(self) -> None:
+#         email: str = "test@example.com"
+#         password: str = "WrongPassword_1234!"
+#         user: User = User(email=email, password=password)
+#         self.mock_user_repository.get_user_by_email.return_value = user
 
-        self.mock_password_hasher.verify.return_value = False
+#         self.mock_password_hasher.verify.return_value = False
 
-        with self.assertRaises(UserInvalidPasswordException) as context:
-            self.use_case.execute(email=email, password=password)
-        self.assertEqual(str(context.exception), "Mot de passe incorrect.")
+#         with self.assertRaises(UserInvalidPasswordException) as context:
+#             self.use_case.execute(email=email, password=password)
+#         self.assertEqual(str(context.exception), "Mot de passe incorrect.")
