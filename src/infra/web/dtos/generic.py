@@ -18,7 +18,7 @@ class ClientErrorResponse(BaseModel):
     """400"""
 
     code: int = Field(default=HTTPStatus.BAD_REQUEST, description="Status Code")
-    message: str | list[dict] = Field(
+    message: str | list[dict[str, str]] = Field(
         default="Bad Request", description="Client error message"
     )
 

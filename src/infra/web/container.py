@@ -1,24 +1,9 @@
 from dependency_injector import containers, providers
 
-from app.usecases.fast_quote.add_cooling_load_fast_coefficient import (
-    AddCoolingLoadFastCoefficientUseCase,
-)
-from app.usecases.fast_quote.calc_cold_room_cooling_load_fast import (
-    CalculateColdRoomCoolingLoadFastUseCase,
-)
-from app.usecases.fast_quote.get_all_cooling_load_fast_coefficient import (
-    GetAllCoolingLoadFastCoefficienUseCase,
-)
-from app.usecases.fast_quote.update_cooling_load_fast_coefficient import (
-    UpdateCoolingLoadFastCoefficientUseCase,
-)
 from app.usecases.humid_air.get_full_ha_props import GetFullHAPropertyUseCase
 from app.usecases.user.get_all_users import GetAllUsersUsecase
 from app.usecases.user.login_user import LoginUserUseCase
 from app.usecases.user.register_user import UserSignUpUseCase
-from infra.data.repositories.fast_quote_sqlrepo import (
-    ColdRoomCoolingCoefficientSQLRepository,
-)
 from infra.data.repositories.user_sqlrepo import UserSQLRepository
 from infra.data.sql_database import SQLDatabase
 from infra.data.sql_unit_of_work import SQLUnitOfWork
@@ -32,8 +17,6 @@ class AppContainer(containers.DeclarativeContainer):
         modules=[
             "infra.web.api.v1.routes.humid_air_routes",
             "infra.web.api.v1.routes.user_routes",
-            "infra.web.api.v1.routes.protected_routes",
-            "infra.web.api.v1.routes.fast_quote_routes",
         ]
     )
 
@@ -85,26 +68,4 @@ class AppContainer(containers.DeclarativeContainer):
     )
     get_all_users_usecase = providers.Factory(
         GetAllUsersUsecase, repository=user_repository
-    )
-    # === fast quote module ===
-    # repository
-    cold_room_cooling_coef_repository = providers.Factory(
-        ColdRoomCoolingCoefficientSQLRepository, unit_of_work=unit_of_work
-    )
-    # usecases
-    add_cooling_load_fast_coefficient_usecase = providers.Factory(
-        AddCoolingLoadFastCoefficientUseCase,
-        repository=cold_room_cooling_coef_repository,
-    )
-    update_cooling_load_fast_coefficient_usecase = providers.Factory(
-        UpdateCoolingLoadFastCoefficientUseCase,
-        repository=cold_room_cooling_coef_repository,
-    )
-    get_all_cooling_load_fast_coefficients_usecase = providers.Factory(
-        GetAllCoolingLoadFastCoefficienUseCase,
-        repository=cold_room_cooling_coef_repository,
-    )
-    calculate_cold_room_cooling_load_fast_usecase = providers.Factory(
-        CalculateColdRoomCoolingLoadFastUseCase,
-        repository=cold_room_cooling_coef_repository,
     )
