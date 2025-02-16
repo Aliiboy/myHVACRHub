@@ -50,6 +50,9 @@
 
     [tool.ruff.format]
     docstring-code-format = true
+    exclude = [
+        "src/infra/data/migrations/**/*.py",
+        ]
 
     [tool.mypy]
     python_version = "3.10"

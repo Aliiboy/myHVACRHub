@@ -1,6 +1,6 @@
 import unittest
 from http import HTTPStatus
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 from flask import Flask, Response
 from flask_jwt_extended import JWTManager, create_access_token
@@ -54,6 +54,8 @@ class TestRoleRequiredDecorator(unittest.TestCase):
 
     @patch("infra.web.decorators.role_required.verify_jwt_in_request")
     @patch("infra.web.decorators.role_required.get_jwt", return_value={})
-    def test_access_without_jwt(self, mock_get_jwt, mock_verify_jwt) -> None:
+    def test_access_without_jwt(
+        self, mock_get_jwt: MagicMock, mock_verify_jwt: MagicMock
+    ) -> None:
         response = self.client.get("/protected")
         self.assertEqual(response.status_code, 403)

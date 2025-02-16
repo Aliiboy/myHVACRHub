@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 
-from app.schemas.user_schema import UserSignUpSchema
 from domain.entities.user.user_entity import User
 
 

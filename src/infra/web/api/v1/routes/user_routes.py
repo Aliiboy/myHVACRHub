@@ -5,7 +5,7 @@ from typing import cast
 from dependency_injector.wiring import Provide, inject
 from flask import Response
 from flask_jwt_extended import jwt_required
-from flask_openapi3 import APIBlueprint, Tag
+from flask_openapi3 import APIBlueprint, Tag  # type: ignore[attr-defined]
 
 from app.schemas.user_schema import UserSignUpSchema
 from app.usecases.user.get_all_users import GetAllUsersUsecase
