@@ -7,7 +7,7 @@ from domain.entities.humid_air.humid_air_entity import HumidAirEntity
 from domain.settings.humid_air_settings import HumidAirSettings
 
 
-class HumidAirRequest(BaseModel):
+class HumidAirWithDryTempAndRelativeHumidityRequest(BaseModel):
     pressure: float = Field(
         default=HumidAirSettings.pressure_default_value,
         description=HumidAirSettings.pressure_description,
@@ -28,7 +28,7 @@ class HumidAirRequest(BaseModel):
     )
 
 
-class HumidAirResponse(BaseModel):
+class GetHumidAirPropertyResponse(BaseModel):
     pressure: float = Field(..., description=HumidAirSettings.pressure_description)
     temp_dry_bulb: float = Field(..., description=HumidAirSettings.tdb_description)
     relative_humidity: float = Field(..., description=HumidAirSettings.rh_description)
@@ -77,7 +77,9 @@ class HumidAirResponse(BaseModel):
     )
 
     @classmethod
-    def from_use_case_result(cls, full_ha_props: HumidAirEntity) -> "HumidAirResponse":
+    def from_use_case_result(
+        cls, full_ha_props: HumidAirEntity
+    ) -> "GetHumidAirPropertyResponse":
         return cls(
             **{
                 field: getattr(full_ha_props, field)

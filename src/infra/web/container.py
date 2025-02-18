@@ -1,9 +1,9 @@
 from dependency_injector import containers, providers
 
-from app.usecases.humid_air.get_full_ha_props import GetFullHAPropertyUseCase
+from app.usecases.humid_air.get_ha_props import GetHumidAirPropertyUseCase
 from app.usecases.user.get_all_users import GetAllUsersUsecase
-from app.usecases.user.login_user import LoginUserUseCase
-from app.usecases.user.register_user import UserSignUpUseCase
+from app.usecases.user.login_user import UserLoginUseCase
+from app.usecases.user.sign_up_user import UserSignUpUseCase
 from infra.data.repositories.user_sqlrepo import UserSQLRepository
 from infra.data.sql_database import SQLDatabase
 from infra.data.sql_unit_of_work import SQLUnitOfWork
@@ -37,18 +37,12 @@ class AppContainer(containers.DeclarativeContainer):
         expires_delta=app_settings.provided.JWT_ACCESS_TOKEN_EXPIRES,
     )
 
-    # TODO : Créer des dictionnaires, exemple :
-    #     book_usecases = {
-    #     "create": providers.Factory(CreateBookUseCase, repository=book_repository),
-    #     "get_all": providers.Factory(GetAllBooksUseCase, repository=book_repository),
-    # }
-    # TODO : Et modifier les routes, exemple :
-    # use_case: CreateBookUseCase = Provide[AppContainer.book_usecases["create"]],
-
     # === humid air module ===
     # repositories
     # usecases
-    get_full_ha_props_usecase = providers.Factory(GetFullHAPropertyUseCase)
+    humid_air_usecases = providers.Dict(
+        get_ha_props=providers.Factory(GetHumidAirPropertyUseCase)
+    )
 
     # === user module ===
     # repositories
@@ -56,16 +50,10 @@ class AppContainer(containers.DeclarativeContainer):
         UserSQLRepository, unit_of_work=unit_of_work, password_hasher=password_hasher
     )
     # usecases
-    register_user_usecase = providers.Factory(
-        UserSignUpUseCase,
-        repository=user_repository,
-    )
-    login_user_usecase = providers.Factory(
-        LoginUserUseCase,
-        repository=user_repository,
-        password_hasher=password_hasher,
-        token_service=token_service,
-    )
-    get_all_users_usecase = providers.Factory(
-        GetAllUsersUsecase, repository=user_repository
+    user_usecases = providers.Dict(
+        sign_up=providers.Factory(UserSignUpUseCase, repository=user_repository),
+        login=providers.Factory(
+            UserLoginUseCase, repository=user_repository, token_service=token_service
+        ),
+        get_all_users=providers.Factory(GetAllUsersUsecase, repository=user_repository),
     )

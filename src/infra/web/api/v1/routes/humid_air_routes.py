@@ -4,12 +4,16 @@ from dependency_injector.wiring import Provide, inject
 from flask import Response
 from flask_openapi3 import APIBlueprint, Tag  # type: ignore[attr-defined]
 
-from app.usecases.humid_air.get_full_ha_props import (
-    GetFullHAPropertyUseCase,
+from app.schemas.get_ha_props_schema import GetHumidAirPropertySchema
+from app.usecases.humid_air.get_ha_props import (
+    GetHumidAirPropertyUseCase,
 )
 from infra.web.container import AppContainer
 from infra.web.dtos.generic import ClientErrorResponse
-from infra.web.dtos.humid_air_dtos import HumidAirRequest, HumidAirResponse
+from infra.web.dtos.humid_air_dtos import (
+    GetHumidAirPropertyResponse,
+    HumidAirWithDryTempAndRelativeHumidityRequest,
+)
 
 tag = Tag(
     name="Air humide",
@@ -29,24 +33,27 @@ router = APIBlueprint(
     "/get_ha_props",
     description="Affiche l'ensemble des données disponibles pour l'air humide.",
     responses={
-        HTTPStatus.OK: HumidAirResponse,
+        HTTPStatus.OK: GetHumidAirPropertyResponse,
         HTTPStatus.UNPROCESSABLE_ENTITY: ClientErrorResponse,
     },
 )
 @inject
 def get_ha_props(
-    query: HumidAirRequest,
-    use_case: GetFullHAPropertyUseCase = Provide[
-        AppContainer.get_full_ha_props_usecase
+    query: HumidAirWithDryTempAndRelativeHumidityRequest,
+    use_case: GetHumidAirPropertyUseCase = Provide[
+        AppContainer.humid_air_usecases.provided["get_ha_props"]
     ],
 ) -> Response:
     try:
-        full_ha_props = use_case.execute(
+        request = GetHumidAirPropertySchema(
             pressure=query.pressure,
             temp_dry_bulb=query.temp_dry_bulb,
             relative_humidity=query.relative_humidity,
         )
-        return HumidAirResponse.from_use_case_result(full_ha_props).to_response()
+        full_ha_props = use_case.execute(request)
+        return GetHumidAirPropertyResponse.from_use_case_result(
+            full_ha_props
+        ).to_response()
 
     except ValueError as e:
         return ClientErrorResponse(

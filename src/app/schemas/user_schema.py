@@ -1,11 +1,11 @@
-from pydantic import BaseModel, Field
-
-from domain.settings.user_settings import UserSettings
+from pydantic import BaseModel
 
 
 class UserSignUpSchema(BaseModel):
-    email: str = Field(
-        ...,
-        description=UserSettings.email_description,
-    )
-    password: str = Field(..., description=UserSettings.password_description)
+    email: str
+    password: str
+
+
+class UserLoginSchema(BaseModel):
+    email: str
+    password: str

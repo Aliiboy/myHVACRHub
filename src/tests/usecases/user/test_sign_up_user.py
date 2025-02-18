@@ -4,8 +4,10 @@ from unittest.mock import MagicMock
 
 from app.repositories.user_interface import UserRepositoryInterface
 from app.schemas.user_schema import UserSignUpSchema
-from app.usecases.user.register_user import UserSignUpUseCase
-from domain.exceptions.user_exceptions import UserValidationException
+from app.usecases.user.sign_up_user import UserSignUpUseCase
+from domain.exceptions.user_exceptions import (
+    UserValidationException,
+)
 
 
 class UserSignUpUseCaseTests(unittest.TestCase):
@@ -23,7 +25,7 @@ class UserSignUpUseCaseTests(unittest.TestCase):
         )
 
         self.use_case.execute(user_sign_up_schema)
-        cast(MagicMock, self.mock_user_repository.add_user).assert_called_once()
+        cast(MagicMock, self.mock_user_repository.sign_up_user).assert_called_once()
 
     def test_signup_user_with_invalid_data_raises_exception(self) -> None:
         invalid_user_schema = UserSignUpSchema(email="invalid-email", password="123")
@@ -34,3 +36,4 @@ class UserSignUpUseCaseTests(unittest.TestCase):
         self.assertIsInstance(context.exception, UserValidationException)
         self.assertTrue(len(context.exception.errors) > 0)
         self.assertEqual(context.exception.errors[0]["field"], "email")
+        self.assertEqual(context.exception.errors[1]["field"], "password")

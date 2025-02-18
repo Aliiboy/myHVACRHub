@@ -4,7 +4,7 @@ from uuid import UUID
 from pydantic import EmailStr
 from sqlmodel import Field, SQLModel
 
-from domain.entities.user.user_entity import User, UserRole
+from domain.entities.user.user_entity import UserEntity, UserRole
 
 
 class UserSQLModel(SQLModel, table=True):
@@ -18,8 +18,8 @@ class UserSQLModel(SQLModel, table=True):
         ...,
     )
 
-    def to_entity(self) -> User:
-        return User(
+    def to_entity(self) -> UserEntity:
+        return UserEntity(
             id=self.id,
             email=self.email,
             password=self.password,

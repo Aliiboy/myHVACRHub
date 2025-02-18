@@ -13,7 +13,7 @@ class UserRole(str, Enum):
     user = "user"
 
 
-class User(BaseModel):
+class UserEntity(BaseModel):
     id: UUID = Field(default_factory=uuid4)
     email: EmailStr = Field(
         ...,
