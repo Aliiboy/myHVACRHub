@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from sqlalchemy.exc import IntegrityError
 from sqlmodel import asc, select
 
@@ -36,6 +38,16 @@ class UserSQLRepository(UserRepositoryInterface):
         except IntegrityError as e:
             raise UserDBException(message=str(e.orig))
 
+    def delete_user_by_id(self, user_id: UUID) -> None:
+        with self.unit_of_work as uow:
+            user_to_delete = uow.session.get(UserSQLModel, user_id)
+            if not user_to_delete:
+                raise UserDBException(
+                    message=f"L'utilisateur avec l'id '{user_id}' n'existe pas."
+                )
+            uow.session.delete(user_to_delete)
+            uow.session.flush()
+
     # read
     def login_user(self, schema: UserEntity) -> UserEntity:
         with self.unit_of_work as uow:
@@ -44,15 +56,15 @@ class UserSQLRepository(UserRepositoryInterface):
 
             if not user:
                 raise UserDBException(
-                    f"L'utilisateur avec l'email '{schema.email} n'existe pas."
+                    message=f"L'utilisateur avec l'email '{schema.email}' n'existe pas."
                 )
 
             if not self.password_hasher.verify(schema.password, user.password):
-                raise UserDBException("Mot de passe incorrect.")
+                raise UserDBException(message="Mot de passe incorrect.")
 
             return user.to_entity()
 
-    def get_all_users(self, limit: int) -> list[UserEntity]:
+    def get_all_users_with_limit(self, limit: int) -> list[UserEntity]:
         with self.unit_of_work as uow:
             query = select(UserSQLModel).order_by(asc(UserSQLModel.email)).limit(limit)
             users = uow.session.exec(query).all()

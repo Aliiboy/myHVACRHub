@@ -35,6 +35,10 @@ class GetAllUsersQueryParams(BaseModel):
     )
 
 
+class UserPath(BaseModel):
+    id: UUID = Field(..., description="identificant unique de l'utilisateur")
+
+
 # === responses ===
 
 

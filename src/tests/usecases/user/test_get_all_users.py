@@ -15,12 +15,16 @@ class GetAllUsersUsecaseTest(unittest.TestCase):
         )
 
     def test_get_all_users_returns_empty_list_when_no_users_list(self) -> None:
-        cast(MagicMock, self.mock_user_repository.get_all_users).return_value = []
+        cast(
+            MagicMock, self.mock_user_repository.get_all_users_with_limit
+        ).return_value = []
 
         result: list[UserEntity] = self.use_case.execute(limit=100)
 
         self.assertEqual(result, [])
-        cast(MagicMock, self.mock_user_repository.get_all_users).assert_called_once()
+        cast(
+            MagicMock, self.mock_user_repository.get_all_users_with_limit
+        ).assert_called_once()
 
     def test_get_all_users_return_all_users_when_users_exist(self) -> None:
         users: list[UserEntity] = [
@@ -33,6 +37,8 @@ class GetAllUsersUsecaseTest(unittest.TestCase):
                 password="Password_1234!",
             ),
         ]
-        cast(MagicMock, self.mock_user_repository.get_all_users).return_value = users
+        cast(
+            MagicMock, self.mock_user_repository.get_all_users_with_limit
+        ).return_value = users
         result: list[UserEntity] = self.use_case.execute(limit=100)
         self.assertEqual(len(result), len(users))

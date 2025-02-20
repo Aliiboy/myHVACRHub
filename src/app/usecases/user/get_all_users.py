@@ -7,4 +7,4 @@ class GetAllUsersUsecase:
         self.repository = repository
 
     def execute(self, limit: int) -> list[UserEntity]:
-        return self.repository.get_all_users(limit)
+        return self.repository.get_all_users_with_limit(limit)

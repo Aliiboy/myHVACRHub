@@ -1,6 +1,7 @@
 from dependency_injector import containers, providers
 
 from app.usecases.humid_air.get_ha_props import GetHumidAirPropertyUseCase
+from app.usecases.user.delete_user import DeleteUserByIdUsecase
 from app.usecases.user.get_all_users import GetAllUsersUsecase
 from app.usecases.user.login_user import UserLoginUseCase
 from app.usecases.user.sign_up_user import UserSignUpUseCase
@@ -52,6 +53,9 @@ class AppContainer(containers.DeclarativeContainer):
     # usecases
     user_usecases = providers.Dict(
         sign_up=providers.Factory(UserSignUpUseCase, repository=user_repository),
+        delete_user=providers.Factory(
+            DeleteUserByIdUsecase, repository=user_repository
+        ),
         login=providers.Factory(
             UserLoginUseCase, repository=user_repository, token_service=token_service
         ),

@@ -1,3 +1,5 @@
+from uuid import UUID, uuid4
+
 from sqlalchemy import text
 
 from domain.entities.user.user_entity import UserEntity
@@ -56,6 +58,24 @@ class UserSQLRepositoryTests(BaseRepositoryTest):
         with self.assertRaises(UserDBException):
             self.user_repository.sign_up_user(self.valid_user)
 
+    # delete_user
+    def test_delete_user_by_id_success(self) -> None:
+        user_to_delete = self.user_repository.sign_up_user(self.valid_user)
+        self.user_repository.delete_user_by_id(user_to_delete.id)
+        users_after = self.user_repository.get_all_users_with_limit(limit=100)
+        self.assertNotIn(user_to_delete.email, [user.email for user in users_after])
+
+    def test_delete_user_by_id_with_wrong_id(self) -> None:
+        with self.assertRaises(UserDBException) as context:
+            wrong_id: UUID = uuid4()
+            self.user_repository.delete_user_by_id(wrong_id)
+
+        expected_message = (
+            f"UserDBException : L'utilisateur avec l'id '{wrong_id}' n'existe pas."
+        )
+        self.assertIsInstance(context.exception, UserDBException)
+        self.assertEqual(str(context.exception), expected_message)
+
     # login_user
     def test_login_user_success(self) -> None:
         self.user_repository.sign_up_user(self.valid_user)
@@ -85,5 +105,5 @@ class UserSQLRepositoryTests(BaseRepositoryTest):
         for user in self.users_to_add:
             self.user_repository.sign_up_user(user)
 
-        retrieved_users = self.user_repository.get_all_users(limit=100)
+        retrieved_users = self.user_repository.get_all_users_with_limit(limit=100)
         self.assertEqual(len(self.users_to_add), len(retrieved_users))

@@ -20,7 +20,7 @@ Ce projet utilise les bibliothèques suivantes :
 
 ## ✅ TODO
 - Systeme de cache dans pour la db
-
+- test delete user by id
 ---
 
 🎉 **Merci d'utiliser IAsimov Flask API !** 🚀

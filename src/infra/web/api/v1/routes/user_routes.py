@@ -8,6 +8,7 @@ from flask_jwt_extended import jwt_required
 from flask_openapi3 import APIBlueprint, Tag  # type: ignore[attr-defined]
 
 from app.schemas.user_schema import UserLoginSchema, UserSignUpSchema
+from app.usecases.user.delete_user import DeleteUserByIdUsecase
 from app.usecases.user.get_all_users import GetAllUsersUsecase
 from app.usecases.user.login_user import UserLoginUseCase
 from app.usecases.user.sign_up_user import UserSignUpUseCase
@@ -24,6 +25,7 @@ from infra.web.dtos.user_dtos import (
     GetUserResponse,
     UserLoginRequest,
     UserLoginResponse,
+    UserPath,
     UserSignUpRequest,
 )
 
@@ -42,7 +44,7 @@ router = APIBlueprint(
 
 @router.post(
     "/sign_up",
-    description="Permet de s'enregistrer dans la base de données de l'API",
+    description="Permet de s'enregistrer dans la base de données de l'API.",
     responses={
         HTTPStatus.CREATED: SuccessResponse,
         HTTPStatus.UNPROCESSABLE_ENTITY: ClientErrorResponse,
@@ -59,7 +61,7 @@ def sign_up(
         request = UserSignUpSchema(email=body.email, password=body.password)
         use_case.execute(request)
         return SuccessResponse(
-            code=HTTPStatus.CREATED, message="Utilisateur créé avec succès"
+            code=HTTPStatus.CREATED, message="Utilisateur créé avec succès."
         ).to_response()
 
     except UserDBException as e:
@@ -68,9 +70,40 @@ def sign_up(
         ).to_response()
 
 
+@router.delete(
+    "/user/<uuid:id>",
+    description="Permet de supprimer un utilisateur de la base de données de l'API.",
+    security=security,
+    responses={
+        HTTPStatus.OK: SuccessResponse,
+        HTTPStatus.NOT_FOUND: ClientErrorResponse,
+        HTTPStatus.FORBIDDEN: ClientErrorResponse,
+    },
+)
+@inject
+@cast("Callable[..., Response]", jwt_required())
+@cast("Callable[..., Response]", role_required("admin"))
+def delete_user_by_id(
+    path: UserPath,
+    use_case: DeleteUserByIdUsecase = Provide[
+        AppContainer.user_usecases.provided["delete_user"]
+    ],
+) -> Response:
+    try:
+        use_case.execute(path.id)
+        return SuccessResponse(
+            code=HTTPStatus.OK, message="Utilisateur supprimé avec succès."
+        ).to_response()
+
+    except UserDBException as e:
+        return ClientErrorResponse(
+            code=HTTPStatus.NOT_FOUND, message=str(e)
+        ).to_response()
+
+
 @router.post(
     "/login",
-    description="Permet de se connecter et de récuperer le token pour l'inserer dans votre agent GPT",
+    description="Permet de se connecter et de récuperer le token.",
     responses={
         HTTPStatus.OK: UserLoginResponse,
         HTTPStatus.UNPROCESSABLE_ENTITY: ClientErrorResponse,
