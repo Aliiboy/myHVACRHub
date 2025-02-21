@@ -30,6 +30,8 @@ flask-openapi3==4.0.3
     #   flask-openapi3-swagger
 flask-openapi3-swagger==5.18.2
     # via flask-openapi3
+gunicorn==23.0.0
+    # via iasimov-flask-api (pyproject.toml)
 idna==3.10
     # via email-validator
 itsdangerous==2.2.0
@@ -43,6 +45,8 @@ markupsafe==3.0.2
     #   jinja2
     #   mako
     #   werkzeug
+packaging==24.2
+    # via gunicorn
 pydantic==2.10.5
     # via
     #   iasimov-flask-api (pyproject.toml)
