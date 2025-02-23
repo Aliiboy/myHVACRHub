@@ -11,12 +11,13 @@
         "flask-jwt-extended>=4.7.1",
         "flask-openapi3[swagger]>=4.0.3",
         "gunicorn>=23.0.0",
+        "mysqlclient>=2.2.7",
         "pydantic-settings>=2.7.1",
         "pydantic[email]>=2.10.5",
         "pyfluids>=2.7.2",
         "pyjwt>=2.10.1",
         "sqlmodel>=0.0.22",
-        ]
+]
 
     [dependency-groups]
     dev = [
