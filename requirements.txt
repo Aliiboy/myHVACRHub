@@ -47,8 +47,6 @@ markupsafe==3.0.2
     #   werkzeug
 packaging==24.2
     # via gunicorn
-psycopg2==2.9.10
-    # via iasimov-flask-api (pyproject.toml)
 pydantic==2.10.5
     # via
     #   iasimov-flask-api (pyproject.toml)
