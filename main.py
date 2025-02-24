@@ -3,8 +3,8 @@ import sys
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "src"))
 
-from infra.web.app import WebApp  # noqa: I001
-from infra.web.container import AppContainer
+from common.infra.web.app import WebApp  # noqa: I001
+from common.infra.web.container import AppContainer
 
 # container
 container = AppContainer()
