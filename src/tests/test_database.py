@@ -1,3 +1,4 @@
+import os
 import unittest
 from typing import ClassVar
 
@@ -9,25 +10,38 @@ from infra.web.settings import AppSettings
 
 
 class DatabaseTests(unittest.TestCase):
+    TEST_DB_PATH: ClassVar[str] = "test.db"
+    app_settings: ClassVar[AppSettings]
     database: ClassVar[SQLDatabase]
 
     @classmethod
     def setUpClass(cls) -> None:
-        app_settings = AppSettings(
-            DATABASE_URL="sqlite:///:memory:", DATABASE_ECHO=False
+        if os.path.exists(cls.TEST_DB_PATH):
+            os.remove(cls.TEST_DB_PATH)
+
+        cls.app_settings = AppSettings(
+            DATABASE_URL=f"sqlite:///{cls.TEST_DB_PATH}", DATABASE_ECHO=False
         )
-        cls.database = SQLDatabase(settings=app_settings)
+        cls.database = SQLDatabase(settings=cls.app_settings)
         cls.database.create_database()
+
+    def setUp(self) -> None:
+        self.session_context = self.database.get_session()
+        self.session = self.session_context.__enter__()
+
+    def tearDown(self) -> None:
+        """Ferme la session et nettoie la base après chaque test."""
+        self.session_context.__exit__(None, None, None)
 
     @classmethod
     def tearDownClass(cls) -> None:
+        """Supprime la base après les tests."""
         cls.database.engine.dispose()
-
-    def setUp(self) -> None:
-        self.session = Session(self.__class__.database.engine)
+        if os.path.exists(cls.TEST_DB_PATH):
+            os.remove(cls.TEST_DB_PATH)
 
     def test_database_initialization(self) -> None:
-        self.assertEqual(self.database.settings.DATABASE_URL, "sqlite:///:memory:")
+        self.assertEqual(self.database.settings.DATABASE_URL, "sqlite:///test.db")
         self.assertFalse(self.database.settings.DATABASE_ECHO)
         self.assertIsNotNone(self.database.engine)
 
