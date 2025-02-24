@@ -49,3 +49,15 @@ class DeleteUserByIdRouteTests(BaseAPITest):
         self.assertEqual(
             delete_response.get_json()["message"], "Utilisateur supprimé avec succès."
         )
+
+    def test_delete_user_by_id_with_wrong_id(self) -> None:
+        wrong_id: uuid.UUID = uuid.uuid4()
+        delete_response = self.client.delete(
+            f"/v1/auth/user/{wrong_id}",
+            headers={"Authorization": f"Bearer {self.admin_token}"},
+        )
+        self.assertEqual(delete_response.status_code, HTTPStatus.NOT_FOUND)
+        self.assertEqual(
+            delete_response.get_json()["message"],
+            f"UserDBException : L'utilisateur avec l'id '{wrong_id}' n'existe pas.",
+        )

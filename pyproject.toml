@@ -75,8 +75,9 @@
         "src/**/*interface.py",
         "src/**/*_interface.py",
         "src/tests/**/*.py",
-        "src/infra/web/app.py",
-        "src/infra/web/container.py"
+        "src/**/tests/*",
+        "src/common/infra/web/app.py",
+        "src/common/infra/web/container.py"
         ]
 
 
