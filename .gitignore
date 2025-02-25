@@ -172,5 +172,6 @@ cython_debug/
 
 # iasimov
 database.db
+test.db
 merged_files.py
 .gpt/

@@ -4,7 +4,7 @@ from alembic import context
 from sqlalchemy import engine_from_config, pool
 from sqlmodel import SQLModel
 
-from infra.web.settings import AppSettings
+from common.infra.web.settings import AppSettings
 
 config = context.config
 
@@ -20,7 +20,7 @@ if not config.get_main_option("sqlalchemy.url"):
 # add your model's MetaData object here
 # for 'autogenerate' support
 # from myapp import mymodel
-from infra.data.models.user_sqlmodel import *  # noqa: F401
+from users.infra.data.models.user_sqlmodel import *  # noqa: F401
 
 target_metadata = SQLModel.metadata
 # target_metadata = None

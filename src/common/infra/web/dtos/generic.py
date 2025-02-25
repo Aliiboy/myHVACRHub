@@ -12,7 +12,7 @@ class SuccessResponse(BaseModel):
         return make_response(jsonify(self.model_dump()), self.code)
 
 
-class ClientErrorResponse(BaseModel):
+class ErrorResponse(BaseModel):
     code: int = Field(default=HTTPStatus.BAD_REQUEST, description="Status Code")
     message: str | list[dict[str, str]] = Field(
         default="Bad Request", description="Client error message"

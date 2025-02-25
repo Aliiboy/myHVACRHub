@@ -5,7 +5,7 @@ from flask import Response
 from flask_openapi3 import APIBlueprint, Tag  # type: ignore[attr-defined]
 
 from common.infra.web.container import AppContainer
-from common.infra.web.dtos.generic import ClientErrorResponse
+from common.infra.web.dtos.generic import ErrorResponse
 from humid_air.app.schemas.get_ha_props_schema import GetHumidAirPropertySchema
 from humid_air.app.usecases.get_ha_props import GetHumidAirPropertyUseCase
 from humid_air.infra.web.dtos.humid_air_dtos import (
@@ -32,7 +32,7 @@ router = APIBlueprint(
     description="Affiche l'ensemble des données disponibles pour l'air humide.",
     responses={
         HTTPStatus.OK: GetHumidAirPropertyResponse,
-        HTTPStatus.UNPROCESSABLE_ENTITY: ClientErrorResponse,
+        HTTPStatus.UNPROCESSABLE_ENTITY: ErrorResponse,
     },
 )
 @inject
@@ -54,6 +54,6 @@ def get_ha_props(
         ).to_response()
 
     except ValueError as e:
-        return ClientErrorResponse(
+        return ErrorResponse(
             code=HTTPStatus.UNPROCESSABLE_ENTITY, message=str(e)
         ).to_response()
