@@ -20,7 +20,6 @@ Ce projet utilise les bibliothèques suivantes :
 
 ## ✅ TODO
 - Systeme de cache dans pour la db
-- Changer l'organisation des dossiers (par Bounded context)
 ---
 
 🎉 **Merci d'utiliser IAsimov Flask API !** 🚀

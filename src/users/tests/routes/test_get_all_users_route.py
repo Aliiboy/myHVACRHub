@@ -19,10 +19,10 @@ class GetAllUsersRouteTests(BaseAPITest):
         )
         self.session.commit()
 
-    def tearDown(self) -> None:
-        super().tearDown()
-        self.session.execute(text("DELETE FROM users"))
-        self.session.commit()
+    # def tearDown(self) -> None:
+    #     super().tearDown()
+    #     self.session.execute(text("DELETE FROM users"))
+    #     self.session.commit()
 
     def test_get_all_users_return_all_users_when_users_exist(self) -> None:
         login_response = self.client.post("/v1/auth/login", json=self.admin_data)

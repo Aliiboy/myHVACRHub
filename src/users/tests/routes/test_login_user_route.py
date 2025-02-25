@@ -11,10 +11,10 @@ class LoginUserRouteTests(BaseAPITest):
         user_data = {"email": "test@example.com", "password": "SecurePass123!"}
         self.client.post("/v1/auth/sign_up", json=user_data)
 
-    def tearDown(self) -> None:
-        super().tearDown()
-        self.session.execute(text("DELETE FROM users"))
-        self.session.commit()
+    # def tearDown(self) -> None:
+    #     super().tearDown()
+    #     self.session.execute(text("DELETE FROM users"))
+    #     self.session.commit()
 
     def test_login_user_successfully(self) -> None:
         login_data = {"email": "test@example.com", "password": "SecurePass123!"}
