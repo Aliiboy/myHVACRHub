@@ -62,6 +62,16 @@ class UserSQLRepository(UserRepositoryInterface):
 
             return user.to_entity()
 
+    def get_user_profile(self, user_id: UUID) -> UserEntity:
+        with self.unit_of_work as uow:
+            user = uow.session.get(UserSQLModel, user_id)
+            if not user:
+                raise UserDBException(
+                    message=f"L'utilisateur avec l'id '{user_id}' n'existe pas."
+                )
+
+            return user.to_entity()
+
     def get_all_users_with_limit(self, limit: int) -> list[UserEntity]:
         with self.unit_of_work as uow:
             query = select(UserSQLModel).order_by(asc(UserSQLModel.email)).limit(limit)

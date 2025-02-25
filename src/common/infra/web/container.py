@@ -6,6 +6,7 @@ from common.infra.web.settings import AppSettings
 from humid_air.app.usecases.get_ha_props import GetHumidAirPropertyUseCase
 from users.app.usecases.delete_user import DeleteUserByIdUsecase
 from users.app.usecases.get_all_users import GetAllUsersUsecase
+from users.app.usecases.get_user_profile import GetUserProfileUseCase
 from users.app.usecases.login_user import UserLoginUseCase
 from users.app.usecases.sign_up_user import UserSignUpUseCase
 from users.infra.data.repositories.user_sqlrepo import UserSQLRepository
@@ -58,6 +59,9 @@ class AppContainer(containers.DeclarativeContainer):
         ),
         login=providers.Factory(
             UserLoginUseCase, repository=user_repository, token_service=token_service
+        ),
+        get_user_profile=providers.Factory(
+            GetUserProfileUseCase, repository=user_repository
         ),
         get_all_users=providers.Factory(GetAllUsersUsecase, repository=user_repository),
     )

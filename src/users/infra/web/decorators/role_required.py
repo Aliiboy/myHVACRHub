@@ -6,7 +6,7 @@ from typing import Any
 from flask import Response
 from flask_jwt_extended import get_jwt, verify_jwt_in_request
 
-from common.infra.web.dtos.generic import ClientErrorResponse
+from common.infra.web.dtos.generic import ErrorResponse
 
 
 def role_required(
@@ -19,7 +19,7 @@ def role_required(
             claims = get_jwt()
             user_role: str | None = claims.get("role")
             if user_role not in allowed_roles:
-                return ClientErrorResponse(
+                return ErrorResponse(
                     code=HTTPStatus.FORBIDDEN,
                     message="Accès interdit : niveau insuffisant.",
                 ).to_response()

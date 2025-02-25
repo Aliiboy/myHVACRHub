@@ -55,6 +55,9 @@ class GetUserResponse(BaseModel):
     role: UserRole = Field(..., description=UserSettings.role_description)
     created_at: datetime = Field(..., description=UserSettings.created_at_description)
 
+    def to_response(self) -> Response:
+        return make_response(jsonify(self.model_dump()), HTTPStatus.OK)
+
 
 class GetAllUsersResponse(BaseModel):
     users: list[GetUserResponse] = Field(..., description="Liste des utilisateurs")

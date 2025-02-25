@@ -1,4 +1,3 @@
-# src/tests/usecases/user/test_authenticate_user.py
 import unittest
 from typing import cast
 from unittest.mock import MagicMock

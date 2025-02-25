@@ -20,5 +20,9 @@ class UserRepositoryInterface(ABC):
         pass
 
     @abstractmethod
+    def get_user_profile(self, user_id: UUID) -> UserEntity:
+        pass
+
+    @abstractmethod
     def get_all_users_with_limit(self, limit: int) -> list[UserEntity]:
         pass

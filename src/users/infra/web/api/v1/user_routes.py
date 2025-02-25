@@ -1,17 +1,19 @@
 from collections.abc import Callable
 from http import HTTPStatus
 from typing import cast
+from uuid import UUID
 
 from dependency_injector.wiring import Provide, inject
 from flask import Response
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import get_jwt, jwt_required
 from flask_openapi3 import APIBlueprint, Tag  # type: ignore[attr-defined]
 
 from common.infra.web.container import AppContainer
-from common.infra.web.dtos.generic import ClientErrorResponse, SuccessResponse
+from common.infra.web.dtos.generic import ErrorResponse, SuccessResponse
 from users.app.schemas.user_schema import UserLoginSchema, UserSignUpSchema
 from users.app.usecases.delete_user import DeleteUserByIdUsecase
 from users.app.usecases.get_all_users import GetAllUsersUsecase
+from users.app.usecases.get_user_profile import GetUserProfileUseCase
 from users.app.usecases.login_user import UserLoginUseCase
 from users.app.usecases.sign_up_user import UserSignUpUseCase
 from users.domain.exceptions.user_exceptions import (
@@ -47,7 +49,7 @@ router = APIBlueprint(
     description="Permet de s'enregistrer dans la base de données de l'API.",
     responses={
         HTTPStatus.CREATED: SuccessResponse,
-        HTTPStatus.UNPROCESSABLE_ENTITY: ClientErrorResponse,
+        HTTPStatus.UNPROCESSABLE_ENTITY: ErrorResponse,
     },
 )
 @inject
@@ -65,7 +67,7 @@ def sign_up(
         ).to_response()
 
     except UserDBException as e:
-        return ClientErrorResponse(
+        return ErrorResponse(
             code=HTTPStatus.UNPROCESSABLE_ENTITY, message=str(e)
         ).to_response()
 
@@ -76,8 +78,8 @@ def sign_up(
     security=security,
     responses={
         HTTPStatus.OK: SuccessResponse,
-        HTTPStatus.NOT_FOUND: ClientErrorResponse,
-        HTTPStatus.FORBIDDEN: ClientErrorResponse,
+        HTTPStatus.NOT_FOUND: ErrorResponse,
+        HTTPStatus.FORBIDDEN: ErrorResponse,
     },
 )
 @inject
@@ -96,9 +98,7 @@ def delete_user_by_id(
         ).to_response()
 
     except UserDBException as e:
-        return ClientErrorResponse(
-            code=HTTPStatus.NOT_FOUND, message=str(e)
-        ).to_response()
+        return ErrorResponse(code=HTTPStatus.NOT_FOUND, message=str(e)).to_response()
 
 
 @router.post(
@@ -106,7 +106,7 @@ def delete_user_by_id(
     description="Permet de se connecter et de récuperer le token.",
     responses={
         HTTPStatus.OK: UserLoginResponse,
-        HTTPStatus.UNPROCESSABLE_ENTITY: ClientErrorResponse,
+        HTTPStatus.UNPROCESSABLE_ENTITY: ErrorResponse,
     },
 )
 @inject
@@ -120,14 +120,39 @@ def login(
         return UserLoginResponse(access_token=token).to_response()
 
     except UserValidationException as e:
-        return ClientErrorResponse(
+        return ErrorResponse(
             code=HTTPStatus.UNPROCESSABLE_ENTITY, message=e.errors
         ).to_response()
 
     except UserDBException as e:
-        return ClientErrorResponse(
+        return ErrorResponse(
             code=HTTPStatus.UNPROCESSABLE_ENTITY, message=str(e)
         ).to_response()
+
+
+@router.get(
+    "/profile",
+    description="Permet de voir son profil utilisateur.",
+    security=security,
+    responses={
+        HTTPStatus.OK: GetUserResponse,
+        HTTPStatus.NOT_FOUND: ErrorResponse,
+    },
+)
+@inject
+@cast("Callable[..., Response]", jwt_required())
+def get_user_profile(
+    use_case: GetUserProfileUseCase = Provide[
+        AppContainer.user_usecases.provided["get_user_profile"]
+    ],
+) -> Response:
+    user_id = UUID(get_jwt().get("sub"))
+    try:
+        user = use_case.execute(user_id)
+        return GetUserResponse.model_validate(user.model_dump()).to_response()
+
+    except UserDBException as e:
+        return ErrorResponse(code=HTTPStatus.NOT_FOUND, message=str(e)).to_response()
 
 
 @router.get(
@@ -136,7 +161,7 @@ def login(
     security=security,
     responses={
         HTTPStatus.OK: GetAllUsersResponse,
-        HTTPStatus.FORBIDDEN: ClientErrorResponse,
+        HTTPStatus.FORBIDDEN: ErrorResponse,
     },
 )
 @cast("Callable[..., Response]", jwt_required())
