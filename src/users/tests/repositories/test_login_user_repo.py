@@ -1,5 +1,3 @@
-from sqlalchemy import text
-
 from common.tests.repositories.base_repo_test import BaseRepositoryTest
 from users.domain.entities.user_entity import UserEntity
 from users.domain.exceptions.user_exceptions import UserDBException
@@ -22,13 +20,6 @@ class UserLoginSQLRepositoryTests(BaseRepositoryTest):
             email="test2@example.com", password="Password_1234!"
         )
 
-    # def tearDown(self) -> None:
-    #     with self.database.get_session() as session:
-    #         session.execute(text("DELETE FROM users"))
-    #         session.commit()
-    #     super().tearDown()
-
-    # login_user
     def test_login_user_success(self) -> None:
         self.user_repository.sign_up_user(self.valid_user)
 

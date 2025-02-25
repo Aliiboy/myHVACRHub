@@ -1,5 +1,3 @@
-from sqlalchemy import text
-
 from common.tests.repositories.base_repo_test import BaseRepositoryTest
 from users.domain.entities.user_entity import UserEntity
 from users.infra.data.repositories.user_sqlrepo import UserSQLRepository
@@ -21,12 +19,6 @@ class GetAllUsersSQLRepositoryTests(BaseRepositoryTest):
                 password="Password_1234!",
             ),
         ]
-
-    # def tearDown(self) -> None:
-    #     with self.database.get_session() as session:
-    #         session.execute(text("DELETE FROM users"))
-    #         session.commit()
-    #     super().tearDown()
 
     def test_get_all_users_return_all_users_when_users_exist(self) -> None:
         for user in self.users_to_add:

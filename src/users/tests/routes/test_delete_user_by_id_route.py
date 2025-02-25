@@ -20,11 +20,6 @@ class DeleteUserByIdRouteTests(BaseAPITest):
         login_response = self.client.post("/v1/auth/login", json=self.admin_data)
         self.admin_token = login_response.get_json()["access_token"]
 
-    # def tearDown(self) -> None:
-    #     super().tearDown()
-    #     self.session.execute(text("DELETE FROM users"))
-    #     self.session.commit()
-
     def test_delete_user_by_id_success(self) -> None:
         user_to_delete = {
             "email": "user_to_delete@example.com",

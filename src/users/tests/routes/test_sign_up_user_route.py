@@ -12,11 +12,6 @@ class UserSignUpRouteTests(BaseAPITest):
             "password": "pass",
         }
 
-    # def tearDown(self) -> None:
-    #     super().tearDown()
-    #     self.session.execute(text("DELETE FROM users"))
-    #     self.session.commit()
-
     def test_sign_up_user_successfully(self) -> None:
         response = self.client.post("/v1/auth/sign_up", json=self.valid_user)
         print(response.get_json())

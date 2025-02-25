@@ -16,12 +16,6 @@ class DeleteUserByIdSQLRepositoryTests(BaseRepositoryTest):
             email="test@example.com", password="Password_1234!"
         )
 
-    # def tearDown(self) -> None:
-    #     with self.database.get_session() as session:
-    #         session.execute(text("DELETE FROM users"))
-    #         session.commit()
-    #     super().tearDown()
-
     def test_delete_user_by_id_success(self) -> None:
         user_to_delete = self.user_repository.sign_up_user(self.valid_user)
         self.user_repository.delete_user_by_id(user_to_delete.id)
