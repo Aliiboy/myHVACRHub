@@ -48,13 +48,13 @@
             ]
 
     exclude = [
-        "src/infra/data/migrations/**/*.py",
+        "src/common/infra/data/migrations/**/*.py",
         ]
 
     [tool.ruff.format]
     docstring-code-format = true
     exclude = [
-        "src/infra/data/migrations/**/*.py",
+        "src/common/infra/data/migrations/**/*.py",
         ]
 
     [tool.mypy]

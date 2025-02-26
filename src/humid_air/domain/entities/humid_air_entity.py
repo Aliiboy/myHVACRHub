@@ -1,7 +1,9 @@
 from pydantic import BaseModel, Field
-from pyfluids import HumidAir, InputHumidAir
+from pyfluids import HumidAir, InputHumidAir  #  type: ignore[import-untyped]
 
-from humid_air.domain.settings.humid_air_settings import HumidAirSettings  # type: ignore[import-untyped]
+from humid_air.domain.settings.humid_air_settings import (
+    HumidAirSettings,
+)
 
 
 class HumidAirEntity(BaseModel):
