@@ -6,7 +6,18 @@ from common.tests.routes.base_api_test import BaseAPITest
 
 
 class GetAllUsersRouteTests(BaseAPITest):
+    """Test de la récupération de tous les utilisateurs
+
+    Args:
+        BaseAPITest (BaseAPITest): Testeur de base pour les tests des routes
+    """
+
     def setUp(self) -> None:
+        """Initialise le testeur de récupération de tous les utilisateurs
+
+        Returns:
+            None
+        """
         super().setUp()
         self.admin_data = {
             "email": "admin@example.com",
@@ -15,11 +26,16 @@ class GetAllUsersRouteTests(BaseAPITest):
         self.client.post("/v1/auth/sign_up", json=self.admin_data)
 
         self.session.execute(
-            text("UPDATE users SET role='admin' WHERE email='admin@example.com'")
+            text("UPDATE users SET role='ADMIN' WHERE email='admin@example.com'")
         )
         self.session.commit()
 
     def test_get_all_users_return_all_users_when_users_exist(self) -> None:
+        """Test de la récupération de tous les utilisateurs
+
+        Returns:
+            None
+        """
         login_response = self.client.post("/v1/auth/login", json=self.admin_data)
         self.assertEqual(login_response.status_code, HTTPStatus.OK)
         token = login_response.get_json()["access_token"]

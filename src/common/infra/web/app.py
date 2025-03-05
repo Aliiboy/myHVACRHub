@@ -10,8 +10,19 @@ from utils.class_object import singleton
 
 @singleton
 class WebApp:
+    """Application web
+
+    Args:
+        container (AppContainer): Conteneur de l'application
+    """
+
     @inject
     def __init__(self, container: AppContainer = Provide[AppContainer]) -> None:
+        """Initialise l'application web
+
+        Args:
+            container (AppContainer, optional): Conteneur de l'application
+        """
         # container
         self.container = container
         self.settings = self.container.app_settings()
@@ -44,5 +55,10 @@ class WebApp:
         # routes
         self.app.register_api(routers_v1)
 
-    def run(self) -> None:
+    def run(self: "WebApp") -> None:
+        """Démarre l'application web
+
+        Args:
+            self (WebApp): Instance de l'application web
+        """
         self.app.run(host=self.settings.HOST, port=self.settings.PORT)

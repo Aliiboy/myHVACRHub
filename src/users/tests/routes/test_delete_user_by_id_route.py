@@ -7,13 +7,24 @@ from common.tests.routes.base_api_test import BaseAPITest
 
 
 class DeleteUserByIdRouteTests(BaseAPITest):
+    """Test de la suppression d'un utilisateur par son id
+
+    Args:
+        BaseAPITest (BaseAPITest): Testeur de base pour les tests des routes
+    """
+
     def setUp(self) -> None:
+        """Initialise le testeur de suppression d'un utilisateur par son id
+
+        Returns:
+            None
+        """
         super().setUp()
         self.admin_data = {"email": "admin2@example.com", "password": "SecurePass123!"}
         self.client.post("/v1/auth/sign_up", json=self.admin_data)
 
         self.session.execute(
-            text("UPDATE users SET role='admin' WHERE email='admin2@example.com'")
+            text("UPDATE users SET role='ADMIN' WHERE email='admin2@example.com'")
         )
         self.session.commit()
 
@@ -21,6 +32,11 @@ class DeleteUserByIdRouteTests(BaseAPITest):
         self.admin_token = login_response.get_json()["access_token"]
 
     def test_delete_user_by_id_success(self) -> None:
+        """Test de la suppression d'un utilisateur par son id
+
+        Returns:
+            None
+        """
         user_to_delete = {
             "email": "user_to_delete@example.com",
             "password": "Password_1234!",
@@ -46,6 +62,11 @@ class DeleteUserByIdRouteTests(BaseAPITest):
         )
 
     def test_delete_user_by_id_with_wrong_id(self) -> None:
+        """Test de la suppression d'un utilisateur par son id avec un id invalide
+
+        Returns:
+            None
+        """
         wrong_id: uuid.UUID = uuid.uuid4()
         delete_response = self.client.delete(
             f"/v1/auth/user/{wrong_id}",

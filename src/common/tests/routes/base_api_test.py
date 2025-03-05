@@ -11,6 +11,12 @@ from common.infra.web.settings import AppSettings
 
 
 class BaseAPITest(unittest.TestCase):
+    """Test de base pour les tests des API
+
+    Args:
+        unittest (unittest.TestCase): Testeur de base pour les tests des API
+    """
+
     TEST_DB_PATH: ClassVar[str] = "test.db"
     app_settings: ClassVar[AppSettings]
     container: ClassVar[AppContainer]

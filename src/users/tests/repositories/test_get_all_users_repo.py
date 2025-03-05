@@ -4,6 +4,12 @@ from users.infra.data.repositories.user_sqlrepo import UserSQLRepository
 
 
 class GetAllUsersSQLRepositoryTests(BaseRepositoryTest):
+    """Test de la récupération de tous les utilisateurs
+
+    Args:
+        BaseRepositoryTest (BaseRepositoryTest): Testeur de base pour les tests des répositories
+    """
+
     def setUp(self) -> None:
         super().setUp()
         self.user_repository = UserSQLRepository(
@@ -21,6 +27,11 @@ class GetAllUsersSQLRepositoryTests(BaseRepositoryTest):
         ]
 
     def test_get_all_users_return_all_users_when_users_exist(self) -> None:
+        """Test de la récupération de tous les utilisateurs
+
+        Returns:
+            None
+        """
         for user in self.users_to_add:
             self.user_repository.sign_up_user(user)
 

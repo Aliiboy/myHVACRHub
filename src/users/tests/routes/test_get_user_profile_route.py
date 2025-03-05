@@ -4,7 +4,18 @@ from common.tests.routes.base_api_test import BaseAPITest
 
 
 class GetUserProfileRouteTests(BaseAPITest):
+    """Test de la récupération du profil d'un utilisateur
+
+    Args:
+        BaseAPITest (BaseAPITest): Testeur de base pour les tests des routes
+    """
+
     def setUp(self) -> None:
+        """Initialise le testeur de récupération du profil d'un utilisateur
+
+        Returns:
+            None
+        """
         super().setUp()
         self.valid_user = {
             "email": "user@example.com",
@@ -15,6 +26,11 @@ class GetUserProfileRouteTests(BaseAPITest):
         self.token = self.login_response.get_json()["access_token"]
 
     def test_get_user_profile_successfully(self) -> None:
+        """Test de la récupération du profil d'un utilisateur
+
+        Returns:
+            None
+        """
         self.assertEqual(self.login_response.status_code, HTTPStatus.OK)
 
         response = self.client.get(
@@ -22,9 +38,14 @@ class GetUserProfileRouteTests(BaseAPITest):
         )
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertEqual(response.get_json()["email"], "user@example.com")
-        self.assertEqual(response.get_json()["role"], "user")
+        self.assertEqual(response.get_json()["role"], "USER")
 
     def test_get_user_profile_with_wrong_id(self) -> None:
+        """Test de la récupération du profil d'un utilisateur avec un id invalide
+
+        Returns:
+            None
+        """
         wrong_id = "c5de7e9e-6b7b-43c1-8e8e-9997806e25b4"
         response = self.client.get(
             "/v1/auth/profile",

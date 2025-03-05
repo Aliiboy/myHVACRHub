@@ -5,7 +5,18 @@ from users.infra.data.repositories.user_sqlrepo import UserSQLRepository
 
 
 class UserLoginSQLRepositoryTests(BaseRepositoryTest):
+    """Test de la connexion d'un utilisateur
+
+    Args:
+        BaseRepositoryTest (BaseRepositoryTest): Testeur de base pour les tests des répositories
+    """
+
     def setUp(self) -> None:
+        """Initialise le testeur de connexion d'un utilisateur
+
+        Returns:
+            None
+        """
         super().setUp()
         self.user_repository = UserSQLRepository(
             unit_of_work=self.uow, password_hasher=self.password_hasher
@@ -21,6 +32,11 @@ class UserLoginSQLRepositoryTests(BaseRepositoryTest):
         )
 
     def test_login_user_success(self) -> None:
+        """Test de la connexion d'un utilisateur
+
+        Returns:
+            None
+        """
         self.user_repository.sign_up_user(self.valid_user)
 
         user_to_login = self.user_repository.login_user(self.valid_user)
@@ -32,12 +48,22 @@ class UserLoginSQLRepositoryTests(BaseRepositoryTest):
         )
 
     def test_login_user_with_wrong_password(self) -> None:
+        """Test de la connexion d'un utilisateur avec un mot de passe incorrect
+
+        Returns:
+            None
+        """
         self.user_repository.sign_up_user(self.valid_user)
 
         with self.assertRaises(UserDBException):
             self.user_repository.login_user(self.invalid_user)
 
     def test_login_user_with_invalid_email(self) -> None:
+        """Test de la connexion d'un utilisateur avec un email invalide
+
+        Returns:
+            None
+        """
         self.user_repository.sign_up_user(self.valid_user)
 
         with self.assertRaises(UserDBException):

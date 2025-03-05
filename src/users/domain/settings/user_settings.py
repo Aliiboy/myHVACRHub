@@ -1,4 +1,9 @@
 class UserSettings:
+    """Paramètres de l'utilisateur
+
+    Cette classe contient les paramètres de l'utilisateur.
+    """
+
     # id
     id_description: str = "Identifiant unique de l'utilisateur"
     # email
@@ -17,4 +22,7 @@ class UserSettings:
     # date
     created_at_description: str = (
         "Date a laquelle l'utilisateur est rentré dans la base de données"
+    )
+    updated_at_description: str = (
+        "Date a laquelle l'utilisateur a été modifié dans la base de données"
     )

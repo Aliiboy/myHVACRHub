@@ -15,6 +15,12 @@ from users.infra.services.jwt_token_service import JWTTokenService
 
 
 class AppContainer(containers.DeclarativeContainer):
+    """Conteneur de l'application
+
+    Args:
+        containers (containers.DeclarativeContainer): Conteneur de dépendances
+    """
+
     wiring_config = containers.WiringConfiguration(
         modules=[
             "humid_air.infra.web.api.v1.humid_air_routes",

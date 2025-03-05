@@ -12,6 +12,12 @@ from users.domain.settings.user_settings import UserSettings
 
 
 class UserSignUpRequest(BaseModel):
+    """Schéma de validation d'un nouvel utilisateur
+
+    Args:
+        BaseModel (BaseModel): Schéma de validation d'un nouvel utilisateur
+    """
+
     email: EmailStr = Field(
         ...,
         description=UserSettings.email_description,
@@ -25,17 +31,35 @@ class UserSignUpRequest(BaseModel):
 
 
 class UserLoginRequest(BaseModel):
+    """Schéma de validation d'un utilisateur à connecter
+
+    Args:
+        BaseModel (BaseModel): Schéma de validation d'un utilisateur à connecter
+    """
+
     email: EmailStr = Field(..., description=UserSettings.email_description)
     password: str = Field(..., description=UserSettings.password_description)
 
 
 class GetAllUsersQueryParams(BaseModel):
+    """Schéma de validation des paramètres de la requête
+
+    Args:
+        BaseModel (BaseModel): Schéma de validation des paramètres de la requête
+    """
+
     limit: int = Field(
         default=100, gt=0, description="Nombre maximum d'utimisateurs à recuperer"
     )
 
 
 class UserPath(BaseModel):
+    """Schéma de validation du chemin de l'utilisateur
+
+    Args:
+        BaseModel (BaseModel): Schéma de validation du chemin de l'utilisateur
+    """
+
     id: UUID = Field(..., description="identificant unique de l'utilisateur")
 
 
@@ -43,6 +67,15 @@ class UserPath(BaseModel):
 
 
 class UserLoginResponse(BaseModel):
+    """Schéma de validation de la réponse de connexion d'un utilisateur
+
+    Args:
+        BaseModel (BaseModel): Schéma de validation de la réponse de connexion d'un utilisateur
+
+    Returns:
+        str: Jeton d'accès
+    """
+
     access_token: str = Field(..., description=UserSettings.access_token_description)
 
     def to_response(self) -> Response:
@@ -50,16 +83,35 @@ class UserLoginResponse(BaseModel):
 
 
 class GetUserResponse(BaseModel):
+    """Schéma de validation de la réponse d'un utilisateur
+
+    Args:
+        BaseModel (BaseModel): Schéma de validation de la réponse d'un utilisateur
+
+    Returns:
+        dict: Profil utilisateur
+    """
+
     id: UUID = Field(..., description=UserSettings.id_description)
     email: EmailStr = Field(..., description=UserSettings.email_description)
     role: UserRole = Field(..., description=UserSettings.role_description)
     created_at: datetime = Field(..., description=UserSettings.created_at_description)
+    updated_at: datetime = Field(..., description=UserSettings.updated_at_description)
 
     def to_response(self) -> Response:
         return make_response(jsonify(self.model_dump()), HTTPStatus.OK)
 
 
 class GetAllUsersResponse(BaseModel):
+    """Schéma de validation de la réponse de la liste des utilisateurs
+
+    Args:
+        BaseModel (BaseModel): Schéma de validation de la réponse de la liste des utilisateurs
+
+    Returns:
+        list[GetUserResponse]: Liste des utilisateurs
+    """
+
     users: list[GetUserResponse] = Field(..., description="Liste des utilisateurs")
 
     def to_response(self) -> Response:

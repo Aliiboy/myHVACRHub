@@ -10,7 +10,18 @@ from users.domain.services.token_service_interface import TokenServiceInterface
 
 
 class LoginUserUseCaseTests(unittest.TestCase):
+    """Test de la connexion d'un utilisateur
+
+    Args:
+        unittest (unittest.TestCase): Testeur de base pour les tests des usecases
+    """
+
     def setUp(self) -> None:
+        """Initialise le testeur de la connexion d'un utilisateur
+
+        Returns:
+            None
+        """
         self.mock_user_repository: MagicMock = MagicMock(spec=UserRepositoryInterface)
         self.mock_token_service: MagicMock = MagicMock(spec=TokenServiceInterface)
         self.use_case: UserLoginUseCase = UserLoginUseCase(
@@ -19,6 +30,11 @@ class LoginUserUseCaseTests(unittest.TestCase):
         )
 
     def test_login_user_success_returns_valid_token(self) -> None:
+        """Test de la connexion d'un utilisateur avec succès
+
+        Returns:
+            None
+        """
         user_login_valid_schema = UserLoginSchema(
             email="test@example.com", password="Password_1234!"
         )
@@ -27,6 +43,11 @@ class LoginUserUseCaseTests(unittest.TestCase):
         cast(MagicMock, self.mock_token_service.generate_token).assert_called_once()
 
     def test_login_user_invalid_data_raises_exception(self) -> None:
+        """Test de la connexion d'un utilisateur avec des données invalides
+
+        Returns:
+            None
+        """
         user_login_invalid_schema = UserLoginSchema(
             email="invalid-email", password="123"
         )

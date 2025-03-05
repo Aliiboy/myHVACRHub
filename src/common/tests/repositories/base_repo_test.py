@@ -11,6 +11,12 @@ from users.infra.services.bcrypt_password_hasher import BcryptPasswordHasher
 
 
 class BaseRepositoryTest(unittest.TestCase):
+    """Test de base pour les tests des repositories
+
+    Args:
+        unittest (unittest.TestCase): Testeur de base pour les tests des repositories
+    """
+
     TEST_DB_PATH: ClassVar[str] = "test.db"
     app_settings: ClassVar[AppSettings]
     database: ClassVar[SQLDatabase]
@@ -28,7 +34,7 @@ class BaseRepositoryTest(unittest.TestCase):
         cls.database.create_database()
 
     def setUp(self) -> None:
-        """Ouvre une session avant chaque test."""
+        """Initialise une base persistante pour tous les tests."""
         self.uow = SQLUnitOfWork(session_factory=self.database.get_session)
         self.password_hasher = BcryptPasswordHasher()
         self.session_context = self.database.get_session()
@@ -43,7 +49,7 @@ class BaseRepositoryTest(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls) -> None:
-        """Supprime la base après les tests."""
+        """Nettoie la base après les tests."""
         cls.database.engine.dispose()
         if os.path.exists(cls.TEST_DB_PATH):
             os.remove(cls.TEST_DB_PATH)

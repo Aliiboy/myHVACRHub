@@ -9,7 +9,18 @@ from users.domain.exceptions.user_exceptions import UserValidationException
 
 
 class UserSignUpUseCaseTests(unittest.TestCase):
+    """Test de l'inscription d'un utilisateur
+
+    Args:
+        unittest (unittest.TestCase): Testeur de base pour les tests des usecases
+    """
+
     def setUp(self) -> None:
+        """Initialise le testeur de l'inscription d'un utilisateur
+
+        Returns:
+            None
+        """
         self.mock_user_repository: UserRepositoryInterface = MagicMock(
             spec=UserRepositoryInterface
         )
@@ -18,6 +29,11 @@ class UserSignUpUseCaseTests(unittest.TestCase):
         )
 
     def test_signup_user_success(self) -> None:
+        """Test de l'inscription d'un utilisateur avec succès
+
+        Returns:
+            None
+        """
         user_sign_up_schema = UserSignUpSchema(
             email="test@example.com", password="Password_1234!"
         )
@@ -26,6 +42,11 @@ class UserSignUpUseCaseTests(unittest.TestCase):
         cast(MagicMock, self.mock_user_repository.sign_up_user).assert_called_once()
 
     def test_signup_user_with_invalid_data_raises_exception(self) -> None:
+        """Test de l'inscription d'un utilisateur avec des données invalides
+
+        Returns:
+            None
+        """
         invalid_user_schema = UserSignUpSchema(email="invalid-email", password="123")
 
         with self.assertRaises(UserValidationException) as context:

@@ -19,6 +19,7 @@ Ce projet utilise les bibliothèques suivantes :
 - [`coolprop`](http\://coolprop.org/)
 
 ## ✅ TODO
+- Doc string in humid_air
 - Systeme de cache dans pour la db
 ---
 

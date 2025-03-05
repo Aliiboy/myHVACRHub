@@ -16,6 +16,7 @@ from users.app.usecases.get_all_users import GetAllUsersUsecase
 from users.app.usecases.get_user_profile import GetUserProfileUseCase
 from users.app.usecases.login_user import UserLoginUseCase
 from users.app.usecases.sign_up_user import UserSignUpUseCase
+from users.domain.entities.user_entity import UserRole
 from users.domain.exceptions.user_exceptions import (
     UserDBException,
     UserValidationException,
@@ -59,6 +60,15 @@ def sign_up(
         AppContainer.user_usecases.provided["sign_up"]
     ],
 ) -> Response:
+    """Permet de s'enregistrer dans la base de données de l'API.
+
+    Args:
+        body (UserSignUpRequest): Schéma de validation d'un nouvel utilisateur
+        use_case (UserSignUpUseCase, optional): Cas d'utilisation pour enregistrer un nouvel utilisateur. Defaults to Provide[ AppContainer.user_usecases.provided["sign_up"] ].
+
+    Returns:
+        Response: Réponse de succès ou d'erreur
+    """
     try:
         request = UserSignUpSchema(email=body.email, password=body.password)
         use_case.execute(request)
@@ -84,13 +94,22 @@ def sign_up(
 )
 @inject
 @cast("Callable[..., Response]", jwt_required())
-@cast("Callable[..., Response]", role_required("admin"))
+@cast("Callable[..., Response]", role_required(UserRole.ADMIN))
 def delete_user_by_id(
     path: UserPath,
     use_case: DeleteUserByIdUsecase = Provide[
         AppContainer.user_usecases.provided["delete_user"]
     ],
 ) -> Response:
+    """Permet de supprimer un utilisateur de la base de données de l'API.
+
+    Args:
+        path (UserPath): Chemin de l'utilisateur à supprimer
+        use_case (DeleteUserByIdUsecase, optional): Cas d'utilisation pour supprimer un utilisateur par son identifiant. Defaults to Provide[ AppContainer.user_usecases.provided["delete_user"] ].
+
+    Returns:
+        Response: Réponse de succès ou d'erreur
+    """
     try:
         use_case.execute(path.id)
         return SuccessResponse(
@@ -114,6 +133,15 @@ def login(
     body: UserLoginRequest,
     use_case: UserLoginUseCase = Provide[AppContainer.user_usecases.provided["login"]],
 ) -> Response:
+    """Permet de se connecter et de récuperer le token.
+
+    Args:
+        body (UserLoginRequest): Schéma de validation d'un utilisateur à connecter
+        use_case (UserLoginUseCase, optional): Cas d'utilisation pour se connecter et de récuperer le token. Defaults to Provide[AppContainer.user_usecases.provided["login"]].
+
+    Returns:
+        Response: Réponse de succès ou d'erreur
+    """
     try:
         request = UserLoginSchema(email=body.email, password=body.password)
         token = use_case.execute(request)
@@ -146,6 +174,14 @@ def get_user_profile(
         AppContainer.user_usecases.provided["get_user_profile"]
     ],
 ) -> Response:
+    """Permet de voir son profil utilisateur.
+
+    Args:
+        use_case (GetUserProfileUseCase, optional): Cas d'utilisation pour voir son profil utilisateur. Defaults to Provide[ AppContainer.user_usecases.provided["get_user_profile"] ].
+
+    Returns:
+        Response: Réponse de succès ou d'erreur
+    """
     user_id = UUID(get_jwt().get("sub"))
     try:
         user = use_case.execute(user_id)
@@ -165,7 +201,7 @@ def get_user_profile(
     },
 )
 @cast("Callable[..., Response]", jwt_required())
-@cast("Callable[..., Response]", role_required("admin"))
+@cast("Callable[..., Response]", role_required(UserRole.ADMIN))
 @inject
 def get_all_users(
     query: GetAllUsersQueryParams,
@@ -173,6 +209,15 @@ def get_all_users(
         AppContainer.user_usecases.provided["get_all_users"]
     ],
 ) -> Response:
+    """Récupère la liste de tous les utilisateurs.
+
+    Args:
+        query (GetAllUsersQueryParams): Schéma de validation des paramètres de la requête
+        use_case (GetAllUsersUsecase, optional): Cas d'utilisation pour récupérer la liste de tous les utilisateurs. Defaults to Provide[ AppContainer.user_usecases.provided["get_all_users"] ].
+
+    Returns:
+        Response: Réponse de succès ou d'erreur
+    """
     users = use_case.execute(limit=query.limit)
     users_to = [GetUserResponse.model_validate(user.model_dump()) for user in users]
     return GetAllUsersResponse(users=users_to).to_response()

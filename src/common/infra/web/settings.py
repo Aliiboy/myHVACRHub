@@ -5,6 +5,12 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class AppSettings(BaseSettings):
+    """Paramètres de l'application
+
+    Args:
+        BaseSettings (BaseSettings): Paramètres de l'application
+    """
+
     # general
     APP_NAME: str = Field(default="IAsimov api", description="Nom de l'application")
     APP_VERSION: str = Field(default="0.0.1", description="Version de l'application")
