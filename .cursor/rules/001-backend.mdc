@@ -1,0 +1,9 @@
+---
+description: 
+globs: *.py
+alwaysApply: true
+---
+
+# Your rule content
+
+- Avant de produire du code, consulter le fichier [pyproject.toml](mdc:pyproject.toml) et [requirements.txt](mdc:requirements.txt).

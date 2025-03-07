@@ -10,7 +10,7 @@ from humid_air.app.schemas.get_ha_props_schema import GetHumidAirPropertySchema
 from humid_air.app.usecases.get_ha_props import GetHumidAirPropertyUseCase
 from humid_air.infra.web.dtos.humid_air_dtos import (
     GetHumidAirPropertyResponse,
-    HumidAirWithDryTempAndRelativeHumidityRequest,
+    HumidAirWithDryTemperatureAndRelativeHumidityRequest,
 )
 
 tag = Tag(
@@ -37,7 +37,7 @@ router = APIBlueprint(
 )
 @inject
 def get_ha_props(
-    query: HumidAirWithDryTempAndRelativeHumidityRequest,
+    query: HumidAirWithDryTemperatureAndRelativeHumidityRequest,
     use_case: GetHumidAirPropertyUseCase = Provide[
         AppContainer.humid_air_usecases.provided["get_ha_props"]
     ],

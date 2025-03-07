@@ -5,6 +5,7 @@ from unittest.mock import MagicMock
 from users.app.repositories.user_interface import UserRepositoryInterface
 from users.app.schemas.user_schema import UserSignUpSchema
 from users.app.usecases.sign_up_user import UserSignUpUseCase
+from users.domain.entities.user_entity import UserEntity
 from users.domain.exceptions.user_exceptions import UserValidationException
 
 
@@ -34,14 +35,29 @@ class UserSignUpUseCaseTests(unittest.TestCase):
         Returns:
             None
         """
+
+        # Arrange - Préparer les données de test et le comportement attendu
         user_sign_up_schema = UserSignUpSchema(
             email="test@example.com", password="Password_1234!"
         )
 
-        self.use_case.execute(user_sign_up_schema)
-        cast(MagicMock, self.mock_user_repository.sign_up_user).assert_called_once()
+        # Configurer le mock pour retourner une entité utilisateur avec l'ID spécifié
+        mock_user_entity = UserEntity(
+            email=user_sign_up_schema.email, password=user_sign_up_schema.password
+        )
+        cast(
+            MagicMock, self.mock_user_repository.sign_up_user
+        ).return_value = mock_user_entity
 
-    def test_signup_user_with_invalid_data_raises_exception(self) -> None:
+        # Act - Exécuter le cas d'utilisation
+        result = self.use_case.execute(user_sign_up_schema)
+
+        # Assert - Vérifier les résultats et comportements attendus
+        cast(MagicMock, self.mock_user_repository.sign_up_user).assert_called_once()
+        self.assertEqual(result.email, user_sign_up_schema.email)
+        self.assertEqual(result.password, user_sign_up_schema.password)
+
+    def test_signup_user_with_validation_error(self) -> None:
         """Test de l'inscription d'un utilisateur avec des données invalides
 
         Returns:

@@ -21,6 +21,7 @@ if not config.get_main_option("sqlalchemy.url"):
 # for 'autogenerate' support
 # from myapp import mymodel
 from users.infra.data.models.user_sqlmodel import *  # noqa: F401
+from projects.infra.data.models.project_sqlmodel import *  # noqa: F401
 
 target_metadata = SQLModel.metadata
 # target_metadata = None

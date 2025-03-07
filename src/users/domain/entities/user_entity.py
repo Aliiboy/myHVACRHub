@@ -1,10 +1,14 @@
 from datetime import datetime, timezone
 from enum import Enum
+from typing import ForwardRef
 from uuid import UUID, uuid4
 
 from pydantic import BaseModel, EmailStr, Field
 
 from users.domain.settings.user_settings import UserSettings
+
+# Référence avancée pour ProjectEntity
+ProjectEntityRef = ForwardRef("ProjectEntity")
 
 
 class UserRole(str, Enum):
@@ -35,6 +39,7 @@ class UserEntity(BaseModel):
         role (UserRole): Rôle de l'utilisateur
         created_at (datetime): Date de création de l'utilisateur
         updated_at (datetime): Date de mise à jour de l'utilisateur
+        projects (list[ProjectEntityRef]): Liste des projets de l'utilisateur
     """
 
     id: UUID = Field(default_factory=uuid4)
@@ -49,3 +54,4 @@ class UserEntity(BaseModel):
     role: UserRole = Field(default=UserRole.USER)
     created_at: datetime = Field(default=datetime.now(timezone.utc))
     updated_at: datetime = Field(default=datetime.now(timezone.utc))
+    projects: list[ProjectEntityRef] = Field(default_factory=list)  # type: ignore

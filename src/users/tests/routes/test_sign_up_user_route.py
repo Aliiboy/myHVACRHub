@@ -47,5 +47,5 @@ class UserSignUpRouteTests(BaseAPITest):
         self.assertEqual(response.status_code, HTTPStatus.UNPROCESSABLE_ENTITY)
         self.assertEqual(
             response.get_json()["message"],
-            "UserDBException : UNIQUE constraint failed: users.email",
+            "UserDBException : L'utilisateur avec l'email 'test@example.com' existe déjà.",
         )

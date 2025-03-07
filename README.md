@@ -19,8 +19,21 @@ Ce projet utilise les bibliothèques suivantes :
 - [`coolprop`](http\://coolprop.org/)
 
 ## ✅ TODO
-- Doc string in humid_air
-- Systeme de cache dans pour la db
+COMMON :
+- Créer des README par module
+- Systeme de cache dans pour la db.
+HUMID AIR :
+- Doc string in humid_air.
+PROJECTS : 
+- UseCase : Faire lever ValidationException de Pydantic.
+- Routes !!!.
+- Integrer les roles (propriétaire et membres).
+- 100% coverage.
+USERS :
+- Update user.
+- voir les projets des utilisateurs (membre et propriétaire) ?.
+- Changer les exceptions de users.
+- Interdir la suppression d'un utilisateur s'il est proprietaire d'un projet.
 ---
 
 🎉 **Merci d'utiliser IAsimov Flask API !** 🚀

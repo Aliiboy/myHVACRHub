@@ -1,12 +1,13 @@
 from uuid import UUID
 
-from sqlalchemy.exc import IntegrityError
 from sqlmodel import asc, select
 
 from common.infra.data.sql_unit_of_work import SQLUnitOfWork
 from users.app.repositories.user_interface import UserRepositoryInterface
 from users.domain.entities.user_entity import UserEntity
-from users.domain.exceptions.user_exceptions import UserDBException
+from users.domain.exceptions.user_exceptions import (
+    UserDBException,
+)
 from users.domain.services.password_hasher_interface import PasswordHasherInterface
 from users.infra.data.models.user_sqlmodel import UserSQLModel
 
@@ -21,38 +22,55 @@ class UserSQLRepository(UserRepositoryInterface):
     def __init__(
         self, unit_of_work: SQLUnitOfWork, password_hasher: PasswordHasherInterface
     ):
+        """Initialise le repository SQL pour les utilisateurs
+
+        Args:
+            unit_of_work (SQLUnitOfWork): Unité de travail SQL
+            password_hasher (PasswordHasherInterface): Service de hachage de mot de passe
+        """
         self.unit_of_work = unit_of_work
         self.password_hasher = password_hasher
 
     # write
     def sign_up_user(self, schema: UserEntity) -> UserEntity:
-        """Enregistre un utilisateur
+        """Enregistre un nouvel utilisateur
 
         Args:
             schema (UserEntity): Utilisateur à enregistrer
 
         Raises:
-            UserDBException: Exception de base de données
+            UserDBException: L'utilisateur avec l'email spécifié existe déjà
 
         Returns:
             UserEntity: Utilisateur enregistré
         """
-        try:
-            hashed_password = self.password_hasher.hash(schema.password)
-            with self.unit_of_work as uow:
-                query = UserSQLModel(
-                    id=schema.id,
-                    email=schema.email,
-                    password=hashed_password,
-                    role=schema.role,
-                    created_at=schema.created_at,
-                    updated_at=schema.updated_at,
+        with self.unit_of_work as uow:
+            # Vérifier si l'utilisateur existe déjà
+            query = select(UserSQLModel).where(UserSQLModel.email == schema.email)
+            user = uow.session.exec(query).first()
+
+            if user:
+                raise UserDBException(
+                    message=f"L'utilisateur avec l'email '{schema.email}' existe déjà."
                 )
-                uow.session.add(query)
-                uow.session.flush()
-                return query.to_entity()
-        except IntegrityError as e:
-            raise UserDBException(message=str(e.orig))
+
+            # Hacher le mot de passe
+            hashed_password = self.password_hasher.hash(schema.password)
+
+            # Créer le modèle utilisateur
+            user_model = UserSQLModel(
+                id=schema.id,
+                email=schema.email,
+                password=hashed_password,
+                role=schema.role,
+                created_at=schema.created_at,
+                updated_at=schema.updated_at,
+            )
+
+            # Enregistrer l'utilisateur
+            uow.session.add(user_model)
+            uow.session.flush()
+            return user_model.to_entity()
 
     def delete_user_by_id(self, user_id: UUID) -> None:
         """Supprime un utilisateur par son identifiant
@@ -77,11 +95,11 @@ class UserSQLRepository(UserRepositoryInterface):
         """Connecte un utilisateur
 
         Args:
-            schema (UserEntity): _description_
+            schema (UserEntity): Utilisateur à connecter avec email et mot de passe
 
         Raises:
-            UserDBException: _description_
-            UserDBException: _description_
+            UserDBException: L'utilisateur avec l'email spécifié n'existe pas
+            UserDBException: Le mot de passe fourni est incorrect
 
         Returns:
         UserEntity: Utilisateur connecté

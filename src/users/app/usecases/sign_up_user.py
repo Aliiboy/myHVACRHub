@@ -33,6 +33,9 @@ class UserSignUpUseCase:
 
         Raises:
             UserValidationException: Exception de validation
+
+        Returns:
+            UserEntity: Entité d'utilisateur
         """
         try:
             user_to_sign_up = UserEntity(email=schema.email, password=schema.password)

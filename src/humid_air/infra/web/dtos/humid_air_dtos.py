@@ -7,7 +7,7 @@ from humid_air.domain.entities.humid_air_entity import HumidAirEntity
 from humid_air.domain.settings.humid_air_settings import HumidAirSettings
 
 
-class HumidAirWithDryTempAndRelativeHumidityRequest(BaseModel):
+class HumidAirWithDryTemperatureAndRelativeHumidityRequest(BaseModel):
     pressure: float = Field(
         default=HumidAirSettings.pressure_default_value,
         description=HumidAirSettings.pressure_description,

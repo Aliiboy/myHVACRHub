@@ -2,8 +2,12 @@ from datetime import datetime
 from uuid import UUID
 
 from pydantic import EmailStr
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, Relationship, SQLModel
 
+from projects.infra.data.models.project_sqlmodel import (
+    ProjectMemberLinkSQLModel,
+    ProjectSQLModel,
+)
 from users.domain.entities.user_entity import UserEntity, UserRole
 
 
@@ -33,8 +37,19 @@ class UserSQLModel(SQLModel, table=True):
     updated_at: datetime = Field(
         ...,
     )
+    projects: list[ProjectSQLModel] = Relationship(
+        back_populates="members", link_model=ProjectMemberLinkSQLModel
+    )
 
-    def to_entity(self) -> UserEntity:
+    def to_entity(self, include_related: bool = True) -> UserEntity:
+        """Convertit le modèle SQL en entité
+
+        Args:
+            include_related (bool, optional): Indique si les relations doivent être incluses. Defaults to True.
+
+        Returns:
+            UserEntity: Entité utilisateur
+        """
         return UserEntity(
             id=self.id,
             email=self.email,
@@ -42,4 +57,9 @@ class UserSQLModel(SQLModel, table=True):
             role=self.role,
             created_at=self.created_at,
             updated_at=self.updated_at,
+            projects=[
+                project.to_entity(include_related=False) for project in self.projects
+            ]
+            if include_related
+            else [],
         )
