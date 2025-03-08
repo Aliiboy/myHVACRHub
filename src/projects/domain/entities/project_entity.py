@@ -62,7 +62,7 @@ class ProjectEntity(BaseModel):
     members: list[UserEntityRef] = Field(default_factory=list)  # type: ignore
 
 
-class ProjectMemberLinkEntity(BaseModel):
+class ProjectAndUserJonctionTableEntity(BaseModel):
     """Entité membre du projet
 
     Représente la table de jointure entre les projets et les utilisateurs, stockant le rôle de chaque utilisateur dans un projet.

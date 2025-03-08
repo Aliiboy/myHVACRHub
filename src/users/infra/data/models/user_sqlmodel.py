@@ -5,7 +5,7 @@ from pydantic import EmailStr
 from sqlmodel import Field, Relationship, SQLModel
 
 from projects.infra.data.models.project_sqlmodel import (
-    ProjectMemberLinkSQLModel,
+    ProjectAndUserJonctionTableSQLModel,
     ProjectSQLModel,
 )
 from users.domain.entities.user_entity import UserEntity, UserRole
@@ -38,7 +38,7 @@ class UserSQLModel(SQLModel, table=True):
         ...,
     )
     projects: list[ProjectSQLModel] = Relationship(
-        back_populates="members", link_model=ProjectMemberLinkSQLModel
+        back_populates="members", link_model=ProjectAndUserJonctionTableSQLModel
     )
 
     def to_entity(self, include_related: bool = True) -> UserEntity:

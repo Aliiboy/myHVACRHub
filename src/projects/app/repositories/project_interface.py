@@ -2,8 +2,8 @@ from abc import ABC, abstractmethod
 from uuid import UUID
 
 from projects.domain.entities.project_entity import (
+    ProjectAndUserJonctionTableEntity,
     ProjectEntity,
-    ProjectMemberLinkEntity,
 )
 from users.domain.entities.user_entity import UserEntity
 
@@ -48,7 +48,7 @@ class ProjectRepositoryInterface(ABC):
     @abstractmethod
     def add_project_member(
         self, project_id: UUID, user_id: UUID
-    ) -> ProjectMemberLinkEntity:
+    ) -> ProjectAndUserJonctionTableEntity:
         """Ajoute un membre à un projet
 
         Args:

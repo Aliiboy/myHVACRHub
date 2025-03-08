@@ -5,15 +5,15 @@ from uuid import UUID
 from sqlmodel import Field, Relationship, SQLModel
 
 from projects.domain.entities.project_entity import (
+    ProjectAndUserJonctionTableEntity,
     ProjectEntity,
-    ProjectMemberLinkEntity,
 )
 
 if TYPE_CHECKING:  # pragma: no cover
     from users.infra.data.models.user_sqlmodel import UserSQLModel
 
 
-class ProjectMemberLinkSQLModel(SQLModel, table=True):
+class ProjectAndUserJonctionTableSQLModel(SQLModel, table=True):
     """Modèle SQL pour les membres du projet
 
     Représente la table de jointure entre les projets et les utilisateurs, stockant le rôle de chaque utilisateur dans un projet.
@@ -27,13 +27,13 @@ class ProjectMemberLinkSQLModel(SQLModel, table=True):
     project_id: UUID = Field(..., foreign_key="projects.id", primary_key=True)
     user_id: UUID = Field(..., foreign_key="users.id", primary_key=True)
 
-    def to_entity(self) -> ProjectMemberLinkEntity:
+    def to_entity(self) -> ProjectAndUserJonctionTableEntity:
         """Convertit le modèle SQL en entité
 
         Returns:
-            ProjectMemberLinkEntity: Entité membre du projet
+            ProjectAndUserJonctionTableEntity: Entité membre du projet
         """
-        return ProjectMemberLinkEntity(
+        return ProjectAndUserJonctionTableEntity(
             project_id=self.project_id,
             user_id=self.user_id,
         )
@@ -62,7 +62,7 @@ class ProjectSQLModel(SQLModel, table=True):
     created_at: datetime = Field(...)
     updated_at: datetime = Field(...)
     members: list["UserSQLModel"] = Relationship(
-        back_populates="projects", link_model=ProjectMemberLinkSQLModel
+        back_populates="projects", link_model=ProjectAndUserJonctionTableSQLModel
     )
 
     def to_entity(self, include_related: bool = True) -> ProjectEntity:

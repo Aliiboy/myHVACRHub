@@ -5,15 +5,15 @@ from sqlmodel import and_, asc, select
 from common.infra.data.sql_unit_of_work import SQLUnitOfWork
 from projects.app.repositories.project_interface import ProjectRepositoryInterface
 from projects.domain.entities.project_entity import (
+    ProjectAndUserJonctionTableEntity,
     ProjectEntity,
-    ProjectMemberLinkEntity,
 )
 from projects.domain.exceptions.project_exceptions import (
     ProjectDBException,
     ProjectNotFoundException,
 )
 from projects.infra.data.models.project_sqlmodel import (
-    ProjectMemberLinkSQLModel,
+    ProjectAndUserJonctionTableSQLModel,
     ProjectSQLModel,
 )
 from users.domain.entities.user_entity import UserEntity
@@ -155,7 +155,7 @@ class ProjectSQLRepository(ProjectRepositoryInterface):
 
     def add_project_member(
         self, project_id: UUID, user_id: UUID
-    ) -> ProjectMemberLinkEntity:
+    ) -> ProjectAndUserJonctionTableEntity:
         """Ajoute un membre à un projet
 
         Args:
@@ -185,9 +185,9 @@ class ProjectSQLRepository(ProjectRepositoryInterface):
                 )
 
             # Vérifier si l'utilisateur est déjà membre du projet
-            query = select(ProjectMemberLinkSQLModel).where(
-                ProjectMemberLinkSQLModel.project_id == project_id,
-                ProjectMemberLinkSQLModel.user_id == user_id,
+            query = select(ProjectAndUserJonctionTableSQLModel).where(
+                ProjectAndUserJonctionTableSQLModel.project_id == project_id,
+                ProjectAndUserJonctionTableSQLModel.user_id == user_id,
             )
             existing_member = uow.session.exec(query).first()
             if existing_member:
@@ -196,7 +196,7 @@ class ProjectSQLRepository(ProjectRepositoryInterface):
                 )
 
             # Ajouter le membre au projet
-            member = ProjectMemberLinkSQLModel(
+            member = ProjectAndUserJonctionTableSQLModel(
                 project_id=project_id,
                 user_id=user_id,
             )
@@ -224,9 +224,9 @@ class ProjectSQLRepository(ProjectRepositoryInterface):
                 )
 
             # Vérifier si l'utilisateur est membre du projet
-            query = select(ProjectMemberLinkSQLModel).where(
-                ProjectMemberLinkSQLModel.project_id == project_id,
-                ProjectMemberLinkSQLModel.user_id == user_id,
+            query = select(ProjectAndUserJonctionTableSQLModel).where(
+                ProjectAndUserJonctionTableSQLModel.project_id == project_id,
+                ProjectAndUserJonctionTableSQLModel.user_id == user_id,
             )
             member = uow.session.exec(query).first()
             if not member:
@@ -290,10 +290,13 @@ class ProjectSQLRepository(ProjectRepositoryInterface):
             query = (
                 select(ProjectSQLModel)
                 .join(
-                    ProjectMemberLinkSQLModel,
-                    and_(ProjectSQLModel.id == ProjectMemberLinkSQLModel.project_id),
+                    ProjectAndUserJonctionTableSQLModel,
+                    and_(
+                        ProjectSQLModel.id
+                        == ProjectAndUserJonctionTableSQLModel.project_id
+                    ),
                 )
-                .where(ProjectMemberLinkSQLModel.user_id == user_id)
+                .where(ProjectAndUserJonctionTableSQLModel.user_id == user_id)
             )
             projects = uow.session.exec(query).all()
             return [project.to_entity() for project in projects]
@@ -321,8 +324,8 @@ class ProjectSQLRepository(ProjectRepositoryInterface):
             # Récupérer les membres du projet
             query = (
                 select(UserSQLModel)
-                .join(ProjectMemberLinkSQLModel)
-                .where(ProjectMemberLinkSQLModel.project_id == project_id)
+                .join(ProjectAndUserJonctionTableSQLModel)
+                .where(ProjectAndUserJonctionTableSQLModel.project_id == project_id)
             )
             members = uow.session.exec(query).all()
             return [member.to_entity(include_related=False) for member in members]
