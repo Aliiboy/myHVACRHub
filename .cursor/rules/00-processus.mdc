@@ -1,6 +1,6 @@
 ---
 description: processus
-globs: 
+globs: *.py
 alwaysApply: true
 ---
 ## MISSION

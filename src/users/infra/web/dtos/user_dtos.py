@@ -60,7 +60,7 @@ class UserPath(BaseModel):
         BaseModel (BaseModel): Schéma de validation du chemin de l'utilisateur
     """
 
-    id: UUID = Field(..., description="identificant unique de l'utilisateur")
+    id: UUID = Field(..., description="Identifiant unique de l'utilisateur")
 
 
 # === responses ===

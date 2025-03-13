@@ -4,6 +4,16 @@ from common.infra.data.sql_database import SQLDatabase
 from common.infra.data.sql_unit_of_work import SQLUnitOfWork
 from common.infra.web.settings import AppSettings
 from humid_air.app.usecases.get_ha_props import GetHumidAirPropertyUseCase
+from projects.app.usecases.add_project_member import AddProjectMemberUseCase
+from projects.app.usecases.create_project import CreateProjectUseCase
+from projects.app.usecases.delete_project import DeleteProjectUseCase
+from projects.app.usecases.get_all_projects import GetAllProjectsUseCase
+from projects.app.usecases.get_project_by_id import GetProjectByIdUseCase
+from projects.app.usecases.get_project_members import GetProjectMembersUseCase
+from projects.app.usecases.get_user_projects import GetUserProjectsUseCase
+from projects.app.usecases.remove_project_member import RemoveProjectMemberUseCase
+from projects.app.usecases.update_project import UpdateProjectUseCase
+from projects.infra.data.repositories.project_sqlrepo import ProjectSQLRepository
 from users.app.usecases.delete_user import DeleteUserByIdUsecase
 from users.app.usecases.get_all_users import GetAllUsersUsecase
 from users.app.usecases.get_user_profile import GetUserProfileUseCase
@@ -25,6 +35,7 @@ class AppContainer(containers.DeclarativeContainer):
         modules=[
             "humid_air.infra.web.api.v1.humid_air_routes",
             "users.infra.web.api.v1.user_routes",
+            "projects.infra.web.api.v1.project_routes",
         ]
     )
 
@@ -70,4 +81,40 @@ class AppContainer(containers.DeclarativeContainer):
             GetUserProfileUseCase, repository=user_repository
         ),
         get_all_users=providers.Factory(GetAllUsersUsecase, repository=user_repository),
+    )
+
+    # === project module ===
+    # repositories
+    project_repository = providers.Factory(
+        ProjectSQLRepository, unit_of_work=unit_of_work
+    )
+    # usecases
+    project_usecases = providers.Dict(
+        create_project=providers.Factory(
+            CreateProjectUseCase, repository=project_repository
+        ),
+        get_project_by_id=providers.Factory(
+            GetProjectByIdUseCase, repository=project_repository
+        ),
+        get_all_projects=providers.Factory(
+            GetAllProjectsUseCase, repository=project_repository
+        ),
+        update_project=providers.Factory(
+            UpdateProjectUseCase, repository=project_repository
+        ),
+        delete_project=providers.Factory(
+            DeleteProjectUseCase, repository=project_repository
+        ),
+        add_project_member=providers.Factory(
+            AddProjectMemberUseCase, repository=project_repository
+        ),
+        remove_project_member=providers.Factory(
+            RemoveProjectMemberUseCase, repository=project_repository
+        ),
+        get_project_members=providers.Factory(
+            GetProjectMembersUseCase, repository=project_repository
+        ),
+        get_user_projects=providers.Factory(
+            GetUserProjectsUseCase, repository=project_repository
+        ),
     )

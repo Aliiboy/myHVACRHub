@@ -68,3 +68,23 @@ class ProjectValidationException(ProjectException):
             for err in errors
         ]
         super().__init__("ProjectValidationException")
+
+
+class ProjectMemberValidationException(ProjectException):
+    """Exception pour la validation d'un membre de projet
+
+    Args:
+        ProjectException (ProjectException): Exception de base pour les projets
+    """
+
+    def __init__(self, errors: list[ErrorDetails]):
+        """Initialise l'exception
+
+        Args:
+            errors (list[ErrorDetails]): Liste des erreurs de validation
+        """
+        self.errors = [
+            {"field": ".".join(map(str, err["loc"])), "message": err["msg"]}
+            for err in errors
+        ]
+        super().__init__("ProjectMemberValidationException")

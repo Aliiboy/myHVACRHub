@@ -22,15 +22,20 @@ Ce projet utilise les bibliothèques suivantes :
 COMMON :
 - Créer des README par module
 - Systeme de cache dans pour la db.
+- faire la chasse au "delete" et "remove", choisir 1 mot sur les 2.
 HUMID AIR :
 - Doc string in humid_air.
 PROJECTS : 
 - UseCase : Faire lever ValidationException de Pydantic.
 - Routes !!!.
+- Dto : exporter des strings dans ProjetSettings
 - Integrer les roles (propriétaire et membres).
-- 100% coverage.
+- en fonction des role (moderator, user, admin), controller les niveaux d'accés des routes.
+- Generer les tests avec 100% coverage.
+- Update Project : sortir le uuid du schéma, le mettre en paramètre à part (à l'aide de Path), ensuite la modification du projet pourra se faire mais sans changer le UUID.
 USERS :
 - Update user.
+- route sign_in : manque ValidationError ?
 - voir les projets des utilisateurs (membre et propriétaire) ?.
 - Changer les exceptions de users.
 - Interdir la suppression d'un utilisateur s'il est proprietaire d'un projet.
