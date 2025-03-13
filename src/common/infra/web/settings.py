@@ -12,7 +12,7 @@ class AppSettings(BaseSettings):
     """
 
     # general
-    APP_NAME: str = Field(default="myHVACRHub api", description="Nom de l'application")
+    APP_NAME: str = Field(default="myHVACRHub", description="Nom de l'application")
     APP_VERSION: str = Field(default="0.0.1", description="Version de l'application")
 
     # server
