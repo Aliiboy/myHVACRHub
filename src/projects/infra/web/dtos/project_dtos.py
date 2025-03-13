@@ -80,7 +80,7 @@ class GetAllProjectsQueryParams(BaseModel):
     )
 
 
-class ProjectMemberRequest(BaseModel):
+class ProjectAddMemberRequest(BaseModel):
     """Schéma de validation pour ajouter un membre à un projet
 
     Args:

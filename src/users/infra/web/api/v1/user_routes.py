@@ -70,8 +70,8 @@ def sign_up(
         Response: Réponse de succès ou d'erreur
     """
     try:
-        request = UserSignUpSchema(email=body.email, password=body.password)
-        use_case.execute(request)
+        schema = UserSignUpSchema(email=body.email, password=body.password)
+        use_case.execute(schema=schema)
         return SuccessResponse(
             code=HTTPStatus.CREATED, message="Utilisateur créé avec succès."
         ).to_response()
@@ -111,7 +111,7 @@ def delete_user_by_id(
         Response: Réponse de succès ou d'erreur
     """
     try:
-        use_case.execute(path.id)
+        use_case.execute(user_id=path.id)
         return SuccessResponse(
             code=HTTPStatus.OK, message="Utilisateur supprimé avec succès."
         ).to_response()
@@ -143,8 +143,8 @@ def login(
         Response: Réponse de succès ou d'erreur
     """
     try:
-        request = UserLoginSchema(email=body.email, password=body.password)
-        token = use_case.execute(request)
+        schema = UserLoginSchema(email=body.email, password=body.password)
+        token = use_case.execute(schema=schema)
         return UserLoginResponse(access_token=token).to_response()
 
     except UserValidationException as e:
@@ -184,7 +184,7 @@ def get_user_profile(
     """
     user_id = UUID(get_jwt().get("sub"))
     try:
-        user = use_case.execute(user_id)
+        user = use_case.execute(user_id=user_id)
         return GetUserResponse.model_validate(user.model_dump()).to_response()
 
     except UserDBException as e:

@@ -35,9 +35,9 @@ from projects.infra.web.dtos.project_dtos import (
     GetProjectMembersResponse,
     GetProjectResponse,
     GetUserResponse,
+    ProjectAddMemberRequest,
     ProjectCreateRequest,
     ProjectMemberPath,
-    ProjectMemberRequest,
     ProjectPath,
     ProjectUpdateRequest,
 )
@@ -205,7 +205,7 @@ def update_project(
             name=body.name,
             description=body.description,
         )
-        updated_project = use_case.execute(schema)
+        updated_project = use_case.execute(schema=schema)
         return GetProjectResponse.model_validate(
             updated_project.model_dump()
         ).to_response()
@@ -247,7 +247,7 @@ def delete_project(
         Response: Réponse de succès ou d'erreur
     """
     try:
-        use_case.execute(path.id)
+        use_case.execute(project_id=path.id)
         return SuccessResponse(
             code=HTTPStatus.OK, message="Projet supprimé avec succès."
         ).to_response()
@@ -257,7 +257,7 @@ def delete_project(
 
 
 @router.post(
-    "/<uuid:project_id>/members",
+    "/<uuid:id>/members",
     description="Permet d'ajouter un membre à un projet.",
     security=security,
     responses={
@@ -270,7 +270,7 @@ def delete_project(
 @cast("Callable[..., Response]", jwt_required())
 def add_project_member(
     path: ProjectPath,
-    body: ProjectMemberRequest,
+    body: ProjectAddMemberRequest,
     use_case: AddProjectMemberUseCase = Provide[
         AppContainer.project_usecases.provided["add_project_member"]
     ],
@@ -279,7 +279,7 @@ def add_project_member(
 
     Args:
         path (ProjectPath): Chemin avec l'identifiant du projet
-        body (ProjectMemberRequest): Schéma de validation pour l'ajout d'un membre
+        body (ProjectAddMemberRequest): Corps de la requête contenant l'identifiant de l'utilisateur
         use_case (AddProjectMemberUseCase, optional): Cas d'utilisation pour ajouter un membre à un projet.
 
     Returns:
@@ -287,7 +287,7 @@ def add_project_member(
     """
     try:
         schema = ProjectAddMemberSchema(project_id=path.id, user_id=body.user_id)
-        use_case.execute(schema)
+        use_case.execute(schema=schema)
         return SuccessResponse(
             code=HTTPStatus.CREATED, message="Membre ajouté au projet avec succès."
         ).to_response()
@@ -328,7 +328,7 @@ def remove_project_member(
         Response: Réponse de succès ou d'erreur
     """
     try:
-        use_case.execute(path.project_id, path.user_id)
+        use_case.execute(project_id=path.project_id, user_id=path.user_id)
         return SuccessResponse(
             code=HTTPStatus.OK, message="Membre supprimé du projet avec succès."
         ).to_response()
@@ -364,7 +364,7 @@ def get_project_members(
         Response: Réponse de succès ou d'erreur
     """
     try:
-        members = use_case.execute(path.id)
+        members = use_case.execute(project_id=path.id)
         members_response = [
             GetUserResponse(id=member.id, email=member.email, role=member.role.value)
             for member in members
@@ -401,7 +401,7 @@ def get_user_projects(
     """
     try:
         user_id = UUID(get_jwt().get("sub"))
-        projects = use_case.execute(user_id)
+        projects = use_case.execute(user_id=user_id)
         projects_response = [
             GetProjectResponse.model_validate(project.model_dump())
             for project in projects

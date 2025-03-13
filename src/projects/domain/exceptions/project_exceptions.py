@@ -34,22 +34,6 @@ class ProjectDBException(ProjectException):
         super().__init__(message=message)
 
 
-class ProjectNotFoundException(ProjectException):
-    """Exception pour un projet non trouvé
-
-    Args:
-        ProjectException (ProjectException): Exception de base pour les projets
-    """
-
-    def __init__(self, message: str = "Projet non trouvé") -> None:
-        """Initialise l'exception
-
-        Args:
-            message (str, optional): Message d'erreur. Defaults to "Projet non trouvé".
-        """
-        super().__init__(message=message)
-
-
 class ProjectValidationException(ProjectException):
     """Exception pour la validation d'un projet
 

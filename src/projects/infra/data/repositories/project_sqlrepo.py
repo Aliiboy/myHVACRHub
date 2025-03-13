@@ -10,7 +10,6 @@ from projects.domain.entities.project_entity import (
 )
 from projects.domain.exceptions.project_exceptions import (
     ProjectDBException,
-    ProjectNotFoundException,
 )
 from projects.infra.data.models.project_sqlmodel import (
     ProjectAndUserJonctionTableSQLModel,
@@ -89,12 +88,12 @@ class ProjectSQLRepository(ProjectRepositoryInterface):
             project_id (UUID): Identifiant du projet à supprimer
 
         Raises:
-            ProjectNotFoundException: Le projet n'existe pas
+            ProjectDBException: Le projet n'existe pas
         """
         with self.unit_of_work as uow:
             project_to_delete = uow.session.get(ProjectSQLModel, project_id)
             if not project_to_delete:
-                raise ProjectNotFoundException(
+                raise ProjectDBException(
                     message=f"Le projet avec l'id '{project_id}' n'existe pas."
                 )
             uow.session.delete(project_to_delete)
@@ -107,7 +106,6 @@ class ProjectSQLRepository(ProjectRepositoryInterface):
             schema (ProjectEntity): Projet à mettre à jour
 
         Raises:
-            ProjectNotFoundException: Le projet n'existe pas
             ProjectDBException: Exception de base de données
 
         Returns:
@@ -116,7 +114,7 @@ class ProjectSQLRepository(ProjectRepositoryInterface):
         with self.unit_of_work as uow:
             project_to_update = uow.session.get(ProjectSQLModel, schema.id)
             if not project_to_update:
-                raise ProjectNotFoundException(
+                raise ProjectDBException(
                     message=f"Le projet avec l'id '{schema.id}' n'existe pas."
                 )
 
@@ -163,7 +161,6 @@ class ProjectSQLRepository(ProjectRepositoryInterface):
             user_id (UUID): Identifiant de l'utilisateur à ajouter
 
         Raises:
-            ProjectNotFoundException: Le projet n'existe pas
             ProjectDBException: Exception de base de données
 
         Returns:
@@ -173,7 +170,7 @@ class ProjectSQLRepository(ProjectRepositoryInterface):
             # Vérifier si le projet existe
             project = uow.session.get(ProjectSQLModel, project_id)
             if not project:
-                raise ProjectNotFoundException(
+                raise ProjectDBException(
                     message=f"Le projet avec l'id '{project_id}' n'existe pas."
                 )
 
@@ -212,14 +209,14 @@ class ProjectSQLRepository(ProjectRepositoryInterface):
             user_id (UUID): Identifiant de l'utilisateur à supprimer
 
         Raises:
-            ProjectNotFoundException: Le projet n'existe pas
+            ProjectDBException: Le projet n'existe pas
             ProjectDBException: Le membre n'existe pas
         """
         with self.unit_of_work as uow:
             # Vérifier si le projet existe
             project = uow.session.get(ProjectSQLModel, project_id)
             if not project:
-                raise ProjectNotFoundException(
+                raise ProjectDBException(
                     message=f"Le projet avec l'id '{project_id}' n'existe pas."
                 )
 
@@ -246,7 +243,7 @@ class ProjectSQLRepository(ProjectRepositoryInterface):
             project_id (UUID): Identifiant du projet à récupérer
 
         Raises:
-            ProjectNotFoundException: Le projet n'existe pas
+            ProjectDBException: Le projet n'existe pas
 
         Returns:
             ProjectEntity: Projet récupéré
@@ -254,7 +251,7 @@ class ProjectSQLRepository(ProjectRepositoryInterface):
         with self.unit_of_work as uow:
             project = uow.session.get(ProjectSQLModel, project_id)
             if not project:
-                raise ProjectNotFoundException(
+                raise ProjectDBException(
                     message=f"Le projet avec l'id '{project_id}' n'existe pas."
                 )
 
@@ -308,7 +305,7 @@ class ProjectSQLRepository(ProjectRepositoryInterface):
             project_id (UUID): Identifiant du projet
 
         Raises:
-            ProjectNotFoundException: Le projet n'existe pas
+            ProjectDBException: Le projet n'existe pas
 
         Returns:
             list[UserEntity]: Liste des membres du projet
@@ -317,7 +314,7 @@ class ProjectSQLRepository(ProjectRepositoryInterface):
             # Vérifier si le projet existe
             project = uow.session.get(ProjectSQLModel, project_id)
             if not project:
-                raise ProjectNotFoundException(
+                raise ProjectDBException(
                     message=f"Le projet avec l'id '{project_id}' n'existe pas."
                 )
 
