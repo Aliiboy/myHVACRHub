@@ -4,7 +4,6 @@ from common.tests.repositories.base_repo_test import BaseRepositoryTest
 from projects.domain.entities.project_entity import ProjectEntity
 from projects.domain.exceptions.project_exceptions import (
     ProjectDBException,
-    ProjectNotFoundException,
 )
 from projects.infra.data.repositories.project_sqlrepo import ProjectSQLRepository
 from users.domain.entities.user_entity import UserEntity
@@ -83,7 +82,7 @@ class RemoveProjectMemberSQLRepositoryTests(BaseRepositoryTest):
         Returns:
             None
         """
-        with self.assertRaises(ProjectNotFoundException) as context:
+        with self.assertRaises(ProjectDBException) as context:
             non_existent_project_id: UUID = uuid4()
             self.project_repository.remove_project_member(
                 project_id=non_existent_project_id,
@@ -91,7 +90,7 @@ class RemoveProjectMemberSQLRepositoryTests(BaseRepositoryTest):
             )
 
         expected_message = f"ProjectException : Le projet avec l'id '{non_existent_project_id}' n'existe pas."
-        self.assertIsInstance(context.exception, ProjectNotFoundException)
+        self.assertIsInstance(context.exception, ProjectDBException)
         self.assertEqual(str(context.exception), expected_message)
 
     def test_remove_project_member_not_a_member(self) -> None:

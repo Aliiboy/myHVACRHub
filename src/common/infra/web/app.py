@@ -1,7 +1,11 @@
+from http import HTTPStatus
+
 from dependency_injector.wiring import Provide, inject
+from flask import Response, jsonify
 from flask_jwt_extended import JWTManager
 from flask_openapi3 import OpenAPI, Server  # type: ignore[attr-defined]
 from flask_openapi3.models.info import Info
+from werkzeug.exceptions import HTTPException
 
 from common.infra.web.api.v1.router import routers as routers_v1
 from common.infra.web.container import AppContainer
@@ -41,6 +45,20 @@ class WebApp:
             security_schemes=security_schemes,  # type: ignore[arg-type]
             doc_prefix="/",
         )
+
+        # error handlers
+        @self.app.errorhandler(Exception)
+        def handle_exception(e: Exception) -> tuple[Response, int]:
+            """Handle all exceptions."""
+            if isinstance(e, HTTPException):
+                response = jsonify(message=str(e))
+                response.status_code = (
+                    e.code if e.code else HTTPStatus.INTERNAL_SERVER_ERROR
+                )
+            else:
+                response = jsonify(message=str(e))
+                response.status_code = HTTPStatus.INTERNAL_SERVER_ERROR
+            return response, response.status_code
 
         # jwt
         self.app.config["JWT_SECRET_KEY"] = self.settings.JWT_SECRET_KEY

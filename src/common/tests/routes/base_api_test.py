@@ -53,6 +53,8 @@ class BaseAPITest(unittest.TestCase):
         """Ferme la session et nettoie la base après chaque test."""
         self.session_context.__exit__(None, None, None)
         with self.database.get_session() as session:
+            session.execute(text("DELETE FROM project_members_links"))
+            session.execute(text("DELETE FROM projects"))
             session.execute(text("DELETE FROM users"))
             session.commit()
 

@@ -1,10 +1,10 @@
+from datetime import timezone
 from uuid import uuid4
 
 from common.tests.repositories.base_repo_test import BaseRepositoryTest
 from projects.domain.entities.project_entity import ProjectEntity
 from projects.domain.exceptions.project_exceptions import (
     ProjectDBException,
-    ProjectNotFoundException,
 )
 from projects.infra.data.repositories.project_sqlrepo import ProjectSQLRepository
 from users.domain.entities.user_entity import UserEntity
@@ -75,6 +75,21 @@ class UpdateProjectSQLRepositoryTests(BaseRepositoryTest):
         self.assertEqual(updated_project.name, result.name)
         self.assertEqual(updated_project.description, result.description)
 
+        # Vérifier que les timestamps sont correctement mis à jour
+        self.assertNotEqual(result.created_at, result.updated_at)
+        # Convertir les dates en UTC si nécessaire
+        created_at_utc = (
+            result.created_at.replace(tzinfo=timezone.utc)
+            if result.created_at.tzinfo is None
+            else result.created_at
+        )
+        updated_at_utc = (
+            result.updated_at.replace(tzinfo=timezone.utc)
+            if result.updated_at.tzinfo is None
+            else result.updated_at
+        )
+        self.assertGreater(updated_at_utc, created_at_utc)
+
         # Récupérer le projet pour vérifier que les modifications ont été enregistrées
         retrieved_project = self.project_repository.get_project_by_id(self.project.id)
         self.assertEqual(
@@ -82,6 +97,19 @@ class UpdateProjectSQLRepositoryTests(BaseRepositoryTest):
         )
         self.assertEqual(updated_project.name, retrieved_project.name)
         self.assertEqual(updated_project.description, retrieved_project.description)
+        self.assertNotEqual(retrieved_project.created_at, retrieved_project.updated_at)
+        # Convertir les dates en UTC si nécessaire
+        retrieved_created_at_utc = (
+            retrieved_project.created_at.replace(tzinfo=timezone.utc)
+            if retrieved_project.created_at.tzinfo is None
+            else retrieved_project.created_at
+        )
+        retrieved_updated_at_utc = (
+            retrieved_project.updated_at.replace(tzinfo=timezone.utc)
+            if retrieved_project.updated_at.tzinfo is None
+            else retrieved_project.updated_at
+        )
+        self.assertGreater(retrieved_updated_at_utc, retrieved_created_at_utc)
 
     def test_update_project_not_found(self) -> None:
         """Test de la mise à jour d'un projet qui n'existe pas
@@ -98,11 +126,11 @@ class UpdateProjectSQLRepositoryTests(BaseRepositoryTest):
         )
 
         # Tenter de mettre à jour le projet
-        with self.assertRaises(ProjectNotFoundException) as context:
+        with self.assertRaises(ProjectDBException) as context:
             self.project_repository.update_project(non_existent_project)
 
         expected_message = f"ProjectException : Le projet avec l'id '{non_existent_project.id}' n'existe pas."
-        self.assertIsInstance(context.exception, ProjectNotFoundException)
+        self.assertIsInstance(context.exception, ProjectDBException)
         self.assertEqual(str(context.exception), expected_message)
 
     def test_update_project_duplicate_name(self) -> None:

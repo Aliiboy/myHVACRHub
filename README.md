@@ -15,9 +15,12 @@ Ce projet utilise les bibliothèques suivantes :
 
 ## ✅ TODO
 COMMON :
+- MONO REPO SUR RAILWAY
 - Créer des README par module
 - Systeme de cache dans pour la db.
 - faire la chasse au "delete" et "remove", choisir 1 mot sur les 2.
+- Au niveau des test : "Test" doit etre en prefixe ou en suffixe. Tout mettre en pré-fixe.
+- 100% de coverage sur les tests end-to-end.
 
 HUMID AIR :
 - Doc string in humid_air.
@@ -34,6 +37,7 @@ PROJECTS :
 - en fonction des role (moderator, user, admin), controller les niveaux d'accés des routes.
 - Generer les tests avec 100% coverage.
 - Update Project : sortir le uuid du schéma, le mettre en paramètre à part (à l'aide de Path), ensuite la modification du projet pourra se faire mais sans changer le UUID.
+- TEST DES ROUTES : Raise ProjectMemberValidationException
 
 USERS :
 - UserLoginRequest : password pattern ?

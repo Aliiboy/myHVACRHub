@@ -62,7 +62,7 @@ router = APIBlueprint(
     description="Permet de créer un nouveau projet.",
     security=security,
     responses={
-        HTTPStatus.CREATED: GetProjectResponse,
+        HTTPStatus.CREATED: SuccessResponse,
         HTTPStatus.UNPROCESSABLE_ENTITY: ErrorResponse,
     },
 )
@@ -89,8 +89,10 @@ def create_project(
             name=body.name,
             description=body.description,
         )
-        project = use_case.execute(schema)
-        return GetProjectResponse.model_validate(project.model_dump()).to_response()
+        use_case.execute(schema)
+        return SuccessResponse(
+            code=HTTPStatus.CREATED, message="Projet créé avec succès."
+        ).to_response()
 
     except ProjectValidationException as e:
         return ErrorResponse(

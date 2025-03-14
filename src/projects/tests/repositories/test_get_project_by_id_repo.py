@@ -2,7 +2,9 @@ from uuid import UUID, uuid4
 
 from common.tests.repositories.base_repo_test import BaseRepositoryTest
 from projects.domain.entities.project_entity import ProjectEntity
-from projects.domain.exceptions.project_exceptions import ProjectNotFoundException
+from projects.domain.exceptions.project_exceptions import (
+    ProjectDBException,
+)
 from projects.infra.data.repositories.project_sqlrepo import ProjectSQLRepository
 from users.domain.entities.user_entity import UserEntity
 from users.infra.data.repositories.user_sqlrepo import UserSQLRepository
@@ -60,12 +62,12 @@ class GetProjectByIdSQLRepositoryTests(BaseRepositoryTest):
         Returns:
             None
         """
-        with self.assertRaises(ProjectNotFoundException) as context:
+        with self.assertRaises(ProjectDBException) as context:
             wrong_id: UUID = uuid4()
             self.project_repository.get_project_by_id(wrong_id)
 
         expected_message = (
             f"ProjectException : Le projet avec l'id '{wrong_id}' n'existe pas."
         )
-        self.assertIsInstance(context.exception, ProjectNotFoundException)
+        self.assertIsInstance(context.exception, ProjectDBException)
         self.assertEqual(str(context.exception), expected_message)
