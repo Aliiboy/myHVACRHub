@@ -15,12 +15,14 @@ Ce projet utilise les bibliothèques suivantes :
 
 ## ✅ TODO
 COMMON :
+- Verifier la définition des routes "/project/create" ou "/project/" par exemple.
 - MONO REPO SUR RAILWAY
 - Créer des README par module
 - Systeme de cache dans pour la db.
 - faire la chasse au "delete" et "remove", choisir 1 mot sur les 2.
 - Au niveau des test : "Test" doit etre en prefixe ou en suffixe. Tout mettre en pré-fixe.
 - 100% de coverage sur les tests end-to-end.
+- Passer avec controller et presenter.
 
 HUMID AIR :
 - Doc string in humid_air.
