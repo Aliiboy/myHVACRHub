@@ -1,12 +1,12 @@
 from uuid import UUID, uuid4
 
-from common.tests.repositories.base_repo_test import BaseRepositoryTest
+from common.tests.repositories.test_base_repo import TestBaseRepository
 from users.domain.entities.user_entity import UserEntity
 from users.domain.exceptions.user_exceptions import UserDBException
 from users.infra.data.repositories.user_sqlrepo import UserSQLRepository
 
 
-class DeleteUserByIdSQLRepositoryTests(BaseRepositoryTest):
+class TestDeleteUserByIdSQLRepository(TestBaseRepository):
     """Test de la suppression d'un utilisateur par son id
 
     Args:
@@ -49,7 +49,7 @@ class DeleteUserByIdSQLRepositoryTests(BaseRepositoryTest):
             self.user_repository.delete_user_by_id(wrong_id)
 
         expected_message = (
-            f"UserDBException : L'utilisateur avec l'id '{wrong_id}' n'existe pas."
+            f"UserException : L'utilisateur avec l'id '{wrong_id}' n'existe pas."
         )
         self.assertIsInstance(context.exception, UserDBException)
         self.assertEqual(str(context.exception), expected_message)

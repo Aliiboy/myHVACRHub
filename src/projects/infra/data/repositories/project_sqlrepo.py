@@ -7,6 +7,7 @@ from projects.app.repositories.project_interface import ProjectRepositoryInterfa
 from projects.domain.entities.project_entity import (
     ProjectAndUserJonctionTableEntity,
     ProjectEntity,
+    ProjectMemberRole,
 )
 from projects.domain.exceptions.project_exceptions import (
     ProjectDBException,
@@ -35,11 +36,12 @@ class ProjectSQLRepository(ProjectRepositoryInterface):
         self.unit_of_work = unit_of_work
 
     # write
-    def create_project(self, schema: ProjectEntity) -> ProjectEntity:
+    def create_project(self, schema: ProjectEntity, creator_id: UUID) -> ProjectEntity:
         """Crée un nouveau projet
 
         Args:
             schema (ProjectEntity): Projet à créer
+            creator_id (UUID): Identifiant de l'utilisateur créateur
 
         Raises:
             ProjectDBException: Exception de base de données
@@ -68,6 +70,13 @@ class ProjectSQLRepository(ProjectRepositoryInterface):
                     message=f"Un projet avec le numéro '{schema.project_number}' existe déjà."
                 )
 
+            # Vérifier si l'utilisateur créateur existe
+            creator = uow.session.get(UserSQLModel, creator_id)
+            if not creator:
+                raise ProjectDBException(
+                    message=f"L'utilisateur avec l'id '{creator_id}' n'existe pas."
+                )
+
             # Créer le projet
             query = ProjectSQLModel(
                 id=schema.id,
@@ -79,6 +88,16 @@ class ProjectSQLRepository(ProjectRepositoryInterface):
             )
             uow.session.add(query)
             uow.session.flush()
+
+            # Ajouter le créateur comme membre avec le rôle ADMIN
+            member = ProjectAndUserJonctionTableSQLModel(
+                project_id=schema.id,
+                user_id=creator_id,
+                role=ProjectMemberRole.ADMIN.value,
+            )
+            uow.session.add(member)
+            uow.session.flush()
+
             return query.to_entity()
 
     def delete_project_by_id(self, project_id: UUID) -> None:
@@ -152,13 +171,17 @@ class ProjectSQLRepository(ProjectRepositoryInterface):
             return project_to_update.to_entity()
 
     def add_project_member(
-        self, project_id: UUID, user_id: UUID
+        self,
+        project_id: UUID,
+        user_id: UUID,
+        role: ProjectMemberRole,
     ) -> ProjectAndUserJonctionTableEntity:
         """Ajoute un membre à un projet
 
         Args:
             project_id (UUID): Identifiant du projet
             user_id (UUID): Identifiant de l'utilisateur à ajouter
+            role (ProjectMemberRole): Rôle de l'utilisateur dans le projet
 
         Raises:
             ProjectDBException: Exception de base de données
@@ -196,12 +219,13 @@ class ProjectSQLRepository(ProjectRepositoryInterface):
             member = ProjectAndUserJonctionTableSQLModel(
                 project_id=project_id,
                 user_id=user_id,
+                role=role.value,
             )
             uow.session.add(member)
             uow.session.flush()
             return member.to_entity()
 
-    def remove_project_member(self, project_id: UUID, user_id: UUID) -> None:
+    def delete_project_member(self, project_id: UUID, user_id: UUID) -> None:
         """Supprime un membre d'un projet
 
         Args:

@@ -3,7 +3,7 @@ import unittest
 from humid_air.domain.entities.humid_air_entity import HumidAirEntity
 
 
-class HumidAirEntityTests(unittest.TestCase):
+class TestHumidAirEntity(unittest.TestCase):
     def setUp(self) -> None:
         self.humid_air = HumidAirEntity(temp_dry_bulb=20, relative_humidity=50)
 

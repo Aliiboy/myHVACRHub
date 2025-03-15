@@ -70,7 +70,9 @@ class ProjectAndUserJonctionTableEntity(BaseModel):
     Attributs:
         project_id (UUID): ID du projet associé
         user_id (UUID): ID de l'utilisateur associé
+        role (ProjectMemberRole): Rôle de l'utilisateur dans le projet
     """
 
     project_id: UUID
     user_id: UUID
+    role: ProjectMemberRole = Field(default=ProjectMemberRole.MEMBER)

@@ -1,9 +1,9 @@
 from http import HTTPStatus
 
-from common.tests.routes.base_api_test import BaseAPITest
+from common.tests.routes.test_base_api import TestBaseAPI
 
 
-class CreateProjectRouteTests(BaseAPITest):
+class TestCreateProjectRoute(TestBaseAPI):
     """Test de création d'un projet
 
     Args:
@@ -51,7 +51,7 @@ class CreateProjectRouteTests(BaseAPITest):
             None
         """
         response = self.client.post(
-            "/v1/projects/",
+            "/v1/projects/create_project",
             json=self.valid_project,
             headers={"Authorization": f"Bearer {self.token}"},
         )
@@ -66,7 +66,7 @@ class CreateProjectRouteTests(BaseAPITest):
             None
         """
         response = self.client.post(
-            "/v1/projects/",
+            "/v1/projects/create_project",
             json=self.valid_project,
         )
 
@@ -80,14 +80,14 @@ class CreateProjectRouteTests(BaseAPITest):
         """
         # Crée un premier projet
         self.client.post(
-            "/v1/projects/",
+            "/v1/projects/create_project",
             json=self.valid_project,
             headers={"Authorization": f"Bearer {self.token}"},
         )
 
         # Tente de créer un second projet avec le même numéro
         response = self.client.post(
-            "/v1/projects/",
+            "/v1/projects/create_project",
             json=self.valid_project,
             headers={"Authorization": f"Bearer {self.token}"},
         )
@@ -101,7 +101,7 @@ class CreateProjectRouteTests(BaseAPITest):
             None
         """
         response = self.client.post(
-            "/v1/projects/",
+            "/v1/projects/create_project",
             json=self.project_with_long_fields,
             headers={"Authorization": f"Bearer {self.token}"},
         )
@@ -115,7 +115,7 @@ class CreateProjectRouteTests(BaseAPITest):
             None
         """
         response = self.client.post(
-            "/v1/projects/",
+            "/v1/projects/create_project",
             json=self.invalid_project,
             headers={"Authorization": f"Bearer {self.token}"},
         )

@@ -5,7 +5,11 @@ from uuid import UUID
 from flask import Response, jsonify, make_response
 from pydantic import BaseModel, Field
 
-from projects.domain.settings.project_settings import ProjectSettings
+from projects.domain.entities.project_entity import ProjectMemberRole
+from projects.domain.settings.project_settings import (
+    ProjectMemberSettings,
+    ProjectSettings,
+)
 
 # === requests ===
 
@@ -20,17 +24,17 @@ class ProjectCreateRequest(BaseModel):
     project_number: str = Field(
         ...,
         max_length=ProjectSettings.project_number_max_length,
-        description="Numéro du projet utilisé comme identifiant par l'entreprise",
+        description=ProjectSettings.project_number_description,
     )
     name: str = Field(
         ...,
         max_length=ProjectSettings.name_max_length,
-        description="Nom du projet",
+        description=ProjectSettings.name_description,
     )
     description: str = Field(
         ...,
         max_length=ProjectSettings.description_max_length,
-        description="Description du projet",
+        description=ProjectSettings.description_description,
     )
 
 
@@ -44,17 +48,17 @@ class ProjectUpdateRequest(BaseModel):
     project_number: str = Field(
         ...,
         max_length=ProjectSettings.project_number_max_length,
-        description="Numéro du projet utilisé comme identifiant par l'entreprise",
+        description=ProjectSettings.project_number_description,
     )
     name: str = Field(
         ...,
         max_length=ProjectSettings.name_max_length,
-        description="Nom du projet",
+        description=ProjectSettings.name_description,
     )
     description: str = Field(
         ...,
         max_length=ProjectSettings.description_max_length,
-        description="Description du projet",
+        description=ProjectSettings.description_description,
     )
 
 
@@ -65,7 +69,7 @@ class ProjectPath(BaseModel):
         BaseModel (BaseModel): Schéma de validation du chemin pour un projet
     """
 
-    id: UUID = Field(..., description="Identifiant unique du projet")
+    id: UUID = Field(..., description=ProjectSettings.project_id_description)
 
 
 class GetAllProjectsQueryParams(BaseModel):
@@ -76,7 +80,9 @@ class GetAllProjectsQueryParams(BaseModel):
     """
 
     limit: int = Field(
-        default=100, gt=0, description="Nombre maximum de projets à récupérer"
+        default=ProjectSettings.limit_default,
+        gt=ProjectSettings.limit_gt,
+        description=ProjectSettings.limit_description,
     )
 
 
@@ -87,7 +93,10 @@ class ProjectAddMemberRequest(BaseModel):
         BaseModel (BaseModel): Schéma de validation pour ajouter un membre à un projet
     """
 
-    user_id: UUID = Field(..., description="Identifiant unique de l'utilisateur")
+    user_id: UUID = Field(..., description=ProjectMemberSettings.user_id_description)
+    role: ProjectMemberRole = Field(
+        ..., description=ProjectMemberSettings.role_description
+    )
 
 
 class ProjectMemberPath(BaseModel):
@@ -97,8 +106,8 @@ class ProjectMemberPath(BaseModel):
         BaseModel (BaseModel): Schéma de validation du chemin pour un membre de projet
     """
 
-    project_id: UUID = Field(..., description="Identifiant unique du projet")
-    user_id: UUID = Field(..., description="Identifiant unique de l'utilisateur")
+    project_id: UUID = Field(..., description=ProjectSettings.project_id_description)
+    user_id: UUID = Field(..., description=ProjectMemberSettings.user_id_description)
 
 
 # === responses ===
@@ -114,15 +123,17 @@ class GetProjectResponse(BaseModel):
         dict: Détails du projet
     """
 
-    id: UUID = Field(..., description="Identifiant unique du projet")
+    id: UUID = Field(..., description=ProjectSettings.project_id_description)
     project_number: str = Field(
-        ..., description="Numéro du projet utilisé comme identifiant par l'entreprise"
+        ..., description=ProjectSettings.project_number_description
     )
-    name: str = Field(..., description="Nom du projet")
-    description: str = Field(..., description="Description du projet")
-    created_at: datetime = Field(..., description="Date de création du projet")
+    name: str = Field(..., description=ProjectSettings.name_description)
+    description: str = Field(..., description=ProjectSettings.description_description)
+    created_at: datetime = Field(
+        ..., description=ProjectSettings.created_at_description
+    )
     updated_at: datetime = Field(
-        ..., description="Date de dernière mise à jour du projet"
+        ..., description=ProjectSettings.updated_at_description
     )
 
     def to_response(self) -> Response:
@@ -139,7 +150,9 @@ class GetAllProjectsResponse(BaseModel):
         list[GetProjectResponse]: Liste des projets
     """
 
-    projects: list[GetProjectResponse] = Field(..., description="Liste des projets")
+    projects: list[GetProjectResponse] = Field(
+        ..., description=ProjectSettings.projects_description
+    )
 
     def to_response(self) -> Response:
         return make_response(jsonify(self.model_dump()), HTTPStatus.OK)
@@ -155,9 +168,9 @@ class GetUserResponse(BaseModel):
         dict: Détails de l'utilisateur
     """
 
-    id: UUID = Field(..., description="Identifiant unique de l'utilisateur")
-    email: str = Field(..., description="Adresse email de l'utilisateur")
-    role: str = Field(..., description="Rôle de l'utilisateur dans le système")
+    id: UUID = Field(..., description=ProjectMemberSettings.user_id_description)
+    email: str = Field(..., description=ProjectMemberSettings.email_description)
+    role: str = Field(..., description=ProjectMemberSettings.role_description)
 
     def to_response(self) -> Response:
         return make_response(jsonify(self.model_dump()), HTTPStatus.OK)
@@ -174,7 +187,7 @@ class GetProjectMembersResponse(BaseModel):
     """
 
     members: list[GetUserResponse] = Field(
-        ..., description="Liste des membres du projet"
+        ..., description=ProjectMemberSettings.members_description
     )
 
     def to_response(self) -> Response:

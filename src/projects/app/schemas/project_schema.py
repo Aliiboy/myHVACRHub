@@ -45,6 +45,7 @@ class ProjectAddMemberSchema(BaseModel):
     Attributs:
         project_id (UUID): ID du projet
         user_id (UUID): ID de l'utilisateur à ajouter au projet
+        role (ProjectMemberRole): Rôle de l'utilisateur dans le projet
     """
 
     project_id: UUID

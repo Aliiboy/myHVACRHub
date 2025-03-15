@@ -11,7 +11,7 @@ from projects.domain.exceptions.project_exceptions import ProjectValidationExcep
 from projects.domain.settings.project_settings import ProjectSettings
 
 
-class CreateProjectUseCaseTests(unittest.TestCase):
+class TestCreateProjectUseCase(unittest.TestCase):
     """Tests du cas d'utilisation de création d'un projet
 
     Args:
@@ -38,7 +38,7 @@ class CreateProjectUseCaseTests(unittest.TestCase):
             None
         """
         project_id = uuid4()
-
+        creator_id = uuid4()
         # Arrange - Préparer les données de test et le comportement attendu
         project_schema = ProjectCreateSchema(
             project_number="PRJ-001",
@@ -58,7 +58,7 @@ class CreateProjectUseCaseTests(unittest.TestCase):
         ).return_value = mock_project_entity
 
         # Act - Exécuter le cas d'utilisation
-        result = self.use_case.execute(project_schema)
+        result = self.use_case.execute(schema=project_schema, creator_id=creator_id)
 
         # Assert - Vérifier les résultats et comportements attendus
         cast(
@@ -75,7 +75,7 @@ class CreateProjectUseCaseTests(unittest.TestCase):
         Returns:
             None
         """
-
+        creator_id = uuid4()
         # Créer un schéma invalid pour le test
         invalid_project_schema = ProjectCreateSchema(
             project_number="A" * (ProjectSettings.project_number_max_length + 1),
@@ -85,7 +85,7 @@ class CreateProjectUseCaseTests(unittest.TestCase):
 
         # Act & Assert - On s'attend à une exception lorsque le cas d'utilisation est exécuté
         with self.assertRaises(ProjectValidationException) as context:
-            self.use_case.execute(invalid_project_schema)
+            self.use_case.execute(schema=invalid_project_schema, creator_id=creator_id)
 
         # Assert - Vérifier que l'exception est levée
         self.assertIsInstance(context.exception, ProjectValidationException)

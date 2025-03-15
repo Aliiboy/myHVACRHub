@@ -4,8 +4,8 @@ class UserSettings:
     Cette classe contient les paramètres de l'utilisateur.
     """
 
-    # id
-    id_description: str = "Identifiant unique de l'utilisateur"
+    # user_id
+    user_id_description: str = "Identifiant unique de l'utilisateur"
     # email
     email_description: str = "Adresse email unique de l'utilisateur"
     # password
@@ -26,3 +26,9 @@ class UserSettings:
     updated_at_description: str = (
         "Date a laquelle l'utilisateur a été modifié dans la base de données"
     )
+    # limit
+    limit_description: str = "Nombre maximum d'utilisateurs à récupérer"
+    limit_default: int = 100
+    limit_gt: int = 0
+    # users
+    users_description: str = "Liste des utilisateurs"

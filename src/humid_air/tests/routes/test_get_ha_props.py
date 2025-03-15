@@ -1,9 +1,9 @@
 from http import HTTPStatus
 
-from common.tests.routes.base_api_test import BaseAPITest
+from common.tests.routes.test_base_api import TestBaseAPI
 
 
-class HumidAirRoutesTests(BaseAPITest):
+class TestHumidAirRoutes(TestBaseAPI):
     def test_get_humid_air_properties_with_valid_data(self) -> None:
         valid_data = {
             "pressure": 101325,

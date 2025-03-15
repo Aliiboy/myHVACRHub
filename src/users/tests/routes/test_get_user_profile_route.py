@@ -1,9 +1,9 @@
 from http import HTTPStatus
 
-from common.tests.routes.base_api_test import BaseAPITest
+from common.tests.routes.test_base_api import TestBaseAPI
 
 
-class GetUserProfileRouteTests(BaseAPITest):
+class TestGetUserProfileRoute(TestBaseAPI):
     """Test de la récupération du profil d'un utilisateur
 
     Args:
@@ -57,5 +57,5 @@ class GetUserProfileRouteTests(BaseAPITest):
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
         self.assertEqual(
             response.get_json()["message"],
-            f"UserDBException : L'utilisateur avec l'id '{wrong_id}' n'existe pas.",
+            f"UserException : L'utilisateur avec l'id '{wrong_id}' n'existe pas.",
         )

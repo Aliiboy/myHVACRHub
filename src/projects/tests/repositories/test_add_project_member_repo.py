@@ -1,7 +1,7 @@
 from uuid import UUID, uuid4
 
-from common.tests.repositories.base_repo_test import BaseRepositoryTest
-from projects.domain.entities.project_entity import ProjectEntity
+from common.tests.repositories.test_base_repo import TestBaseRepository
+from projects.domain.entities.project_entity import ProjectEntity, ProjectMemberRole
 from projects.domain.exceptions.project_exceptions import (
     ProjectDBException,
 )
@@ -10,7 +10,7 @@ from users.domain.entities.user_entity import UserEntity
 from users.infra.data.repositories.user_sqlrepo import UserSQLRepository
 
 
-class AddProjectMemberSQLRepositoryTests(BaseRepositoryTest):
+class TestAddProjectMemberSQLRepository(TestBaseRepository):
     """Test de l'ajout d'un membre à un projet
 
     Args:
@@ -43,7 +43,9 @@ class AddProjectMemberSQLRepositoryTests(BaseRepositoryTest):
             name="Test Project",
             description="A test project",
         )
-        self.project = self.project_repository.create_project(self.valid_project)
+        self.project = self.project_repository.create_project(
+            schema=self.valid_project, creator_id=self.owner.id
+        )
 
     def test_add_project_member_success(self) -> None:
         """Test de l'ajout d'un membre à un projet
@@ -55,6 +57,7 @@ class AddProjectMemberSQLRepositoryTests(BaseRepositoryTest):
         project_member = self.project_repository.add_project_member(
             project_id=self.project.id,
             user_id=self.member.id,
+            role=ProjectMemberRole.MEMBER,
         )
 
         # Vérifier que le membre a été ajouté
@@ -63,7 +66,8 @@ class AddProjectMemberSQLRepositoryTests(BaseRepositoryTest):
 
         # Vérifier que le membre est dans la liste des membres du projet
         project_members = self.project_repository.get_project_members(self.project.id)
-        self.assertEqual(1, len(project_members))
+        self.assertEqual(2, len(project_members))
+        self.assertEqual(self.owner.id, project_members[1].id)
         self.assertEqual(self.member.id, project_members[0].id)
 
     def test_add_project_member_with_wrong_project_id(self) -> None:
@@ -77,6 +81,7 @@ class AddProjectMemberSQLRepositoryTests(BaseRepositoryTest):
             self.project_repository.add_project_member(
                 project_id=wrong_id,
                 user_id=self.member.id,
+                role=ProjectMemberRole.MEMBER,
             )
 
         expected_message = (
@@ -96,6 +101,7 @@ class AddProjectMemberSQLRepositoryTests(BaseRepositoryTest):
             self.project_repository.add_project_member(
                 project_id=self.project.id,
                 user_id=wrong_id,
+                role=ProjectMemberRole.MEMBER,
             )
 
         expected_message = (
@@ -114,6 +120,7 @@ class AddProjectMemberSQLRepositoryTests(BaseRepositoryTest):
         self.project_repository.add_project_member(
             project_id=self.project.id,
             user_id=self.member.id,
+            role=ProjectMemberRole.MEMBER,
         )
 
         # Tenter d'ajouter le même membre à nouveau
@@ -121,6 +128,7 @@ class AddProjectMemberSQLRepositoryTests(BaseRepositoryTest):
             self.project_repository.add_project_member(
                 project_id=self.project.id,
                 user_id=self.member.id,
+                role=ProjectMemberRole.MEMBER,
             )
 
         expected_message = "ProjectException : L'utilisateur est déjà membre du projet."

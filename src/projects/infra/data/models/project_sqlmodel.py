@@ -7,6 +7,7 @@ from sqlmodel import Field, Relationship, SQLModel
 from projects.domain.entities.project_entity import (
     ProjectAndUserJonctionTableEntity,
     ProjectEntity,
+    ProjectMemberRole,
 )
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -21,11 +22,13 @@ class ProjectAndUserJonctionTableSQLModel(SQLModel, table=True):
     Attributs:
         project_id (UUID): ID du projet associé
         user_id (UUID): ID de l'utilisateur associé
+        role (ProjectMemberRole): Rôle de l'utilisateur dans le projet
     """
 
     __tablename__ = "project_members_links"
     project_id: UUID = Field(..., foreign_key="projects.id", primary_key=True)
     user_id: UUID = Field(..., foreign_key="users.id", primary_key=True)
+    role: str = Field(...)
 
     def to_entity(self) -> ProjectAndUserJonctionTableEntity:
         """Convertit le modèle SQL en entité
@@ -36,6 +39,7 @@ class ProjectAndUserJonctionTableSQLModel(SQLModel, table=True):
         return ProjectAndUserJonctionTableEntity(
             project_id=self.project_id,
             user_id=self.user_id,
+            role=ProjectMemberRole(self.role),
         )
 
 

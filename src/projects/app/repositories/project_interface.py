@@ -4,20 +4,22 @@ from uuid import UUID
 from projects.domain.entities.project_entity import (
     ProjectAndUserJonctionTableEntity,
     ProjectEntity,
+    ProjectMemberRole,
 )
 from users.domain.entities.user_entity import UserEntity
 
 
 class ProjectRepositoryInterface(ABC):
-    """Interface pour les opérations de base de données sur les projets"""
+    """Interface pour les opérations sur les projets"""
 
     # write
     @abstractmethod
-    def create_project(self, schema: ProjectEntity) -> ProjectEntity:
+    def create_project(self, schema: ProjectEntity, creator_id: UUID) -> ProjectEntity:
         """Crée un nouveau projet
 
         Args:
-            schema (ProjectEntity): Schéma du projet à créer
+            schema (ProjectEntity): Projet à créer
+            creator_id (UUID): Identifiant de l'utilisateur créateur
 
         Returns:
             ProjectEntity: Projet créé
@@ -38,7 +40,7 @@ class ProjectRepositoryInterface(ABC):
         """Met à jour un projet
 
         Args:
-            schema (ProjectEntity): Schéma du projet à mettre à jour
+            schema (ProjectEntity): Projet à mettre à jour
 
         Returns:
             ProjectEntity: Projet mis à jour
@@ -47,21 +49,25 @@ class ProjectRepositoryInterface(ABC):
 
     @abstractmethod
     def add_project_member(
-        self, project_id: UUID, user_id: UUID
+        self,
+        project_id: UUID,
+        user_id: UUID,
+        role: ProjectMemberRole,
     ) -> ProjectAndUserJonctionTableEntity:
         """Ajoute un membre à un projet
 
         Args:
             project_id (UUID): Identifiant du projet
             user_id (UUID): Identifiant de l'utilisateur à ajouter
+            role (ProjectMemberRole, optional): Rôle de l'utilisateur dans le projet.
 
         Returns:
-            ProjectMemberLinkEntity: Membre du projet ajouté
+            ProjectAndUserJonctionTableEntity: Membre du projet ajouté
         """
         pass
 
     @abstractmethod
-    def remove_project_member(self, project_id: UUID, user_id: UUID) -> None:
+    def delete_project_member(self, project_id: UUID, user_id: UUID) -> None:
         """Supprime un membre d'un projet
 
         Args:
@@ -109,7 +115,7 @@ class ProjectRepositoryInterface(ABC):
 
     @abstractmethod
     def get_project_members(self, project_id: UUID) -> list[UserEntity]:
-        """Récupère tous les membres d'un projet
+        """Récupère les membres d'un projet
 
         Args:
             project_id (UUID): Identifiant du projet

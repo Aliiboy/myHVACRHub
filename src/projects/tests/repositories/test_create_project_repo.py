@@ -1,4 +1,4 @@
-from common.tests.repositories.base_repo_test import BaseRepositoryTest
+from common.tests.repositories.test_base_repo import TestBaseRepository
 from projects.domain.entities.project_entity import ProjectEntity
 from projects.domain.exceptions.project_exceptions import ProjectDBException
 from projects.infra.data.repositories.project_sqlrepo import ProjectSQLRepository
@@ -6,7 +6,7 @@ from users.domain.entities.user_entity import UserEntity
 from users.infra.data.repositories.user_sqlrepo import UserSQLRepository
 
 
-class CreateProjectSQLRepositoryTests(BaseRepositoryTest):
+class TestCreateProjectSQLRepository(TestBaseRepository):
     """Test de la création d'un projet
 
     Args:
@@ -51,7 +51,9 @@ class CreateProjectSQLRepositoryTests(BaseRepositoryTest):
             description="A test project for success",
         )
 
-        created_project = self.project_repository.create_project(test_project)
+        created_project = self.project_repository.create_project(
+            schema=test_project, creator_id=self.user.id
+        )
 
         self.assertEqual(test_project.project_number, created_project.project_number)
         self.assertEqual(test_project.name, created_project.name)
@@ -69,7 +71,9 @@ class CreateProjectSQLRepositoryTests(BaseRepositoryTest):
             name="Test Project Duplicate Number 1",
             description="A test project for duplicate number",
         )
-        self.project_repository.create_project(first_project)
+        self.project_repository.create_project(
+            schema=first_project, creator_id=self.user.id
+        )
 
         # Ensuite, tenter de créer un projet avec le même numéro
         duplicate_project = ProjectEntity(
@@ -79,7 +83,9 @@ class CreateProjectSQLRepositoryTests(BaseRepositoryTest):
         )
 
         with self.assertRaises(ProjectDBException):
-            self.project_repository.create_project(duplicate_project)
+            self.project_repository.create_project(
+                schema=duplicate_project, creator_id=self.user.id
+            )
 
     def test_create_project_duplicate_name_raises_exception(self) -> None:
         """Test de la création d'un projet avec un nom déjà utilisé
@@ -93,7 +99,9 @@ class CreateProjectSQLRepositoryTests(BaseRepositoryTest):
             name="Test Project Duplicate Name",
             description="A test project for duplicate name",
         )
-        self.project_repository.create_project(first_project)
+        self.project_repository.create_project(
+            schema=first_project, creator_id=self.user.id
+        )
 
         # Ensuite, tenter de créer un projet avec le même nom
         duplicate_project = ProjectEntity(
@@ -103,4 +111,6 @@ class CreateProjectSQLRepositoryTests(BaseRepositoryTest):
         )
 
         with self.assertRaises(ProjectDBException):
-            self.project_repository.create_project(duplicate_project)
+            self.project_repository.create_project(
+                schema=duplicate_project, creator_id=self.user.id
+            )

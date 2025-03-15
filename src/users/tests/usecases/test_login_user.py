@@ -9,7 +9,7 @@ from users.domain.exceptions.user_exceptions import UserValidationException
 from users.domain.services.token_service_interface import TokenServiceInterface
 
 
-class LoginUserUseCaseTests(unittest.TestCase):
+class TestLoginUserUseCase(unittest.TestCase):
     """Test de la connexion d'un utilisateur
 
     Args:

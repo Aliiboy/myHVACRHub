@@ -1,6 +1,6 @@
 from uuid import UUID, uuid4
 
-from common.tests.repositories.base_repo_test import BaseRepositoryTest
+from common.tests.repositories.test_base_repo import TestBaseRepository
 from projects.domain.entities.project_entity import ProjectEntity
 from projects.domain.exceptions.project_exceptions import (
     ProjectDBException,
@@ -10,7 +10,7 @@ from users.domain.entities.user_entity import UserEntity
 from users.infra.data.repositories.user_sqlrepo import UserSQLRepository
 
 
-class GetProjectByIdSQLRepositoryTests(BaseRepositoryTest):
+class TestGetProjectByIdSQLRepository(TestBaseRepository):
     """Test de la récupération d'un projet par son identifiant
 
     Args:
@@ -41,7 +41,9 @@ class GetProjectByIdSQLRepositoryTests(BaseRepositoryTest):
             name="Test Project",
             description="A test project",
         )
-        self.project = self.project_repository.create_project(self.valid_project)
+        self.project = self.project_repository.create_project(
+            schema=self.valid_project, creator_id=self.user.id
+        )
 
     def test_get_project_by_id_success(self) -> None:
         """Test de la récupération d'un projet par son identifiant

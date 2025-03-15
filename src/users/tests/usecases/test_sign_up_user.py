@@ -9,7 +9,7 @@ from users.domain.entities.user_entity import UserEntity
 from users.domain.exceptions.user_exceptions import UserValidationException
 
 
-class UserSignUpUseCaseTests(unittest.TestCase):
+class TestUserSignUpUseCase(unittest.TestCase):
     """Test de l'inscription d'un utilisateur
 
     Args:

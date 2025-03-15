@@ -1,9 +1,9 @@
 from http import HTTPStatus
 
-from common.tests.routes.base_api_test import BaseAPITest
+from common.tests.routes.test_base_api import TestBaseAPI
 
 
-class LoginUserRouteTests(BaseAPITest):
+class TestLoginUserRoute(TestBaseAPI):
     """Test de la connexion d'un utilisateur
 
     Args:
@@ -54,5 +54,5 @@ class LoginUserRouteTests(BaseAPITest):
         self.assertEqual(response.status_code, HTTPStatus.UNPROCESSABLE_ENTITY)
         self.assertEqual(
             response.get_json()["message"],
-            f"UserDBException : L'utilisateur avec l'email '{login_data['email']}' n'existe pas.",
+            f"UserException : L'utilisateur avec l'email '{login_data['email']}' n'existe pas.",
         )

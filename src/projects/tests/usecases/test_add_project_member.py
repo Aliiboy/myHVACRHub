@@ -6,7 +6,10 @@ from uuid import uuid4
 from projects.app.repositories.project_interface import ProjectRepositoryInterface
 from projects.app.schemas.project_schema import ProjectAddMemberSchema
 from projects.app.usecases.add_project_member import AddProjectMemberUseCase
-from projects.domain.entities.project_entity import ProjectAndUserJonctionTableEntity
+from projects.domain.entities.project_entity import (
+    ProjectAndUserJonctionTableEntity,
+    ProjectMemberRole,
+)
 
 
 class TestAddProjectMemberUseCase(unittest.TestCase):
@@ -38,6 +41,8 @@ class TestAddProjectMemberUseCase(unittest.TestCase):
         # Arrange
         project_id = uuid4()
         user_id = uuid4()
+        role = ProjectMemberRole.MEMBER
+
         schema = ProjectAddMemberSchema(
             project_id=project_id,
             user_id=user_id,
@@ -45,6 +50,7 @@ class TestAddProjectMemberUseCase(unittest.TestCase):
         expected_member = ProjectAndUserJonctionTableEntity(
             project_id=project_id,
             user_id=user_id,
+            role=role,
         )
         cast(
             MagicMock, self.mock_project_repository.add_project_member
@@ -52,10 +58,10 @@ class TestAddProjectMemberUseCase(unittest.TestCase):
 
         # Act
         result = self.use_case.execute(schema=schema)
-
         # Assert
         self.assertEqual(result.project_id, expected_member.project_id)
         self.assertEqual(result.user_id, expected_member.user_id)
+        self.assertEqual(result.role, expected_member.role)
         cast(
             MagicMock, self.mock_project_repository.add_project_member
-        ).assert_called_once_with(project_id, user_id)
+        ).assert_called_once_with(project_id=project_id, user_id=user_id, role=role)

@@ -8,7 +8,7 @@ class ProjectException(Exception):
         Exception (Exception): Exception de base
     """
 
-    def __init__(self, message: str = "Exception de projet") -> None:
+    def __init__(self, message: str = "Exception pour les erreurs de projet") -> None:
         """Initialise l'exception
 
         Args:
@@ -25,7 +25,9 @@ class ProjectDBException(ProjectException):
         ProjectException (ProjectException): Exception de base pour les projets
     """
 
-    def __init__(self, message: str = "Exception de base de données") -> None:
+    def __init__(
+        self, message: str = "Exception pour les erreurs de base de données"
+    ) -> None:
         """Initialise l'exception
 
         Args:
@@ -51,7 +53,7 @@ class ProjectValidationException(ProjectException):
             {"field": ".".join(map(str, err["loc"])), "message": err["msg"]}
             for err in errors
         ]
-        super().__init__("ProjectValidationException")
+        super().__init__(message="ProjectValidationException")
 
 
 class ProjectMemberValidationException(ProjectException):
@@ -71,4 +73,4 @@ class ProjectMemberValidationException(ProjectException):
             {"field": ".".join(map(str, err["loc"])), "message": err["msg"]}
             for err in errors
         ]
-        super().__init__("ProjectMemberValidationException")
+        super().__init__(message="ProjectMemberValidationException")

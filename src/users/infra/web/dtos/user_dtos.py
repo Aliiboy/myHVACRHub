@@ -49,7 +49,9 @@ class GetAllUsersQueryParams(BaseModel):
     """
 
     limit: int = Field(
-        default=100, gt=0, description="Nombre maximum d'utimisateurs à recuperer"
+        default=UserSettings.limit_default,
+        gt=UserSettings.limit_gt,
+        description=UserSettings.limit_description,
     )
 
 
@@ -60,7 +62,7 @@ class UserPath(BaseModel):
         BaseModel (BaseModel): Schéma de validation du chemin de l'utilisateur
     """
 
-    id: UUID = Field(..., description="Identifiant unique de l'utilisateur")
+    id: UUID = Field(..., description=UserSettings.user_id_description)
 
 
 # === responses ===
@@ -92,7 +94,7 @@ class GetUserResponse(BaseModel):
         dict: Profil utilisateur
     """
 
-    id: UUID = Field(..., description=UserSettings.id_description)
+    id: UUID = Field(..., description=UserSettings.user_id_description)
     email: EmailStr = Field(..., description=UserSettings.email_description)
     role: UserRole = Field(..., description=UserSettings.role_description)
     created_at: datetime = Field(..., description=UserSettings.created_at_description)
@@ -112,7 +114,9 @@ class GetAllUsersResponse(BaseModel):
         list[GetUserResponse]: Liste des utilisateurs
     """
 
-    users: list[GetUserResponse] = Field(..., description="Liste des utilisateurs")
+    users: list[GetUserResponse] = Field(
+        ..., description=UserSettings.users_description
+    )
 
     def to_response(self) -> Response:
         return make_response(jsonify(self.model_dump()), HTTPStatus.OK)

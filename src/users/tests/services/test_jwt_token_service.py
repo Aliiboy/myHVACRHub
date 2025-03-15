@@ -8,7 +8,7 @@ from users.domain.entities.user_entity import UserRole
 from users.infra.services.jwt_token_service import JWTTokenService
 
 
-class JWTTokenServiceTests(unittest.TestCase):
+class TestJWTTokenService(unittest.TestCase):
     """Test de la génération de jetons JWT
 
     Args:

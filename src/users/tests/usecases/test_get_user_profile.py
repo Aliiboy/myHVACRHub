@@ -7,7 +7,7 @@ from users.app.repositories.user_interface import UserRepositoryInterface
 from users.app.usecases.get_user_profile import GetUserProfileUseCase
 
 
-class GetUserProfileUseCaseTests(unittest.TestCase):
+class TestGetUserProfileUseCase(unittest.TestCase):
     """Test de la récupération du profil d'un utilisateur
 
     Args:

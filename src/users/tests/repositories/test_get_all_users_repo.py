@@ -1,9 +1,9 @@
-from common.tests.repositories.base_repo_test import BaseRepositoryTest
+from common.tests.repositories.test_base_repo import TestBaseRepository
 from users.domain.entities.user_entity import UserEntity
 from users.infra.data.repositories.user_sqlrepo import UserSQLRepository
 
 
-class GetAllUsersSQLRepositoryTests(BaseRepositoryTest):
+class TestGetAllUsersSQLRepository(TestBaseRepository):
     """Test de la récupération de tous les utilisateurs
 
     Args:

@@ -1,9 +1,9 @@
 from http import HTTPStatus
 
-from common.tests.routes.base_api_test import BaseAPITest
+from common.tests.routes.test_base_api import TestBaseAPI
 
 
-class UserSignUpRouteTests(BaseAPITest):
+class TestUserSignUpRoute(TestBaseAPI):
     """Test de l'inscription d'un utilisateur
 
     Args:
@@ -47,5 +47,5 @@ class UserSignUpRouteTests(BaseAPITest):
         self.assertEqual(response.status_code, HTTPStatus.UNPROCESSABLE_ENTITY)
         self.assertEqual(
             response.get_json()["message"],
-            "UserDBException : L'utilisateur avec l'email 'test@example.com' existe déjà.",
+            "UserException : L'utilisateur avec l'email 'test@example.com' existe déjà.",
         )

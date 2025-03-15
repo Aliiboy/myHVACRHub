@@ -76,6 +76,11 @@ def sign_up(
             code=HTTPStatus.CREATED, message="Utilisateur créé avec succès."
         ).to_response()
 
+    except UserValidationException as e:
+        return ErrorResponse(
+            code=HTTPStatus.UNPROCESSABLE_ENTITY, message=e.errors
+        ).to_response()
+
     except UserDBException as e:
         return ErrorResponse(
             code=HTTPStatus.UNPROCESSABLE_ENTITY, message=str(e)

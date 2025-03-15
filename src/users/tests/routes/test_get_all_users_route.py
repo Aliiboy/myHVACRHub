@@ -2,10 +2,10 @@ from http import HTTPStatus
 
 from sqlalchemy import text
 
-from common.tests.routes.base_api_test import BaseAPITest
+from common.tests.routes.test_base_api import TestBaseAPI
 
 
-class GetAllUsersRouteTests(BaseAPITest):
+class TestGetAllUsersRoute(TestBaseAPI):
     """Test de la récupération de tous les utilisateurs
 
     Args:

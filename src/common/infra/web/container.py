@@ -7,11 +7,11 @@ from humid_air.app.usecases.get_ha_props import GetHumidAirPropertyUseCase
 from projects.app.usecases.add_project_member import AddProjectMemberUseCase
 from projects.app.usecases.create_project import CreateProjectUseCase
 from projects.app.usecases.delete_project import DeleteProjectUseCase
+from projects.app.usecases.delete_project_member import DeleteProjectMemberUseCase
 from projects.app.usecases.get_all_projects import GetAllProjectsUseCase
 from projects.app.usecases.get_project_by_id import GetProjectByIdUseCase
 from projects.app.usecases.get_project_members import GetProjectMembersUseCase
 from projects.app.usecases.get_user_projects import GetUserProjectsUseCase
-from projects.app.usecases.remove_project_member import RemoveProjectMemberUseCase
 from projects.app.usecases.update_project import UpdateProjectUseCase
 from projects.infra.data.repositories.project_sqlrepo import ProjectSQLRepository
 from users.app.usecases.delete_user import DeleteUserByIdUsecase
@@ -108,8 +108,8 @@ class AppContainer(containers.DeclarativeContainer):
         add_project_member=providers.Factory(
             AddProjectMemberUseCase, repository=project_repository
         ),
-        remove_project_member=providers.Factory(
-            RemoveProjectMemberUseCase, repository=project_repository
+        delete_project_member=providers.Factory(
+            DeleteProjectMemberUseCase, repository=project_repository
         ),
         get_project_members=providers.Factory(
             GetProjectMembersUseCase, repository=project_repository

@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from pydantic import ValidationError
 
 from projects.app.repositories.project_interface import ProjectRepositoryInterface
@@ -25,11 +27,12 @@ class CreateProjectUseCase:
         """
         self.repository = repository
 
-    def execute(self, schema: ProjectCreateSchema) -> ProjectEntity:
+    def execute(self, schema: ProjectCreateSchema, creator_id: UUID) -> ProjectEntity:
         """Exécute le cas d'utilisation pour créer un nouveau projet
 
         Args:
             schema (ProjectCreateSchema): Schéma de validation d'un nouveau projet
+            creator_id (UUID): Identifiant de l'utilisateur créateur
 
         Raises:
             ProjectValidationException: Exception de validation
@@ -43,6 +46,8 @@ class CreateProjectUseCase:
                 name=schema.name,
                 description=schema.description,
             )
-            return self.repository.create_project(project_to_create)
+            return self.repository.create_project(
+                schema=project_to_create, creator_id=creator_id
+            )
         except ValidationError as e:
             raise ProjectValidationException(e.errors())

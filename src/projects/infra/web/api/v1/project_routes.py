@@ -18,11 +18,11 @@ from projects.app.schemas.project_schema import (
 from projects.app.usecases.add_project_member import AddProjectMemberUseCase
 from projects.app.usecases.create_project import CreateProjectUseCase
 from projects.app.usecases.delete_project import DeleteProjectUseCase
+from projects.app.usecases.delete_project_member import DeleteProjectMemberUseCase
 from projects.app.usecases.get_all_projects import GetAllProjectsUseCase
 from projects.app.usecases.get_project_by_id import GetProjectByIdUseCase
 from projects.app.usecases.get_project_members import GetProjectMembersUseCase
 from projects.app.usecases.get_user_projects import GetUserProjectsUseCase
-from projects.app.usecases.remove_project_member import RemoveProjectMemberUseCase
 from projects.app.usecases.update_project import UpdateProjectUseCase
 from projects.domain.exceptions.project_exceptions import (
     ProjectDBException,
@@ -58,7 +58,7 @@ router = APIBlueprint(
 
 
 @router.post(
-    "/",
+    "/create_project",
     description="Permet de créer un nouveau projet.",
     security=security,
     responses={
@@ -89,7 +89,8 @@ def create_project(
             name=body.name,
             description=body.description,
         )
-        use_case.execute(schema)
+        user_id = UUID(get_jwt().get("sub"))
+        use_case.execute(schema=schema, creator_id=user_id)
         return SuccessResponse(
             code=HTTPStatus.CREATED, message="Projet créé avec succès."
         ).to_response()
@@ -106,7 +107,7 @@ def create_project(
 
 
 @router.get(
-    "/",
+    "get_all_projects",
     description="Permet de récupérer la liste de tous les projets.",
     security=security,
     responses={
@@ -115,6 +116,7 @@ def create_project(
 )
 @inject
 @cast("Callable[..., Response]", jwt_required())
+@cast("Callable[..., Response]", role_required(UserRole.ADMIN))
 def get_all_projects(
     query: GetAllProjectsQueryParams,
     use_case: GetAllProjectsUseCase = Provide[
@@ -232,7 +234,6 @@ def update_project(
 )
 @inject
 @cast("Callable[..., Response]", jwt_required())
-@cast("Callable[..., Response]", role_required(UserRole.ADMIN))
 def delete_project(
     path: ProjectPath,
     use_case: DeleteProjectUseCase = Provide[
@@ -280,15 +281,18 @@ def add_project_member(
     """Permet d'ajouter un membre à un projet.
 
     Args:
-        path (ProjectPath): Chemin avec l'identifiant du projet
-        body (ProjectAddMemberRequest): Corps de la requête contenant l'identifiant de l'utilisateur
+        path (ProjectPath): Chemin de la requête
+        body (ProjectAddMemberRequest): Corps de la requête
         use_case (AddProjectMemberUseCase, optional): Cas d'utilisation pour ajouter un membre à un projet.
 
     Returns:
         Response: Réponse de succès ou d'erreur
     """
     try:
-        schema = ProjectAddMemberSchema(project_id=path.id, user_id=body.user_id)
+        schema = ProjectAddMemberSchema(
+            project_id=path.id,
+            user_id=body.user_id,
+        )
         use_case.execute(schema=schema)
         return SuccessResponse(
             code=HTTPStatus.CREATED, message="Membre ajouté au projet avec succès."
@@ -314,17 +318,17 @@ def add_project_member(
 )
 @inject
 @cast("Callable[..., Response]", jwt_required())
-def remove_project_member(
+def delete_project_member(
     path: ProjectMemberPath,
-    use_case: RemoveProjectMemberUseCase = Provide[
-        AppContainer.project_usecases.provided["remove_project_member"]
+    use_case: DeleteProjectMemberUseCase = Provide[
+        AppContainer.project_usecases.provided["delete_project_member"]
     ],
 ) -> Response:
     """Permet de supprimer un membre d'un projet.
 
     Args:
         path (ProjectMemberPath): Chemin avec l'identifiant du projet et de l'utilisateur
-        use_case (RemoveProjectMemberUseCase, optional): Cas d'utilisation pour supprimer un membre d'un projet.
+        use_case (DeleteProjectMemberUseCase, optional): Cas d'utilisation pour supprimer un membre d'un projet.
 
     Returns:
         Response: Réponse de succès ou d'erreur
@@ -379,7 +383,7 @@ def get_project_members(
 
 @router.get(
     "/user/projects",
-    description="Permet de récupérer tous les projets d'un utilisateur.",
+    description="Permet de récupérer tous les projets de l'utilisateur connecté.",
     security=security,
     responses={
         HTTPStatus.OK: GetAllProjectsResponse,
@@ -393,7 +397,7 @@ def get_user_projects(
         AppContainer.project_usecases.provided["get_user_projects"]
     ],
 ) -> Response:
-    """Permet de récupérer tous les projets d'un utilisateur.
+    """Permet de récupérer tous les projets de l'utilisateur connecté.
 
     Args:
         use_case (GetUserProjectsUseCase, optional): Cas d'utilisation pour récupérer les projets d'un utilisateur.

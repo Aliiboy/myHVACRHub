@@ -1,11 +1,11 @@
-from common.tests.repositories.base_repo_test import BaseRepositoryTest
+from common.tests.repositories.test_base_repo import TestBaseRepository
 from projects.domain.entities.project_entity import ProjectEntity
 from projects.infra.data.repositories.project_sqlrepo import ProjectSQLRepository
 from users.domain.entities.user_entity import UserEntity
 from users.infra.data.repositories.user_sqlrepo import UserSQLRepository
 
 
-class GetAllProjectsWithLimitSQLRepositoryTests(BaseRepositoryTest):
+class TestGetAllProjectsWithLimitSQLRepository(TestBaseRepository):
     """Test de la récupération de tous les projets avec une limite
 
     Args:
@@ -38,7 +38,9 @@ class GetAllProjectsWithLimitSQLRepositoryTests(BaseRepositoryTest):
                 name=f"Test Project {i + 1}",
                 description=f"A test project {i + 1}",
             )
-            created_project = self.project_repository.create_project(project)
+            created_project = self.project_repository.create_project(
+                schema=project, creator_id=self.user.id
+            )
             self.projects.append(created_project)
 
     def test_get_all_projects_with_limit_success(self) -> None:

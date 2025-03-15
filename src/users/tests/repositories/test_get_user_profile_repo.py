@@ -1,12 +1,12 @@
 from uuid import UUID, uuid4
 
-from common.tests.repositories.base_repo_test import BaseRepositoryTest
+from common.tests.repositories.test_base_repo import TestBaseRepository
 from users.domain.entities.user_entity import UserEntity
 from users.domain.exceptions.user_exceptions import UserDBException
 from users.infra.data.repositories.user_sqlrepo import UserSQLRepository
 
 
-class GetUserProfileSQLRepositoryTests(BaseRepositoryTest):
+class TestGetUserProfileSQLRepository(TestBaseRepository):
     """Test de la récupération du profil d'un utilisateur
 
     Args:
@@ -49,7 +49,7 @@ class GetUserProfileSQLRepositoryTests(BaseRepositoryTest):
             self.user_repository.get_user_profile(wrong_id)
 
         expected_message = (
-            f"UserDBException : L'utilisateur avec l'id '{wrong_id}' n'existe pas."
+            f"UserException : L'utilisateur avec l'id '{wrong_id}' n'existe pas."
         )
         self.assertIsInstance(context.exception, UserDBException)
         self.assertEqual(str(context.exception), expected_message)

@@ -1,7 +1,7 @@
 from uuid import UUID, uuid4
 
-from common.tests.repositories.base_repo_test import BaseRepositoryTest
-from projects.domain.entities.project_entity import ProjectEntity
+from common.tests.repositories.test_base_repo import TestBaseRepository
+from projects.domain.entities.project_entity import ProjectEntity, ProjectMemberRole
 from projects.domain.exceptions.project_exceptions import (
     ProjectDBException,
 )
@@ -10,7 +10,7 @@ from users.domain.entities.user_entity import UserEntity
 from users.infra.data.repositories.user_sqlrepo import UserSQLRepository
 
 
-class RemoveProjectMemberSQLRepositoryTests(BaseRepositoryTest):
+class TestDeleteProjectMemberSQLRepository(TestBaseRepository):
     """Test de la suppression d'un membre d'un projet
 
     Args:
@@ -47,15 +47,18 @@ class RemoveProjectMemberSQLRepositoryTests(BaseRepositoryTest):
             name="Test Project",
             description="A test project",
         )
-        self.project = self.project_repository.create_project(self.valid_project)
+        self.project = self.project_repository.create_project(
+            schema=self.valid_project, creator_id=self.owner.id
+        )
 
         # Ajouter un membre au projet
         self.project_repository.add_project_member(
             project_id=self.project.id,
             user_id=self.member.id,
+            role=ProjectMemberRole.MEMBER,
         )
 
-    def test_remove_project_member_success(self) -> None:
+    def test_delete_project_member_success(self) -> None:
         """Test de la suppression d'un membre d'un projet avec succès
 
         Returns:
@@ -63,20 +66,21 @@ class RemoveProjectMemberSQLRepositoryTests(BaseRepositoryTest):
         """
         # Vérifier que le membre est bien dans le projet
         project_members = self.project_repository.get_project_members(self.project.id)
-        self.assertEqual(1, len(project_members))
+        self.assertEqual(2, len(project_members))
+        self.assertEqual(self.owner.id, project_members[1].id)
         self.assertEqual(self.member.id, project_members[0].id)
 
         # Supprimer le membre du projet
-        self.project_repository.remove_project_member(
+        self.project_repository.delete_project_member(
             project_id=self.project.id,
             user_id=self.member.id,
         )
 
         # Vérifier que le membre a été supprimé
         project_members = self.project_repository.get_project_members(self.project.id)
-        self.assertEqual(0, len(project_members))
+        self.assertEqual(1, len(project_members))
 
-    def test_remove_project_member_project_not_found(self) -> None:
+    def test_delete_project_member_project_not_found(self) -> None:
         """Test de la suppression d'un membre d'un projet qui n'existe pas
 
         Returns:
@@ -84,7 +88,7 @@ class RemoveProjectMemberSQLRepositoryTests(BaseRepositoryTest):
         """
         with self.assertRaises(ProjectDBException) as context:
             non_existent_project_id: UUID = uuid4()
-            self.project_repository.remove_project_member(
+            self.project_repository.delete_project_member(
                 project_id=non_existent_project_id,
                 user_id=self.member.id,
             )
@@ -93,14 +97,14 @@ class RemoveProjectMemberSQLRepositoryTests(BaseRepositoryTest):
         self.assertIsInstance(context.exception, ProjectDBException)
         self.assertEqual(str(context.exception), expected_message)
 
-    def test_remove_project_member_not_a_member(self) -> None:
+    def test_delete_project_member_not_a_member(self) -> None:
         """Test de la suppression d'un utilisateur qui n'est pas membre du projet
 
         Returns:
             None
         """
         with self.assertRaises(ProjectDBException) as context:
-            self.project_repository.remove_project_member(
+            self.project_repository.delete_project_member(
                 project_id=self.project.id,
                 user_id=self.another_member.id,  # Cet utilisateur n'est pas membre du projet
             )
@@ -111,7 +115,7 @@ class RemoveProjectMemberSQLRepositoryTests(BaseRepositoryTest):
         self.assertIsInstance(context.exception, ProjectDBException)
         self.assertEqual(str(context.exception), expected_message)
 
-    def test_remove_project_member_user_not_found(self) -> None:
+    def test_delete_project_member_user_not_found(self) -> None:
         """Test de la suppression d'un utilisateur qui n'existe pas
 
         Returns:
@@ -119,7 +123,7 @@ class RemoveProjectMemberSQLRepositoryTests(BaseRepositoryTest):
         """
         with self.assertRaises(ProjectDBException) as context:
             non_existent_user_id: UUID = uuid4()
-            self.project_repository.remove_project_member(
+            self.project_repository.delete_project_member(
                 project_id=self.project.id,
                 user_id=non_existent_user_id,
             )

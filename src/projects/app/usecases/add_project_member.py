@@ -33,8 +33,11 @@ class AddProjectMemberUseCase:
             ProjectAndUserJonctionTableEntity: Lien créé entre le projet et le membre
         """
         member_to_add = ProjectAndUserJonctionTableEntity(
-            project_id=schema.project_id, user_id=schema.user_id
+            project_id=schema.project_id,
+            user_id=schema.user_id,
         )
         return self.repository.add_project_member(
-            member_to_add.project_id, member_to_add.user_id
+            project_id=member_to_add.project_id,
+            user_id=member_to_add.user_id,
+            role=member_to_add.role,
         )

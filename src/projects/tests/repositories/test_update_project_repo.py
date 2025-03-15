@@ -1,7 +1,7 @@
 from datetime import timezone
 from uuid import uuid4
 
-from common.tests.repositories.base_repo_test import BaseRepositoryTest
+from common.tests.repositories.test_base_repo import TestBaseRepository
 from projects.domain.entities.project_entity import ProjectEntity
 from projects.domain.exceptions.project_exceptions import (
     ProjectDBException,
@@ -11,7 +11,7 @@ from users.domain.entities.user_entity import UserEntity
 from users.infra.data.repositories.user_sqlrepo import UserSQLRepository
 
 
-class UpdateProjectSQLRepositoryTests(BaseRepositoryTest):
+class TestUpdateProjectSQLRepository(TestBaseRepository):
     """Test de la mise à jour d'un projet
 
     Args:
@@ -40,7 +40,9 @@ class UpdateProjectSQLRepositoryTests(BaseRepositoryTest):
             name="Test Project",
             description="A test project",
         )
-        self.project = self.project_repository.create_project(self.valid_project)
+        self.project = self.project_repository.create_project(
+            schema=self.valid_project, creator_id=self.owner.id
+        )
 
         # Créer un second projet pour tester les contraintes d'unicité
         self.second_project = ProjectEntity(
@@ -49,7 +51,7 @@ class UpdateProjectSQLRepositoryTests(BaseRepositoryTest):
             description="Another test project",
         )
         self.second_project = self.project_repository.create_project(
-            self.second_project
+            schema=self.second_project, creator_id=self.owner.id
         )
 
     def test_update_project_success(self) -> None:

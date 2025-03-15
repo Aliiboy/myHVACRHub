@@ -15,36 +15,19 @@ Ce projet utilise les bibliothèques suivantes :
 
 ## ✅ TODO
 COMMON :
-- Verifier la définition des routes "/project/create" ou "/project/" par exemple.
-- MONO REPO SUR RAILWAY
-- Créer des README par module
-- Systeme de cache dans pour la db.
-- faire la chasse au "delete" et "remove", choisir 1 mot sur les 2.
-- Au niveau des test : "Test" doit etre en prefixe ou en suffixe. Tout mettre en pré-fixe.
-- 100% de coverage sur les tests end-to-end.
+- 100% de coverage sur les tests.
 - Passer avec controller et presenter.
 
 HUMID AIR :
 - Doc string in humid_air.
 
 PROJECTS : 
-- CreateProject : Message de success plutot que le projet en lui même?
-- CreateProject : Le créateur doit directement etre le permier membre ou le propriétaire (tant qu'a faire..)
 - UpdateProject : Ne change pas update_at lors de la modification d'un projet.
-- GetAllProject : Admin seule.
-- UseCase : Faire lever ValidationException de Pydantic.
-- Routes !!!.
-- Dto : exporter des strings dans ProjetSettings
-- Integrer les roles (propriétaire et membres).
+- UpdateProject : Seulement si l'utilisateur est propriétaire.
+- DeleteProject : Seulement si l'utilisateur est propriétaire.
+- AddProjectMember : Seulement si l'utilisateur est propriétaire.
 - en fonction des role (moderator, user, admin), controller les niveaux d'accés des routes.
-- Generer les tests avec 100% coverage.
-- Update Project : sortir le uuid du schéma, le mettre en paramètre à part (à l'aide de Path), ensuite la modification du projet pourra se faire mais sans changer le UUID.
-- TEST DES ROUTES : Raise ProjectMemberValidationException
 
 USERS :
-- UserLoginRequest : password pattern ?
 - Update user.
-- route sign_in : manque ValidationError ?
-- voir les projets des utilisateurs (membre et propriétaire) ?.
-- Changer les exceptions de users.
 - Interdir la suppression d'un utilisateur s'il est proprietaire d'un projet.

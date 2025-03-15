@@ -4,10 +4,10 @@ from unittest.mock import MagicMock
 from uuid import uuid4
 
 from projects.app.repositories.project_interface import ProjectRepositoryInterface
-from projects.app.usecases.remove_project_member import RemoveProjectMemberUseCase
+from projects.app.usecases.delete_project_member import DeleteProjectMemberUseCase
 
 
-class TestRemoveProjectMemberUseCase(unittest.TestCase):
+class TestDeleteProjectMemberUseCase(unittest.TestCase):
     """Test de la suppression d'un membre d'un projet
 
     Args:
@@ -23,11 +23,11 @@ class TestRemoveProjectMemberUseCase(unittest.TestCase):
         self.mock_project_repository: MagicMock = MagicMock(
             spec=ProjectRepositoryInterface
         )
-        self.use_case: RemoveProjectMemberUseCase = RemoveProjectMemberUseCase(
+        self.use_case: DeleteProjectMemberUseCase = DeleteProjectMemberUseCase(
             repository=self.mock_project_repository,
         )
 
-    def test_remove_project_member_success(self) -> None:
+    def test_delete_project_member_success(self) -> None:
         """Test de la suppression d'un membre d'un projet avec succès
 
         Returns:
@@ -42,5 +42,5 @@ class TestRemoveProjectMemberUseCase(unittest.TestCase):
 
         # Assert
         cast(
-            MagicMock, self.mock_project_repository.remove_project_member
+            MagicMock, self.mock_project_repository.delete_project_member
         ).assert_called_once_with(project_id, user_id)

@@ -1,13 +1,13 @@
 from uuid import UUID, uuid4
 
-from common.tests.repositories.base_repo_test import BaseRepositoryTest
-from projects.domain.entities.project_entity import ProjectEntity
+from common.tests.repositories.test_base_repo import TestBaseRepository
+from projects.domain.entities.project_entity import ProjectEntity, ProjectMemberRole
 from projects.infra.data.repositories.project_sqlrepo import ProjectSQLRepository
 from users.domain.entities.user_entity import UserEntity
 from users.infra.data.repositories.user_sqlrepo import UserSQLRepository
 
 
-class GetUserProjectsSQLRepositoryTests(BaseRepositoryTest):
+class TestGetUserProjectsSQLRepository(TestBaseRepository):
     """Test de la récupération des projets d'un utilisateur
 
     Args:
@@ -39,41 +39,33 @@ class GetUserProjectsSQLRepositoryTests(BaseRepositoryTest):
             name="Test Project 1",
             description="A test project 1",
         )
-        self.project1 = self.project_repository.create_project(self.project1)
+        self.project1 = self.project_repository.create_project(
+            schema=self.project1, creator_id=self.user1.id
+        )
 
         self.project2 = ProjectEntity(
             project_number="PRJ-002",
             name="Test Project 2",
             description="A test project 2",
         )
-        self.project2 = self.project_repository.create_project(self.project2)
+        self.project2 = self.project_repository.create_project(
+            schema=self.project2, creator_id=self.user2.id
+        )
 
         self.project3 = ProjectEntity(
             project_number="PRJ-003",
             name="Test Project 3",
             description="A test project 3",
         )
-        self.project3 = self.project_repository.create_project(self.project3)
+        self.project3 = self.project_repository.create_project(
+            schema=self.project3, creator_id=self.user2.id
+        )
 
         # Ajouter des membres aux projets
-        # user1 est membre de project1 et project2
-        self.project_repository.add_project_member(
-            project_id=self.project1.id,
-            user_id=self.user1.id,
-        )
         self.project_repository.add_project_member(
             project_id=self.project2.id,
             user_id=self.user1.id,
-        )
-
-        # user2 est membre de project2 et project3
-        self.project_repository.add_project_member(
-            project_id=self.project2.id,
-            user_id=self.user2.id,
-        )
-        self.project_repository.add_project_member(
-            project_id=self.project3.id,
-            user_id=self.user2.id,
+            role=ProjectMemberRole.MEMBER,
         )
 
     def test_get_user_projects_success(self) -> None:

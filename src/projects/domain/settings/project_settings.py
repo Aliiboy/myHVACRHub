@@ -4,8 +4,8 @@ class ProjectSettings:
     Cette classe contient les paramètres des projets.
     """
 
-    # id
-    id_description: str = "Identifiant unique du projet"
+    # project_id
+    project_id_description: str = "Identifiant unique du projet"
     # project_number
     project_number_description: str = (
         "Numéro de projet utilisé comme identifiant par l'entreprise"
@@ -25,5 +25,24 @@ class ProjectSettings:
     # dates
     created_at_description: str = "Date de création du projet"
     updated_at_description: str = "Date de mise à jour du projet"
+    # projects
+    projects_description: str = "Liste des projets"
+    # limit
+    limit_description: str = "Nombre maximum de projets à récupérer"
+    limit_default: int = 100
+    limit_gt: int = 0
+
+
+class ProjectMemberSettings:
+    """Paramètres des membres du projet
+
+    Cette classe contient les paramètres des membres des projets.
+    """
+
     # ProjectMemberRole
     role_description: str = "Rôle de l'utilisateur dans le projet"
+    # user
+    user_id_description: str = "Identifiant unique de l'utilisateur"
+    email_description: str = "Adresse email de l'utilisateur"
+    # members
+    members_description: str = "Liste des membres du projet"

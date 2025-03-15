@@ -10,7 +10,7 @@ from common.infra.web.settings import AppSettings
 from users.infra.services.bcrypt_password_hasher import BcryptPasswordHasher
 
 
-class BaseRepositoryTest(unittest.TestCase):
+class TestBaseRepository(unittest.TestCase):
     """Test de base pour les tests des repositories
 
     Args:

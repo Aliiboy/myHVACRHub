@@ -1,10 +1,10 @@
-from common.tests.repositories.base_repo_test import BaseRepositoryTest
+from common.tests.repositories.test_base_repo import TestBaseRepository
 from users.domain.entities.user_entity import UserEntity
 from users.domain.exceptions.user_exceptions import UserDBException
 from users.infra.data.repositories.user_sqlrepo import UserSQLRepository
 
 
-class UserSignUpSQLRepositoryTests(BaseRepositoryTest):
+class TestUserSignUpSQLRepository(TestBaseRepository):
     """Test de l'inscription d'un utilisateur
 
     Args:

@@ -5,7 +5,7 @@ from humid_air.app.usecases.get_ha_props import GetHumidAirPropertyUseCase
 from humid_air.domain.exceptions.humid_air_exceptions import HumidAirValidationException
 
 
-class GetFullHAPropertyUseCaseTests(unittest.TestCase):
+class TestGetFullHAPropertyUseCase(unittest.TestCase):
     def setUp(self) -> None:
         self.use_case = GetHumidAirPropertyUseCase()
 

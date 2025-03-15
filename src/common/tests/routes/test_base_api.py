@@ -10,7 +10,7 @@ from common.infra.web.container import AppContainer
 from common.infra.web.settings import AppSettings
 
 
-class BaseAPITest(unittest.TestCase):
+class TestBaseAPI(unittest.TestCase):
     """Test de base pour les tests des API
 
     Args:

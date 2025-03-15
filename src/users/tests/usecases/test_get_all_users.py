@@ -7,7 +7,7 @@ from users.app.usecases.get_all_users import GetAllUsersUsecase
 from users.domain.entities.user_entity import UserEntity
 
 
-class GetAllUsersUsecaseTest(unittest.TestCase):
+class TestGetAllUsersUsecase(unittest.TestCase):
     """Test de la récupération de tous les utilisateurs
 
     Args:

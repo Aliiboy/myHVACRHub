@@ -3,7 +3,7 @@ from uuid import UUID
 from projects.app.repositories.project_interface import ProjectRepositoryInterface
 
 
-class RemoveProjectMemberUseCase:
+class DeleteProjectMemberUseCase:
     """Cas d'utilisation pour supprimer un membre d'un projet
 
     Cette classe implémente la logique métier nécessaire pour supprimer
@@ -31,4 +31,4 @@ class RemoveProjectMemberUseCase:
         Returns:
             None
         """
-        self.repository.remove_project_member(project_id, user_id)
+        self.repository.delete_project_member(project_id, user_id)

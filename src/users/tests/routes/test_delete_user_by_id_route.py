@@ -3,10 +3,10 @@ from http import HTTPStatus
 
 from sqlalchemy import text
 
-from common.tests.routes.base_api_test import BaseAPITest
+from common.tests.routes.test_base_api import TestBaseAPI
 
 
-class DeleteUserByIdRouteTests(BaseAPITest):
+class TestDeleteUserByIdRoute(TestBaseAPI):
     """Test de la suppression d'un utilisateur par son id
 
     Args:
@@ -75,5 +75,5 @@ class DeleteUserByIdRouteTests(BaseAPITest):
         self.assertEqual(delete_response.status_code, HTTPStatus.NOT_FOUND)
         self.assertEqual(
             delete_response.get_json()["message"],
-            f"UserDBException : L'utilisateur avec l'id '{wrong_id}' n'existe pas.",
+            f"UserException : L'utilisateur avec l'id '{wrong_id}' n'existe pas.",
         )
