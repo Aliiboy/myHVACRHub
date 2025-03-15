@@ -398,7 +398,7 @@ wheels = [
 ]
 
 [[package]]
-name = "iasimov-flask-api"
+name = "iasimov"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [

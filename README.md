@@ -1,7 +1,7 @@
-# myHVACRHub
+# iasimov
 
 Propulsé par **PyFluids** et **CoolProp** pour les calculs thermodynamique.
-[myHVACRHub](https://myhvacrhub.up.railway.app/)
+[iasimov](https://iasimov.pythonanywhere.com/)
 
 ## 🚀 Fonctionnalités
 - 💨 **Propriétés thermodynamiques de l'air humide** :
